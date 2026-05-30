@@ -1,0 +1,228 @@
+{
+  "version": "1.0.0",
+  "generated": true,
+  "roles": [
+    {
+      "key": "manager",
+      "label": "Manager",
+      "rank": 1,
+      "description": "Full admin — user management, audit view + rollback, every module action."
+    },
+    {
+      "key": "supervisor",
+      "label": "Supervisor",
+      "rank": 2,
+      "description": "Audit view, intake commit, equipment edit. No user management."
+    },
+    {
+      "key": "employee",
+      "label": "Employee",
+      "rank": 3,
+      "description": "Intake view + import, equipment view. No commit, no admin."
+    },
+    {
+      "key": "apprentice",
+      "label": "Apprentice",
+      "rank": 4,
+      "description": "Read-mostly — intake view only."
+    },
+    {
+      "key": "labour_hire",
+      "label": "Labour Hire",
+      "rank": 5,
+      "description": "Minimal — own roster / timesheet only (no shell permissions today)."
+    }
+  ],
+  "roleKeys": [
+    "manager",
+    "supervisor",
+    "employee",
+    "apprentice",
+    "labour_hire"
+  ],
+  "tiers": [
+    "trial",
+    "standard",
+    "advanced",
+    "enterprise"
+  ],
+  "platformAdmin": {
+    "field": "is_platform_admin",
+    "effect": "Orthogonal to role. When true, can() short-circuits to true for every permission across every tenant. EQ-internal staff only (single audit point for cross-tenant power)."
+  },
+  "modules": [
+    "admin",
+    "audit",
+    "intake",
+    "equipment",
+    "reports"
+  ],
+  "permissions": [
+    {
+      "key": "admin.list_users",
+      "module": "admin",
+      "description": "List tenant users.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "admin.invite_user",
+      "module": "admin",
+      "description": "Invite a new user to the tenant.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "admin.edit_user",
+      "module": "admin",
+      "description": "Edit a user's role / details.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "admin.deactivate_user",
+      "module": "admin",
+      "description": "Deactivate a user.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "admin.review_cards",
+      "module": "admin",
+      "description": "Review Cards onboarding submissions.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "audit.view",
+      "module": "audit",
+      "description": "View the audit log.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "audit.rollback",
+      "module": "audit",
+      "description": "Roll back an audited change.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "intake.view",
+      "module": "intake",
+      "description": "See the Intake surface.",
+      "roles": [
+        "manager",
+        "supervisor",
+        "employee",
+        "apprentice"
+      ]
+    },
+    {
+      "key": "intake.import",
+      "module": "intake",
+      "description": "Initiate an import (drop file, map, validate).",
+      "roles": [
+        "manager",
+        "supervisor",
+        "employee"
+      ]
+    },
+    {
+      "key": "intake.commit",
+      "module": "intake",
+      "description": "Commit a validated batch to canonical (destructive).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "equipment.view",
+      "module": "equipment",
+      "description": "See the Plant & Equipment list + calibration.",
+      "roles": [
+        "manager",
+        "supervisor",
+        "employee"
+      ]
+    },
+    {
+      "key": "equipment.edit",
+      "module": "equipment",
+      "description": "Add / edit equipment + calibration fields.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "reports.view",
+      "module": "reports",
+      "description": "View GM reports.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "reports.upload",
+      "module": "reports",
+      "description": "Upload a source report.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "reports.generate_briefing",
+      "module": "reports",
+      "description": "Generate the AI briefing.",
+      "roles": [
+        "manager"
+      ]
+    }
+  ],
+  "matrix": {
+    "manager": [
+      "admin.list_users",
+      "admin.invite_user",
+      "admin.edit_user",
+      "admin.deactivate_user",
+      "admin.review_cards",
+      "audit.view",
+      "audit.rollback",
+      "intake.view",
+      "intake.import",
+      "intake.commit",
+      "equipment.view",
+      "equipment.edit",
+      "reports.view",
+      "reports.upload",
+      "reports.generate_briefing"
+    ],
+    "supervisor": [
+      "audit.view",
+      "intake.view",
+      "intake.import",
+      "intake.commit",
+      "equipment.view",
+      "equipment.edit"
+    ],
+    "employee": [
+      "intake.view",
+      "intake.import",
+      "equipment.view"
+    ],
+    "apprentice": [
+      "intake.view"
+    ],
+    "labour_hire": []
+  }
+}

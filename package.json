@@ -1,0 +1,29 @@
+{
+  "name": "@eq-solutions/roles",
+  "version": "1.0.0",
+  "private": false,
+  "license": "UNLICENSED",
+  "author": "CDC Solutions Pty Ltd",
+  "description": "Canonical EQ role model — the 5-tier role enum (manager / supervisor / employee / apprentice / labour_hire), the is_platform_admin override, and the permission matrix. Single source of truth across every EQ surface (Shell, Field, Service, Cards, Quotes). Outputs typed TS + resolved JSON from one JSON source.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eq-solutions/eq-roles.git"
+  },
+  "keywords": ["eq-solutions", "rbac", "roles", "permissions", "authorization"],
+  "main": "roles.ts",
+  "types": "roles.ts",
+  "exports": {
+    ".": { "types": "./roles.ts", "default": "./roles.ts" },
+    "./roles.ts": "./roles.ts",
+    "./roles.json": "./roles.json",
+    "./package.json": "./package.json"
+  },
+  "files": ["roles/", "roles.ts", "roles.json", "build.mjs", "README.md"],
+  "scripts": {
+    "build": "node build.mjs",
+    "prepublishOnly": "node build.mjs"
+  },
+  "publishConfig": { "access": "restricted" },
+  "engines": { "node": ">=18" }
+}
