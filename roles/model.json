@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "$comment": "Single source of truth for the EQ 5-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier or permission is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
@@ -20,6 +20,7 @@
     { "key": "admin.edit_user",       "module": "admin",     "description": "Edit a user's role / details.",                       "roles": ["manager"] },
     { "key": "admin.deactivate_user", "module": "admin",     "description": "Deactivate a user.",                                  "roles": ["manager"] },
     { "key": "admin.review_cards",    "module": "admin",     "description": "Review Cards onboarding submissions.",                "roles": ["manager"] },
+    { "key": "admin.manage_groups",   "module": "admin",     "description": "Create and manage security groups + membership.",     "roles": ["manager"] },
 
     { "key": "audit.view",            "module": "audit",     "description": "View the audit log.",                                 "roles": ["manager", "supervisor"] },
     { "key": "audit.rollback",        "module": "audit",     "description": "Roll back an audited change.",                        "roles": ["manager"] },

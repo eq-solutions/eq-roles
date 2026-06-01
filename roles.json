@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "generated": true,
   "roles": [
     {
@@ -99,6 +99,14 @@
       "key": "admin.review_cards",
       "module": "admin",
       "description": "Review Cards onboarding submissions.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "admin.manage_groups",
+      "module": "admin",
+      "description": "Create and manage security groups + membership.",
       "roles": [
         "manager"
       ]
@@ -334,6 +342,7 @@
       "admin.edit_user",
       "admin.deactivate_user",
       "admin.review_cards",
+      "admin.manage_groups",
       "audit.view",
       "audit.rollback",
       "entity.view",
