@@ -88,6 +88,16 @@ export function permissionsFor(role: EqRole, opts?: { isPlatformAdmin?: boolean 
   return MATRIX[role] ?? [];
 }
 
+export function canAny(role: EqRole, perms: readonly PermKey[], opts?: { isPlatformAdmin?: boolean }): boolean {
+  if (opts?.isPlatformAdmin) return true;
+  return perms.some((p) => MATRIX_SETS[role]?.has(p));
+}
+
+export function canAll(role: EqRole, perms: readonly PermKey[], opts?: { isPlatformAdmin?: boolean }): boolean {
+  if (opts?.isPlatformAdmin) return true;
+  return perms.every((p) => MATRIX_SETS[role]?.has(p));
+}
+
 export function isEqRole(x: unknown): x is EqRole { return typeof x === 'string' && (ROLE_KEYS as readonly string[]).includes(x); }
 `;
 writeFileSync(join(here, 'roles.ts'), ts);
