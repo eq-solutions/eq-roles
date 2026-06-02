@@ -16,10 +16,11 @@ Today the same model is hand-redefined in `eq-shell/src/session.ts` + `src/permi
 ## Source of truth
 
 Edit [`roles/model.json`](roles/model.json), then `npm run build`. That regenerates:
-- **`roles.ts`** — typed consumable: `EqRole` / `EqTier` / `PermKey` unions, `ROLES`, `PERMISSIONS`, `MATRIX`, and `can()`.
-- **`roles.json`** — resolved data (incl. derived per-role matrix) for servers / non-TS consumers (Netlify functions, Field's vanilla JS, a future Dart emit for Cards).
+- **`roles.ts`** — typed consumable: `EqRole` / `EqTier` / `PermKey` unions, `ROLES`, `PERMISSIONS`, `MATRIX`, and `can()`. Used for types (`"types"`).
+- **`roles.js`** — compiled runtime ESM entry (same exports, data inlined, types stripped). This is what `main` / the default export resolve to, so bundlers (Netlify functions) and plain Node ESM load real JS at runtime — never the raw `.ts`. **Committed to the repo** because tarball installs (`github:eq-solutions/eq-roles#vX`) don't run `build`.
+- **`roles.json`** — resolved data (incl. derived per-role matrix) for servers / non-TS consumers that read JSON directly (Field's vanilla JS, a future Dart emit for Cards).
 
-The build validates the model (no dup keys, every grant names a real role, every key is `module.verb`).
+The build validates the model (no dup keys, every grant names a real role, every key is `module.verb`). `npm test` then guards the result: matrix semantics, the shipped `roles.js` runtime matching `roles.ts`, and the committed artefacts byte-matching a fresh build (so stale generated files can't be merged). `prepublishOnly` runs both before any publish.
 
 ## Usage (TS)
 
