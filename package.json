@@ -1,6 +1,6 @@
 {
   "name": "@eq-solutions/roles",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "private": false,
   "license": "UNLICENSED",
   "author": "CDC Solutions Pty Ltd",
@@ -18,7 +18,17 @@
     "./roles.js": "./roles.js",
     "./roles.ts": "./roles.ts",
     "./roles.json": "./roles.json",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./admin": { "types": "./roles/admin.ts", "default": "./roles/admin.js" },
+    "./audit": { "types": "./roles/audit.ts", "default": "./roles/audit.js" },
+    "./entity": { "types": "./roles/entity.ts", "default": "./roles/entity.js" },
+    "./intake": { "types": "./roles/intake.ts", "default": "./roles/intake.js" },
+    "./equipment": { "types": "./roles/equipment.ts", "default": "./roles/equipment.js" },
+    "./reports": { "types": "./roles/reports.ts", "default": "./roles/reports.js" },
+    "./cards": { "types": "./roles/cards.ts", "default": "./roles/cards.js" },
+    "./service": { "types": "./roles/service.ts", "default": "./roles/service.js" },
+    "./field": { "types": "./roles/field.ts", "default": "./roles/field.js" },
+    "./quotes": { "types": "./roles/quotes.ts", "default": "./roles/quotes.js" }
   },
   "files": ["roles/", "roles.js", "roles.ts", "roles.json", "build.mjs", "README.md"],
   "scripts": {

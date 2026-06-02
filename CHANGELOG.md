@@ -3,6 +3,18 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.0.0] - 2026-06-02
+
+### Added
+- **Per-module subpath exports** — `@eq-solutions/roles/<module>` for all 10 modules (`admin`, `audit`, `entity`, `intake`, `equipment`, `reports`, `cards`, `service`, `field`, `quotes`). Each subpath is a self-contained slice: only that module's `PermKey` union, `MATRIX`, and typed helpers (`<module>Can`, `permissionsFor<Module>`, `<module>CanAny`, `<module>CanAll`). `EqRole` is inlined so the slice has zero imports — consumers ship only what they use.
+- `buildModuleArtefacts(model, moduleKey)` pure function exported from `build.mjs`, drift-guarded by `roles.dist.test.ts`.
+- 40 new tests in `roles.dist.test.ts` — drift-guard + export-surface + cross-role parity per module (70 total across both suites).
+
+### Changed
+- `build.mjs` CLI writes 20 additional files (`roles/<module>.ts` + `roles/<module>.js` for each module).
+- `package.json` — 10 new subpath exports. Main entry (`.`) is **unchanged** — fully backward compatible.
+- Version bumped to `2.0.0` to mark the architectural split. Downstream consumers (eq-shell, eq-field, eq-solves-service) adopt module slices in C6/C7/C8.
+
 ## [1.4.0] - 2026-06-02
 
 ### Added
@@ -47,6 +59,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Typed TS output (`roles.ts`: `EqRole` / `EqTier` / `PermKey` unions, `ROLES`, `PERMISSIONS`, `MATRIX`, `can()`) plus resolved `roles.json` for server/non-TS consumers — both generated from `roles/model.json` via `build.mjs`.
 - Consumed by EQ Shell ([eq-shell#70](https://github.com/eq-solutions/eq-shell/pull/70)) as the canonical `EqRole` + `MATRIX` source; 5×15 permission-equivalence verified identical to the prior hand-defined matrix.
 
+[2.0.0]: https://github.com/eq-solutions/eq-roles/compare/v1.4.0...v2.0.0
 [1.4.0]: https://github.com/eq-solutions/eq-roles/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/eq-solutions/eq-roles/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/eq-solutions/eq-roles/compare/v1.1.0...v1.2.0
