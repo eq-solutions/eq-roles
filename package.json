@@ -1,6 +1,6 @@
 {
   "name": "@eq-solutions/roles",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": false,
   "license": "UNLICENSED",
   "author": "CDC Solutions Pty Ltd",
@@ -11,15 +11,16 @@
     "url": "git+https://github.com/eq-solutions/eq-roles.git"
   },
   "keywords": ["eq-solutions", "rbac", "roles", "permissions", "authorization"],
-  "main": "roles.ts",
+  "main": "roles.js",
   "types": "roles.ts",
   "exports": {
-    ".": { "types": "./roles.ts", "default": "./roles.ts" },
+    ".": { "types": "./roles.ts", "default": "./roles.js" },
+    "./roles.js": "./roles.js",
     "./roles.ts": "./roles.ts",
     "./roles.json": "./roles.json",
     "./package.json": "./package.json"
   },
-  "files": ["roles/", "roles.ts", "roles.json", "build.mjs", "README.md"],
+  "files": ["roles/", "roles.js", "roles.ts", "roles.json", "build.mjs", "README.md"],
   "scripts": {
     "build": "node build.mjs",
     "test": "node --import tsx/esm --test roles.test.ts",
