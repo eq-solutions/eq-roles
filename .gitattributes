@@ -1,0 +1,11 @@
+# Normalise all text to LF in the repo, and force LF in the working tree on
+# every platform. The generated artefacts (roles.ts / roles.js / roles.json)
+# are written with `\n` by build.mjs; without this, Windows autocrlf would
+# rewrite them to CRLF on checkout and roles.dist.test.ts (which compares the
+# on-disk files to a fresh build) would fail spuriously.
+* text=auto eol=lf
+
+# Generated — collapse in diffs/reviews; they are derived from roles/model.json.
+roles.ts   linguist-generated=true
+roles.js   linguist-generated=true
+roles.json linguist-generated=true

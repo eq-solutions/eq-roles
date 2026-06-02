@@ -23,7 +23,7 @@
   "files": ["roles/", "roles.js", "roles.ts", "roles.json", "build.mjs", "README.md"],
   "scripts": {
     "build": "node build.mjs",
-    "test": "node --import tsx/esm --test roles.test.ts",
+    "test": "node --import tsx/esm --test roles.test.ts roles.dist.test.ts",
     "prepublishOnly": "node build.mjs && npm test"
   },
   "devDependencies": {
