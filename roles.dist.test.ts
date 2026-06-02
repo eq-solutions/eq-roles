@@ -13,13 +13,14 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { buildArtefacts } from './build.mjs';
+import { buildArtefacts, buildModuleArtefacts } from './build.mjs';
 import {
   ROLE_KEYS as TS_ROLE_KEYS,
   PERMISSIONS as TS_PERMISSIONS,
   can as tsCan,
   permissionsFor as tsPermissionsFor,
 } from './roles.ts';
+import type { ModuleKey } from './roles.ts';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const read = (rel: string) => readFileSync(join(here, rel), 'utf8');
@@ -88,3 +89,44 @@ test('roles.js isEqRole accepts roles and rejects non-roles', () => {
   assert.equal(rt.isEqRole(null), false);
   assert.equal(rt.isEqRole(42), false);
 });
+
+// ── per-module artefacts ─────────────────────────────────────────────────────
+
+const MODEL_MODULES: ModuleKey[] = JSON.parse(read('roles/model.json')).modules;
+
+for (const moduleKey of MODEL_MODULES) {
+  const cap = moduleKey.charAt(0).toUpperCase() + moduleKey.slice(1);
+  const UPPER = moduleKey.toUpperCase();
+
+  test(`roles/${moduleKey}.ts on disk matches a fresh build`, () => {
+    const fresh = buildModuleArtefacts(model, moduleKey);
+    assert.equal(read(`roles/${moduleKey}.ts`), fresh.ts);
+  });
+
+  test(`roles/${moduleKey}.js on disk matches a fresh build`, () => {
+    const fresh = buildModuleArtefacts(model, moduleKey);
+    assert.equal(read(`roles/${moduleKey}.js`), fresh.js);
+  });
+
+  test(`roles/${moduleKey}.js runtime — ${UPPER}_PERM_KEYS + ${UPPER}_MATRIX + ${moduleKey}Can exports exist`, async () => {
+    const modRt = await import(`./roles/${moduleKey}.js`);
+    assert.ok(Array.isArray(modRt[`${UPPER}_PERM_KEYS`]), `${UPPER}_PERM_KEYS missing`);
+    assert.ok(typeof modRt[`${UPPER}_MATRIX`] === 'object', `${UPPER}_MATRIX missing`);
+    assert.ok(typeof modRt[`${moduleKey}Can`] === 'function', `${moduleKey}Can missing`);
+    assert.ok(typeof modRt[`permissionsFor${cap}`] === 'function', `permissionsFor${cap} missing`);
+    assert.ok(typeof modRt[`${moduleKey}CanAny`] === 'function', `${moduleKey}CanAny missing`);
+    assert.ok(typeof modRt[`${moduleKey}CanAll`] === 'function', `${moduleKey}CanAll missing`);
+  });
+
+  test(`roles/${moduleKey}.js — ${moduleKey}Can() agrees with root can() for every role`, async () => {
+    const modRt = await import(`./roles/${moduleKey}.js`);
+    const modPermKeys: string[] = modRt[`${UPPER}_PERM_KEYS`];
+    const canFn = modRt[`${moduleKey}Can`] as (role: string, perm: string, opts?: { isPlatformAdmin?: boolean }) => boolean;
+    for (const role of TS_ROLE_KEYS) {
+      for (const perm of modPermKeys) {
+        assert.equal(canFn(role, perm), tsCan(role, perm as never), `${role}/${perm} diverged`);
+        assert.equal(canFn(role, perm, { isPlatformAdmin: true }), true, `${role}/${perm} ignored platform admin`);
+      }
+    }
+  });
+}
