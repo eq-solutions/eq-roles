@@ -56,8 +56,24 @@ test('roles.js exports the full public surface', () => {
   for (const name of [
     'ROLE_KEYS', 'TIERS', 'ROLES', 'PERMISSIONS', 'PLATFORM_ADMIN_FIELD',
     'MATRIX', 'can', 'permissionsFor', 'canAny', 'canAll', 'isEqRole',
+    'SERVICE_ROLE_MAP', 'fromServiceRole',
   ]) {
     assert.ok(name in rt, `roles.js is missing export "${name}"`);
+  }
+});
+
+test('roles.js fromServiceRole agrees with roles.ts and never yields platform-admin power', () => {
+  const cases: Record<string, string> = {
+    super_admin: 'manager', admin: 'manager', supervisor: 'supervisor', technician: 'employee', read_only: 'apprentice',
+  };
+  for (const [src, canon] of Object.entries(cases)) {
+    assert.equal(rt.fromServiceRole(src), canon, `${src} should map to ${canon}`);
+  }
+  assert.equal(rt.fromServiceRole('nope'), null);
+  // tenant isolation invariant: every alias target is a real role, none is the platform-admin override
+  for (const target of Object.values(rt.SERVICE_ROLE_MAP)) {
+    assert.ok(rt.ROLE_KEYS.includes(target), `${target} is not a real role`);
+    assert.notEqual(target, rt.PLATFORM_ADMIN_FIELD, 'no alias may target is_platform_admin');
   }
 });
 

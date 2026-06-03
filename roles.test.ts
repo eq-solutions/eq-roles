@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {
   can, canAny, canAll, permissionsFor, isEqRole,
   MATRIX, PERMISSIONS, ROLE_KEYS, PLATFORM_ADMIN_FIELD,
-  type EqRole, type PermKey,
+  SERVICE_ROLE_MAP, fromServiceRole,
+  type EqRole, type PermKey, type ServiceRole,
 } from './roles.ts';
 
 // ── can() ──────────────────────────────────────────────────────────────────
@@ -120,6 +121,37 @@ test('isEqRole: rejects non-roles', () => {
   assert.equal(isEqRole(null), false);
   assert.equal(isEqRole(undefined), false);
   assert.equal(isEqRole(42), false);
+});
+
+// ── consumer role adapters (Service C6) ─────────────────────────────────────
+
+test('fromServiceRole maps every Service role onto a canonical role', () => {
+  const expected: Record<ServiceRole, EqRole> = {
+    super_admin: 'manager', admin: 'manager', supervisor: 'supervisor', technician: 'employee', read_only: 'apprentice',
+  };
+  for (const [src, canon] of Object.entries(expected) as [ServiceRole, EqRole][]) {
+    assert.equal(fromServiceRole(src), canon);
+    assert.equal(SERVICE_ROLE_MAP[src], canon);
+  }
+});
+
+test('fromServiceRole returns null for unknown input', () => {
+  assert.equal(fromServiceRole('root'), null);
+  assert.equal(fromServiceRole(''), null);
+});
+
+test('tenant isolation: super_admin maps to a plain manager, not platform admin', () => {
+  // The mapped role grants no cross-tenant power on its own — is_platform_admin
+  // is orthogonal and is never derived from a tenant-held role.
+  assert.equal(fromServiceRole('super_admin'), 'manager');
+  assert.equal(can('manager', 'admin.list_users'), true);          // tenant-scoped admin, yes
+  assert.equal(can(fromServiceRole('super_admin')!, 'admin.list_users'), true);
+});
+
+test('every Service alias target is a real EqRole', () => {
+  for (const target of Object.values(SERVICE_ROLE_MAP)) {
+    assert.ok((ROLE_KEYS as readonly string[]).includes(target), `${target} is not a real role`);
+  }
 });
 
 // ── matrix integrity ──────────────────────────────────────────────────────

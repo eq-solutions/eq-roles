@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "generated": true,
   "roles": [
     {
@@ -407,5 +407,14 @@
     "labour_hire": [
       "field.view"
     ]
+  },
+  "roleAliases": {
+    "service": {
+      "super_admin": "manager",
+      "admin": "manager",
+      "supervisor": "supervisor",
+      "technician": "employee",
+      "read_only": "apprentice"
+    }
   }
 }
