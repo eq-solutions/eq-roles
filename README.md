@@ -25,20 +25,38 @@ The build validates the model (no dup keys, every grant names a real role, every
 ## Usage (TS)
 
 ```ts
-import { can, MATRIX, ROLE_KEYS, type EqRole, type PermKey } from '@eq-solutions/roles';
+import { can, labelFor, MATRIX, ROLE_KEYS, type EqRole, type PermKey } from '@eq-solutions/roles';
 
 can('supervisor', 'intake.commit');                       // true
 can('apprentice', 'intake.commit');                       // false
 can('employee',  'admin.list_users', { isPlatformAdmin: true }); // true (override)
+
+labelFor('intake.commit');                                // 'Confirm an import'  (plain-English, for admin UIs)
 ```
 
+Each permission carries a short, jargon-free `label` for surfaces where a non-technical manager grants access, alongside the longer developer-facing `description`.
+
 `PermKey` is a closed union — `can('field.nope', …)` fails to compile.
+
+## Consumer role adapters
+
+When an app has its *own* role vocabulary, map it onto canonical `EqRole` here (in [`roles/model.json`](roles/model.json) under `roleAliases`) rather than re-deciding the mapping per consumer. The build emits a typed adapter:
+
+```ts
+import { fromServiceRole, SERVICE_ROLE_MAP, type ServiceRole } from '@eq-solutions/roles';
+
+fromServiceRole('technician');   // 'employee'
+fromServiceRole('super_admin');  // 'manager'  (NOT platform admin — see below)
+fromServiceRole('root');         // null
+```
+
+**Tenant isolation invariant:** no alias may target `is_platform_admin`. Cross-tenant power is *never* derived from a tenant-held role — so a tenant role can never escalate to god-mode over other tenants. EQ Service's `super_admin` therefore maps to a tenant-scoped `manager`; genuine EQ-internal platform operations (provisioning, support, incident response) live **out-of-band** (Supabase service-role key / time-boxed audited impersonation that mints a normal tenant-scoped token), not in any tenant role. The build and test suites enforce this.
 
 ## Adoption plan
 - **eq-shell** — replace the `EqRole` union in `session.ts` and the composed `MATRIX` in `permissions/**` with imports from here; `useCan()` calls `can()`.
 - **Netlify functions / RLS** — read `roles.json` server-side; inject `eq_role` into the JWT `app_metadata`.
 - **EQ Field** — consume `roles.json` instead of the lossy 2-tier `staff | supervisor` mapping.
-- **EQ Service** — map its `tenant_members.role` onto these canonical roles.
+- **EQ Service** — map its `tenant_members.role` onto these canonical roles via `fromServiceRole()` (shipped, see *Consumer role adapters*); replace the scattered `isAdmin`/`canWrite` string checks with `can()`.
 - **Cards** — add a `roles.dart` emit (mirrors the tokens Dart path) when wired.
 
 This is the foundation for the staged Supabase-Auth re-platform: one role registry → custom JWT claims → RLS enforcement everywhere.
