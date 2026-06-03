@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type CardsPermKey = 'cards.view' | 'cards.onboard';
 export const CARDS_PERM_KEYS: readonly CardsPermKey[] = ['cards.view', 'cards.onboard'];
-export const CARDS_PERMISSIONS = [{"key":"cards.view","module":"cards","description":"Access the Cards onboarding surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"cards.onboard","module":"cards","description":"Submit or manage an onboarding card.","roles":["manager","supervisor"]}] as const;
+export const CARDS_PERMISSIONS = [{"key":"cards.view","module":"cards","label":"Open Cards","description":"Access the Cards onboarding surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"cards.onboard","module":"cards","label":"Submit onboarding","description":"Submit or manage an onboarding card.","roles":["manager","supervisor"]}] as const;
 
 /** Per-role grants within the cards module. */
 export const CARDS_MATRIX: Record<EqRole, readonly CardsPermKey[]> = {

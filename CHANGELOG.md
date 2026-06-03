@@ -8,10 +8,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 ### Added
 - **Consumer role adapters (`roleAliases`)** — a foreign system's own role vocabulary can now be mapped onto canonical `EqRole` in `roles/model.json`, and the build emits a typed adapter. First consumer: **EQ Service (C6)** — `ServiceRole` type, `SERVICE_ROLE_MAP`, and `fromServiceRole(role): EqRole | null` (in `roles.ts` + `roles.js`; raw map also in `roles.json`). Mapping: `super_admin`/`admin` → `manager`, `supervisor` → `supervisor`, `technician` → `employee`, `read_only` → `apprentice`.
 - **Tenant-isolation invariant, enforced at build + test:** `super_admin` maps to a **tenant-scoped `manager`, never `is_platform_admin`**. Cross-tenant power is never derived from a tenant-held role — EQ-internal platform ops stay out-of-band (service-role / audited impersonation). `build.mjs` validates every alias target is a real role; `roles.test.ts` + `roles.dist.test.ts` assert no alias yields the platform-admin override.
-- 5 new tests (75 total).
+- **Plain-English permission labels** — every permission now carries a short, jargon-free `label` (e.g. `intake.commit` → "Confirm an import") alongside the developer-facing `description`, for admin UIs where a non-technical manager grants access. New `labelFor(perm): string` helper (`roles.ts` + `roles.js`); `label` added to `PermissionMeta` and to each module slice's `*_PERMISSIONS`. `build.mjs` requires every permission to have a non-empty label.
+- 7 new tests (77 total).
 
 ### Changed
-- `build.mjs` validates `model.roleAliases` (doc-only `$`-prefixed keys skipped) and generates the adapter into all three artefacts.
+- `build.mjs` validates `model.roleAliases` (doc-only `$`-prefixed keys skipped) and generates the adapter into all three artefacts; also enforces the per-permission `label`.
 - Version bumped to `2.1.0` (additive public surface, fully backward compatible).
 
 ## [2.0.0] - 2026-06-02

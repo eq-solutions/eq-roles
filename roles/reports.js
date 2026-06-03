@@ -2,7 +2,7 @@
 /* @eq-solutions/roles/reports v2.1.0 — reports-module permission slice (runtime ESM). */
 
 export const REPORTS_PERM_KEYS = ['reports.view', 'reports.upload', 'reports.generate_briefing'];
-export const REPORTS_PERMISSIONS = [{"key":"reports.view","module":"reports","description":"View GM reports.","roles":["manager"]},{"key":"reports.upload","module":"reports","description":"Upload a source report.","roles":["manager"]},{"key":"reports.generate_briefing","module":"reports","description":"Generate the AI briefing.","roles":["manager"]}];
+export const REPORTS_PERMISSIONS = [{"key":"reports.view","module":"reports","label":"View reports","description":"View GM reports.","roles":["manager"]},{"key":"reports.upload","module":"reports","label":"Upload reports","description":"Upload a source report.","roles":["manager"]},{"key":"reports.generate_briefing","module":"reports","label":"Generate AI briefing","description":"Generate the AI briefing.","roles":["manager"]}];
 
 /** Per-role grants within the reports module. */
 export const REPORTS_MATRIX = {

@@ -2,7 +2,7 @@
 /* @eq-solutions/roles/audit v2.1.0 — audit-module permission slice (runtime ESM). */
 
 export const AUDIT_PERM_KEYS = ['audit.view', 'audit.rollback'];
-export const AUDIT_PERMISSIONS = [{"key":"audit.view","module":"audit","description":"View the audit log.","roles":["manager","supervisor"]},{"key":"audit.rollback","module":"audit","description":"Roll back an audited change.","roles":["manager"]}];
+export const AUDIT_PERMISSIONS = [{"key":"audit.view","module":"audit","label":"View activity log","description":"View the audit log.","roles":["manager","supervisor"]},{"key":"audit.rollback","module":"audit","label":"Undo changes","description":"Roll back an audited change.","roles":["manager"]}];
 
 /** Per-role grants within the audit module. */
 export const AUDIT_MATRIX = {

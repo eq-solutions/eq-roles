@@ -25,12 +25,16 @@ The build validates the model (no dup keys, every grant names a real role, every
 ## Usage (TS)
 
 ```ts
-import { can, MATRIX, ROLE_KEYS, type EqRole, type PermKey } from '@eq-solutions/roles';
+import { can, labelFor, MATRIX, ROLE_KEYS, type EqRole, type PermKey } from '@eq-solutions/roles';
 
 can('supervisor', 'intake.commit');                       // true
 can('apprentice', 'intake.commit');                       // false
 can('employee',  'admin.list_users', { isPlatformAdmin: true }); // true (override)
+
+labelFor('intake.commit');                                // 'Confirm an import'  (plain-English, for admin UIs)
 ```
+
+Each permission carries a short, jargon-free `label` for surfaces where a non-technical manager grants access, alongside the longer developer-facing `description`.
 
 `PermKey` is a closed union — `can('field.nope', …)` fails to compile.
 

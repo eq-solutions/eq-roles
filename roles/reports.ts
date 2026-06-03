@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type ReportsPermKey = 'reports.view' | 'reports.upload' | 'reports.generate_briefing';
 export const REPORTS_PERM_KEYS: readonly ReportsPermKey[] = ['reports.view', 'reports.upload', 'reports.generate_briefing'];
-export const REPORTS_PERMISSIONS = [{"key":"reports.view","module":"reports","description":"View GM reports.","roles":["manager"]},{"key":"reports.upload","module":"reports","description":"Upload a source report.","roles":["manager"]},{"key":"reports.generate_briefing","module":"reports","description":"Generate the AI briefing.","roles":["manager"]}] as const;
+export const REPORTS_PERMISSIONS = [{"key":"reports.view","module":"reports","label":"View reports","description":"View GM reports.","roles":["manager"]},{"key":"reports.upload","module":"reports","label":"Upload reports","description":"Upload a source report.","roles":["manager"]},{"key":"reports.generate_briefing","module":"reports","label":"Generate AI briefing","description":"Generate the AI briefing.","roles":["manager"]}] as const;
 
 /** Per-role grants within the reports module. */
 export const REPORTS_MATRIX: Record<EqRole, readonly ReportsPermKey[]> = {

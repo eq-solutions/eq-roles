@@ -2,7 +2,7 @@
 /* @eq-solutions/roles/field v2.1.0 — field-module permission slice (runtime ESM). */
 
 export const FIELD_PERM_KEYS = ['field.view', 'field.dispatch'];
-export const FIELD_PERMISSIONS = [{"key":"field.view","module":"field","description":"View Field resources — staff, licences, availability, assignments.","roles":["manager","supervisor","employee","apprentice","labour_hire"]},{"key":"field.dispatch","module":"field","description":"Dispatch staff to jobs / shifts.","roles":["manager","supervisor"]}];
+export const FIELD_PERMISSIONS = [{"key":"field.view","module":"field","label":"View field resources","description":"View Field resources — staff, licences, availability, assignments.","roles":["manager","supervisor","employee","apprentice","labour_hire"]},{"key":"field.dispatch","module":"field","label":"Dispatch staff","description":"Dispatch staff to jobs / shifts.","roles":["manager","supervisor"]}];
 
 /** Per-role grants within the field module. */
 export const FIELD_MATRIX = {

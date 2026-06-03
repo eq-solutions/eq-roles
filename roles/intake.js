@@ -2,7 +2,7 @@
 /* @eq-solutions/roles/intake v2.1.0 — intake-module permission slice (runtime ESM). */
 
 export const INTAKE_PERM_KEYS = ['intake.view', 'intake.import', 'intake.commit'];
-export const INTAKE_PERMISSIONS = [{"key":"intake.view","module":"intake","description":"See the Intake surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"intake.import","module":"intake","description":"Initiate an import (drop file, map, validate).","roles":["manager","supervisor","employee"]},{"key":"intake.commit","module":"intake","description":"Commit a validated batch to canonical (destructive).","roles":["manager","supervisor"]}];
+export const INTAKE_PERMISSIONS = [{"key":"intake.view","module":"intake","label":"View imports","description":"See the Intake surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"intake.import","module":"intake","label":"Start an import","description":"Initiate an import (drop file, map, validate).","roles":["manager","supervisor","employee"]},{"key":"intake.commit","module":"intake","label":"Confirm an import","description":"Commit a validated batch to canonical (destructive).","roles":["manager","supervisor"]}];
 
 /** Per-role grants within the intake module. */
 export const INTAKE_MATRIX = {

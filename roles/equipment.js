@@ -2,7 +2,7 @@
 /* @eq-solutions/roles/equipment v2.1.0 — equipment-module permission slice (runtime ESM). */
 
 export const EQUIPMENT_PERM_KEYS = ['equipment.view', 'equipment.edit'];
-export const EQUIPMENT_PERMISSIONS = [{"key":"equipment.view","module":"equipment","description":"See the Plant & Equipment list + calibration.","roles":["manager","supervisor","employee"]},{"key":"equipment.edit","module":"equipment","description":"Add / edit equipment + calibration fields.","roles":["manager","supervisor"]}];
+export const EQUIPMENT_PERMISSIONS = [{"key":"equipment.view","module":"equipment","label":"View equipment","description":"See the Plant & Equipment list + calibration.","roles":["manager","supervisor","employee"]},{"key":"equipment.edit","module":"equipment","label":"Edit equipment","description":"Add / edit equipment + calibration fields.","roles":["manager","supervisor"]}];
 
 /** Per-role grants within the equipment module. */
 export const EQUIPMENT_MATRIX = {

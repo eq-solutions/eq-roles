@@ -56,7 +56,7 @@ test('roles.js exports the full public surface', () => {
   for (const name of [
     'ROLE_KEYS', 'TIERS', 'ROLES', 'PERMISSIONS', 'PLATFORM_ADMIN_FIELD',
     'MATRIX', 'can', 'permissionsFor', 'canAny', 'canAll', 'isEqRole',
-    'SERVICE_ROLE_MAP', 'fromServiceRole',
+    'SERVICE_ROLE_MAP', 'fromServiceRole', 'labelFor',
   ]) {
     assert.ok(name in rt, `roles.js is missing export "${name}"`);
   }

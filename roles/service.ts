@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type ServicePermKey = 'service.view' | 'service.create' | 'service.close';
 export const SERVICE_PERM_KEYS: readonly ServicePermKey[] = ['service.view', 'service.create', 'service.close'];
-export const SERVICE_PERMISSIONS = [{"key":"service.view","module":"service","description":"View the Service CMMS (work orders, defects, PPM).","roles":["manager","supervisor","employee","apprentice"]},{"key":"service.create","module":"service","description":"Create a work order or defect.","roles":["manager","supervisor"]},{"key":"service.close","module":"service","description":"Close / resolve a work order.","roles":["manager","supervisor"]}] as const;
+export const SERVICE_PERMISSIONS = [{"key":"service.view","module":"service","label":"View maintenance","description":"View the Service CMMS (work orders, defects, PPM).","roles":["manager","supervisor","employee","apprentice"]},{"key":"service.create","module":"service","label":"Raise work orders","description":"Create a work order or defect.","roles":["manager","supervisor"]},{"key":"service.close","module":"service","label":"Close work orders","description":"Close / resolve a work order.","roles":["manager","supervisor"]}] as const;
 
 /** Per-role grants within the service module. */
 export const SERVICE_MATRIX: Record<EqRole, readonly ServicePermKey[]> = {

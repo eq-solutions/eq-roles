@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type EquipmentPermKey = 'equipment.view' | 'equipment.edit';
 export const EQUIPMENT_PERM_KEYS: readonly EquipmentPermKey[] = ['equipment.view', 'equipment.edit'];
-export const EQUIPMENT_PERMISSIONS = [{"key":"equipment.view","module":"equipment","description":"See the Plant & Equipment list + calibration.","roles":["manager","supervisor","employee"]},{"key":"equipment.edit","module":"equipment","description":"Add / edit equipment + calibration fields.","roles":["manager","supervisor"]}] as const;
+export const EQUIPMENT_PERMISSIONS = [{"key":"equipment.view","module":"equipment","label":"View equipment","description":"See the Plant & Equipment list + calibration.","roles":["manager","supervisor","employee"]},{"key":"equipment.edit","module":"equipment","label":"Edit equipment","description":"Add / edit equipment + calibration fields.","roles":["manager","supervisor"]}] as const;
 
 /** Per-role grants within the equipment module. */
 export const EQUIPMENT_MATRIX: Record<EqRole, readonly EquipmentPermKey[]> = {

@@ -2,7 +2,7 @@
 /* @eq-solutions/roles/entity v2.1.0 — entity-module permission slice (runtime ESM). */
 
 export const ENTITY_PERM_KEYS = ['entity.view', 'entity.create', 'entity.edit', 'entity.delete'];
-export const ENTITY_PERMISSIONS = [{"key":"entity.view","module":"entity","description":"View canonical records (customers, sites, contacts, assets).","roles":["manager","supervisor","employee","apprentice"]},{"key":"entity.create","module":"entity","description":"Create a new canonical record.","roles":["manager"]},{"key":"entity.edit","module":"entity","description":"Edit an existing canonical record.","roles":["manager","supervisor"]},{"key":"entity.delete","module":"entity","description":"Delete a canonical record (hard delete, manager-only).","roles":["manager"]}];
+export const ENTITY_PERMISSIONS = [{"key":"entity.view","module":"entity","label":"View records","description":"View canonical records (customers, sites, contacts, assets).","roles":["manager","supervisor","employee","apprentice"]},{"key":"entity.create","module":"entity","label":"Add records","description":"Create a new canonical record.","roles":["manager"]},{"key":"entity.edit","module":"entity","label":"Edit records","description":"Edit an existing canonical record.","roles":["manager","supervisor"]},{"key":"entity.delete","module":"entity","label":"Delete records","description":"Delete a canonical record (hard delete, manager-only).","roles":["manager"]}];
 
 /** Per-role grants within the entity module. */
 export const ENTITY_MATRIX = {

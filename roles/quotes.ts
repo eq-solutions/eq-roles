@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type QuotesPermKey = 'quotes.view' | 'quotes.create' | 'quotes.approve';
 export const QUOTES_PERM_KEYS: readonly QuotesPermKey[] = ['quotes.view', 'quotes.create', 'quotes.approve'];
-export const QUOTES_PERMISSIONS = [{"key":"quotes.view","module":"quotes","description":"View quotes.","roles":["manager","supervisor","employee"]},{"key":"quotes.create","module":"quotes","description":"Create or edit a quote.","roles":["manager","supervisor"]},{"key":"quotes.approve","module":"quotes","description":"Approve and send a quote.","roles":["manager"]}] as const;
+export const QUOTES_PERMISSIONS = [{"key":"quotes.view","module":"quotes","label":"View quotes","description":"View quotes.","roles":["manager","supervisor","employee"]},{"key":"quotes.create","module":"quotes","label":"Create quotes","description":"Create or edit a quote.","roles":["manager","supervisor"]},{"key":"quotes.approve","module":"quotes","label":"Approve quotes","description":"Approve and send a quote.","roles":["manager"]}] as const;
 
 /** Per-role grants within the quotes module. */
 export const QUOTES_MATRIX: Record<EqRole, readonly QuotesPermKey[]> = {

@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type AuditPermKey = 'audit.view' | 'audit.rollback';
 export const AUDIT_PERM_KEYS: readonly AuditPermKey[] = ['audit.view', 'audit.rollback'];
-export const AUDIT_PERMISSIONS = [{"key":"audit.view","module":"audit","description":"View the audit log.","roles":["manager","supervisor"]},{"key":"audit.rollback","module":"audit","description":"Roll back an audited change.","roles":["manager"]}] as const;
+export const AUDIT_PERMISSIONS = [{"key":"audit.view","module":"audit","label":"View activity log","description":"View the audit log.","roles":["manager","supervisor"]},{"key":"audit.rollback","module":"audit","label":"Undo changes","description":"Roll back an audited change.","roles":["manager"]}] as const;
 
 /** Per-role grants within the audit module. */
 export const AUDIT_MATRIX: Record<EqRole, readonly AuditPermKey[]> = {

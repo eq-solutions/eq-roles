@@ -8,7 +8,7 @@ export type EqRole = 'manager' | 'supervisor' | 'employee' | 'apprentice' | 'lab
 
 export type IntakePermKey = 'intake.view' | 'intake.import' | 'intake.commit';
 export const INTAKE_PERM_KEYS: readonly IntakePermKey[] = ['intake.view', 'intake.import', 'intake.commit'];
-export const INTAKE_PERMISSIONS = [{"key":"intake.view","module":"intake","description":"See the Intake surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"intake.import","module":"intake","description":"Initiate an import (drop file, map, validate).","roles":["manager","supervisor","employee"]},{"key":"intake.commit","module":"intake","description":"Commit a validated batch to canonical (destructive).","roles":["manager","supervisor"]}] as const;
+export const INTAKE_PERMISSIONS = [{"key":"intake.view","module":"intake","label":"View imports","description":"See the Intake surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"intake.import","module":"intake","label":"Start an import","description":"Initiate an import (drop file, map, validate).","roles":["manager","supervisor","employee"]},{"key":"intake.commit","module":"intake","label":"Confirm an import","description":"Commit a validated batch to canonical (destructive).","roles":["manager","supervisor"]}] as const;
 
 /** Per-role grants within the intake module. */
 export const INTAKE_MATRIX: Record<EqRole, readonly IntakePermKey[]> = {

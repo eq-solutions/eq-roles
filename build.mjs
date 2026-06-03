@@ -29,6 +29,7 @@ export function buildArtefacts(model) {
   for (const p of model.permissions) {
     for (const r of p.roles) if (!roleSet.has(r)) errors.push(`permission ${p.key} grants unknown role "${r}"`);
     if (!p.key.includes('.')) errors.push(`permission ${p.key} must be <module>.<verb>`);
+    if (!p.label || !p.label.trim()) errors.push(`permission ${p.key} is missing a plain-English label`);
   }
 
   // roleAliases: foreign role vocabularies mapped onto canonical EqRole. Keys
@@ -99,7 +100,7 @@ export type PermKey = ${union(permKeys)};
 export type ModuleKey = ${union(model.modules)};
 
 export interface RoleMeta { key: EqRole; label: string; rank: number; description: string; }
-export interface PermissionMeta { key: PermKey; module: ModuleKey; description: string; roles: readonly EqRole[]; }
+export interface PermissionMeta { key: PermKey; module: ModuleKey; label: string; description: string; roles: readonly EqRole[]; }
 
 export const ROLE_KEYS = [${roleKeys.map((r) => `'${r}'`).join(', ')}] as const satisfies readonly EqRole[];
 export const TIERS = [${model.tiers.map((t) => `'${t}'`).join(', ')}] as const satisfies readonly EqTier[];
@@ -140,6 +141,10 @@ export function canAll(role: EqRole, perms: readonly PermKey[], opts?: { isPlatf
 }
 
 export function isEqRole(x: unknown): x is EqRole { return typeof x === 'string' && (ROLE_KEYS as readonly string[]).includes(x); }
+
+const PERM_LABELS: Record<PermKey, string> = Object.fromEntries(PERMISSIONS.map((p) => [p.key, p.label])) as Record<PermKey, string>;
+/** Plain-English label for a permission key — what a non-technical manager reads in an admin UI. */
+export function labelFor(perm: PermKey): string { return PERM_LABELS[perm]; }
 ` + aliasTs;
 
   // ── roles.js (runtime ESM, the entry consumers actually load) ──────────────
@@ -192,6 +197,10 @@ export function canAll(role, perms, opts) {
 }
 
 export function isEqRole(x) { return typeof x === 'string' && ROLE_KEYS.includes(x); }
+
+const PERM_LABELS = Object.fromEntries(PERMISSIONS.map((p) => [p.key, p.label]));
+/** Plain-English label for a permission key — what a non-technical manager reads in an admin UI. */
+export function labelFor(perm) { return PERM_LABELS[perm]; }
 ` + aliasJs;
 
   return { json, ts, js, stats: { roles: roleKeys.length, permissions: permKeys.length } };

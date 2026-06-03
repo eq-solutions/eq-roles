@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {
   can, canAny, canAll, permissionsFor, isEqRole,
   MATRIX, PERMISSIONS, ROLE_KEYS, PLATFORM_ADMIN_FIELD,
-  SERVICE_ROLE_MAP, fromServiceRole,
+  SERVICE_ROLE_MAP, fromServiceRole, labelFor,
   type EqRole, type PermKey, type ServiceRole,
 } from './roles.ts';
 
@@ -121,6 +121,21 @@ test('isEqRole: rejects non-roles', () => {
   assert.equal(isEqRole(null), false);
   assert.equal(isEqRole(undefined), false);
   assert.equal(isEqRole(42), false);
+});
+
+// ── plain-English labels ────────────────────────────────────────────────────
+
+test('every permission has a non-empty plain-English label', () => {
+  for (const p of PERMISSIONS) {
+    assert.ok(p.label && p.label.trim().length > 0, `${p.key} has no label`);
+    assert.notEqual(p.label, p.key, `${p.key} label should be human text, not the key`);
+  }
+});
+
+test('labelFor returns the permission label', () => {
+  assert.equal(labelFor('intake.commit'), 'Confirm an import');
+  assert.equal(labelFor('admin.manage_groups'), 'Manage access groups');
+  assert.equal(labelFor('quotes.approve'), 'Approve quotes');
 });
 
 // ── consumer role adapters (Service C6) ─────────────────────────────────────
