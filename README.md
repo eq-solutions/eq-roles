@@ -52,6 +52,29 @@ fromServiceRole('root');         // null
 
 **Tenant isolation invariant:** no alias may target `is_platform_admin`. Cross-tenant power is *never* derived from a tenant-held role — so a tenant role can never escalate to god-mode over other tenants. EQ Service's `super_admin` therefore maps to a tenant-scoped `manager`; genuine EQ-internal platform operations (provisioning, support, incident response) live **out-of-band** (Supabase service-role key / time-boxed audited impersonation that mints a normal tenant-scoped token), not in any tenant role. The build and test suites enforce this.
 
+## Default security groups
+
+A **security group** is a named, per-tenant bundle of *extra* `PermKey`s, **additive on top of** a user's base role (surfaced as `session.extra_perms`) — it is **not** a role. Groups exist for **cross-cutting** grants that don't fit the role hierarchy: "a few people across roles who can edit equipment", say. Today a fresh tenant starts with **zero** groups; this package ships canonical starter templates so Shell can seed sensible defaults on tenant creation.
+
+```ts
+import { DEFAULT_GROUPS, defaultGroupPerms, type DefaultGroupKey } from '@eq-solutions/roles';
+
+DEFAULT_GROUPS;                          // [{ key, name, description, perms }, …]
+defaultGroupPerms('equipment_editors');  // ['equipment.view', 'equipment.edit']
+defaultGroupPerms('does_not_exist');     // []  (unknown key → no perms)
+```
+
+Authored in [`roles/model.json`](roles/model.json) under `defaultGroups`; the build validates every `perms` entry is a real `PermKey` and that keys + names are unique. The shipped set:
+
+| Key | Name | Grants | Why it's cross-cutting |
+|---|---|---|---|
+| `equipment_editors` | Equipment editors | `equipment.view`, `equipment.edit` | Editing the plant list is manager/supervisor-only; this hands it to a few employees/apprentices who maintain equipment. |
+| `report_viewers` | Report viewers | `reports.view` | GM reports are manager-only; this lets a supervisor or lead read them without being made a manager. |
+
+**These are templates, not duplicates of a role.** Each grants only perms that cut *across* the role hierarchy — a group that merely re-grants what a role already has would blur the role-vs-group line and is intentionally excluded.
+
+> Picking *which* defaults ship is a product decision — keep the set small and obviously useful. The Shell consumer seeds `DEFAULT_GROUPS` (mapped by `name`, the DB's unique key) into each new tenant; the package only owns the canonical definition.
+
 ## Adoption plan
 - **eq-shell** — replace the `EqRole` union in `session.ts` and the composed `MATRIX` in `permissions/**` with imports from here; `useCan()` calls `can()`.
 - **Netlify functions / RLS** — read `roles.json` server-side; inject `eq_role` into the JWT `app_metadata`.

@@ -1,5 +1,5 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "$comment": "Single source of truth for the EQ 5-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
@@ -69,5 +69,20 @@
         "read_only": "apprentice"
       }
     }
-  }
+  },
+  "$defaultGroups": "Canonical starter security groups for seeding a fresh tenant (which today starts with zero). A group is a named bundle of EXTRA PermKeys, ADDITIVE on top of a user's base role (surfaced as session.extra_perms) — NOT a role. These templates intentionally grant only CROSS-CUTTING perms (held by a few people regardless of role) and never duplicate what a role already grants. Build validates every `perms` entry is a real permission key and that keys + names are unique. EQ Shell seeds DEFAULT_GROUPS on tenant creation. Names/descriptions are plain English (what a manager reads).",
+  "defaultGroups": [
+    {
+      "key": "equipment_editors",
+      "name": "Equipment editors",
+      "description": "Edit the plant & equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.",
+      "perms": ["equipment.view", "equipment.edit"]
+    },
+    {
+      "key": "report_viewers",
+      "name": "Report viewers",
+      "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
+      "perms": ["reports.view"]
+    }
+  ]
 }

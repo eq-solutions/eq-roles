@@ -4,6 +4,7 @@ import {
   can, canAny, canAll, permissionsFor, isEqRole,
   MATRIX, PERMISSIONS, ROLE_KEYS, PLATFORM_ADMIN_FIELD,
   SERVICE_ROLE_MAP, fromServiceRole, labelFor,
+  DEFAULT_GROUPS, defaultGroupPerms,
   type EqRole, type PermKey, type ServiceRole,
 } from './roles.ts';
 
@@ -166,6 +167,50 @@ test('tenant isolation: super_admin maps to a plain manager, not platform admin'
 test('every Service alias target is a real EqRole', () => {
   for (const target of Object.values(SERVICE_ROLE_MAP)) {
     assert.ok((ROLE_KEYS as readonly string[]).includes(target), `${target} is not a real role`);
+  }
+});
+
+// ── default security groups ─────────────────────────────────────────────────
+
+test('DEFAULT_GROUPS is non-empty and every entry is well-formed', () => {
+  assert.ok(DEFAULT_GROUPS.length > 0, 'expected at least one default group');
+  for (const g of DEFAULT_GROUPS) {
+    assert.ok(g.key && g.key.trim().length > 0, 'group missing key');
+    assert.ok(g.name && g.name.trim().length > 0, `group ${g.key} missing name`);
+    assert.ok(g.description && g.description.trim().length > 0, `group ${g.key} missing description`);
+    assert.ok(g.perms.length > 0, `group ${g.key} grants no perms`);
+  }
+});
+
+test('every default group grants only real permission keys', () => {
+  const declared = new Set(PERMISSIONS.map(p => p.key));
+  for (const g of DEFAULT_GROUPS) {
+    for (const p of g.perms) {
+      assert.ok(declared.has(p), `group ${g.key} grants undeclared perm ${p}`);
+    }
+  }
+});
+
+test('default group keys and names are unique', () => {
+  const keys = DEFAULT_GROUPS.map(g => g.key);
+  const names = DEFAULT_GROUPS.map(g => g.name);
+  assert.equal(new Set(keys).size, keys.length, 'duplicate group key');
+  assert.equal(new Set(names).size, names.length, 'duplicate group name');
+});
+
+test('defaultGroupPerms returns a group\'s perms, and [] for unknown keys', () => {
+  for (const g of DEFAULT_GROUPS) {
+    assert.deepEqual(defaultGroupPerms(g.key), g.perms);
+  }
+  assert.deepEqual(defaultGroupPerms('does_not_exist'), []);
+});
+
+test('default groups are cross-cutting — not a no-op grant for every role', () => {
+  // A useful group hands out at least one perm the lowest-rank role lacks;
+  // otherwise it just echoes the role hierarchy (the gap Royce flagged against).
+  for (const g of DEFAULT_GROUPS) {
+    const addsSomething = g.perms.some(p => !(MATRIX['apprentice'] as readonly PermKey[]).includes(p));
+    assert.ok(addsSomething, `group ${g.key} grants nothing beyond the apprentice baseline`);
   }
 });
 

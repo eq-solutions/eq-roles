@@ -57,6 +57,7 @@ test('roles.js exports the full public surface', () => {
     'ROLE_KEYS', 'TIERS', 'ROLES', 'PERMISSIONS', 'PLATFORM_ADMIN_FIELD',
     'MATRIX', 'can', 'permissionsFor', 'canAny', 'canAll', 'isEqRole',
     'SERVICE_ROLE_MAP', 'fromServiceRole', 'labelFor',
+    'DEFAULT_GROUPS', 'defaultGroupPerms',
   ]) {
     assert.ok(name in rt, `roles.js is missing export "${name}"`);
   }
@@ -75,6 +76,17 @@ test('roles.js fromServiceRole agrees with roles.ts and never yields platform-ad
     assert.ok(rt.ROLE_KEYS.includes(target), `${target} is not a real role`);
     assert.notEqual(target, rt.PLATFORM_ADMIN_FIELD, 'no alias may target is_platform_admin');
   }
+});
+
+test('roles.js DEFAULT_GROUPS + defaultGroupPerms agree with the model', () => {
+  assert.deepEqual(rt.DEFAULT_GROUPS, model.defaultGroups, 'shipped DEFAULT_GROUPS drifted from model.json');
+  for (const g of rt.DEFAULT_GROUPS) {
+    assert.deepEqual(rt.defaultGroupPerms(g.key), g.perms, `defaultGroupPerms(${g.key}) diverged`);
+    for (const p of g.perms) {
+      assert.ok(rt.PERMISSIONS.some((x: { key: string }) => x.key === p), `group ${g.key} grants undeclared perm ${p}`);
+    }
+  }
+  assert.deepEqual(rt.defaultGroupPerms('nope'), []);
 });
 
 test('roles.js can() agrees with roles.ts across every role × permission', () => {

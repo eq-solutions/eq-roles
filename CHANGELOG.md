@@ -3,6 +3,16 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.2.0] - 2026-06-04
+
+### Added
+- **Default security groups (`defaultGroups`)** — canonical starter security-group templates for seeding a fresh tenant (which today starts with **zero** groups — the gap Royce flagged). A group is a named bundle of *extra* `PermKey`s, **additive** on top of a user's base role (`session.extra_perms`), for **cross-cutting** grants that don't fit the role hierarchy. The build emits a typed `DEFAULT_GROUPS` const, a `DefaultGroupKey` union + `DefaultGroup` interface, and a `defaultGroupPerms(key): readonly PermKey[]` helper (returns `[]` for unknown keys) into `roles.ts` + `roles.js`; the resolved data is also in `roles.json`. Shipped set: `equipment_editors` (`equipment.view`, `equipment.edit`) and `report_viewers` (`reports.view`) — both grant only perms that cut across the role hierarchy, never a duplicate of what a role already grants.
+- 6 new tests (83 total): well-formedness, real-perm-key validation, key/name uniqueness, `defaultGroupPerms` behaviour, a cross-cutting (non-no-op) invariant, and a `roles.js`-vs-model drift guard. `roles.dist.test.ts` public-surface list updated with `DEFAULT_GROUPS` + `defaultGroupPerms`.
+
+### Changed
+- `build.mjs` validates `model.defaultGroups` (every `perms` entry is a real permission key; keys + names unique; at least one perm each) and generates the const + helper into all three artefacts.
+- Version bumped to `2.2.0` (additive public surface, fully backward compatible).
+
 ## [2.1.0] - 2026-06-04
 
 ### Added
@@ -71,6 +81,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](ht
 - Typed TS output (`roles.ts`: `EqRole` / `EqTier` / `PermKey` unions, `ROLES`, `PERMISSIONS`, `MATRIX`, `can()`) plus resolved `roles.json` for server/non-TS consumers — both generated from `roles/model.json` via `build.mjs`.
 - Consumed by EQ Shell ([eq-shell#70](https://github.com/eq-solutions/eq-shell/pull/70)) as the canonical `EqRole` + `MATRIX` source; 5×15 permission-equivalence verified identical to the prior hand-defined matrix.
 
+[2.2.0]: https://github.com/eq-solutions/eq-roles/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/eq-solutions/eq-roles/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/eq-solutions/eq-roles/compare/v1.4.0...v2.0.0
 [1.4.0]: https://github.com/eq-solutions/eq-roles/compare/v1.3.0...v1.4.0

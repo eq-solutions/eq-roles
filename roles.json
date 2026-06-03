@@ -1,5 +1,5 @@
 {
-  "version": "2.1.0",
+  "version": "2.2.0",
   "generated": true,
   "roles": [
     {
@@ -446,5 +446,24 @@
       "technician": "employee",
       "read_only": "apprentice"
     }
-  }
+  },
+  "defaultGroups": [
+    {
+      "key": "equipment_editors",
+      "name": "Equipment editors",
+      "description": "Edit the plant & equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.",
+      "perms": [
+        "equipment.view",
+        "equipment.edit"
+      ]
+    },
+    {
+      "key": "report_viewers",
+      "name": "Report viewers",
+      "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
+      "perms": [
+        "reports.view"
+      ]
+    }
+  ]
 }
