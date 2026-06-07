@@ -5,6 +5,7 @@ import {
   MATRIX, PERMISSIONS, ROLE_KEYS, PLATFORM_ADMIN_FIELD,
   SERVICE_ROLE_MAP, fromServiceRole, labelFor,
   DEFAULT_GROUPS, defaultGroupPerms,
+  resolveEffectivePermissions,
   type EqRole, type PermKey, type ServiceRole,
 } from './roles.ts';
 
@@ -242,4 +243,69 @@ test('higher-rank roles are strict subsets of the role above them', () => {
   const apprentice = new Set(MATRIX['apprentice']);
   for (const p of employee) assert.ok(supervisor.has(p), `employee has ${p} but supervisor doesn't`);
   for (const p of apprentice) assert.ok(employee.has(p), `apprentice has ${p} but employee doesn't`);
+});
+
+// ── resolveEffectivePermissions() — grant-only, revoke-ready ─────────────────
+
+test('resolve: no groups → exactly the role default set', () => {
+  for (const role of ROLE_KEYS) {
+    assert.deepEqual(resolveEffectivePermissions({ role }), MATRIX[role]);
+  }
+});
+
+test('resolve: a security group ADDS a perm above the base role', () => {
+  // employee can VIEW equipment but not EDIT it; the equipment_editors group grants edit.
+  assert.equal(can('employee', 'equipment.edit'), false);
+  const eff = resolveEffectivePermissions({
+    role: 'employee',
+    groupPerms: defaultGroupPerms('equipment_editors'),
+  });
+  assert.ok(eff.includes('equipment.edit'), 'group grant should appear in the effective set');
+  assert.ok(eff.includes('field.view'), 'base role perms are retained');
+});
+
+test('resolve: platform admin short-circuits to every permission', () => {
+  const eff = resolveEffectivePermissions({ role: 'labour_hire', isPlatformAdmin: true });
+  assert.equal(eff.length, PERMISSIONS.length);
+});
+
+test('resolve: a group perm already held by the role does not duplicate', () => {
+  // supervisor already holds equipment.edit; granting it again must not double it.
+  const eff = resolveEffectivePermissions({ role: 'supervisor', groupPerms: ['equipment.edit'] });
+  assert.equal(eff.filter((p) => p === 'equipment.edit').length, 1);
+});
+
+test('resolve: stale / unknown group perm keys are ignored, never trusted', () => {
+  const eff = resolveEffectivePermissions({
+    role: 'apprentice',
+    groupPerms: ['not.a.real.perm' as PermKey, 'reports.view'],
+  });
+  assert.ok(!eff.includes('not.a.real.perm' as PermKey), 'orphan key must be dropped');
+  assert.ok(eff.includes('reports.view'), 'real group grant still applies');
+});
+
+test('resolve: deterministic canonical order → identical claim for equal inputs', () => {
+  const a = resolveEffectivePermissions({ role: 'employee', groupPerms: ['reports.view', 'equipment.edit'] });
+  const b = resolveEffectivePermissions({ role: 'employee', groupPerms: ['equipment.edit', 'reports.view'] });
+  assert.deepEqual(a, b, 'input order must not change the resolved claim');
+  const order = PERMISSIONS.map((p) => p.key).filter((k) => a.includes(k));
+  assert.deepEqual(a, order, 'output must follow canonical PERMISSIONS order');
+});
+
+test('resolve: revoke (reserved) subtracts, and deny-wins over a grant', () => {
+  // Forward-compat: the revoke path is wired but unused in production today.
+  const base = resolveEffectivePermissions({ role: 'supervisor' });
+  assert.ok(base.includes('field.dispatch'));
+  const revoked = resolveEffectivePermissions({ role: 'supervisor', revokes: ['field.dispatch'] });
+  assert.ok(!revoked.includes('field.dispatch'), 'revoke removes a role default');
+  // deny-wins: same perm granted by a group AND revoked → absent.
+  const conflict = resolveEffectivePermissions({
+    role: 'employee', groupPerms: ['equipment.edit'], revokes: ['equipment.edit'],
+  });
+  assert.ok(!conflict.includes('equipment.edit'), 'revoke must beat a group grant');
+});
+
+test('resolve: platform admin beats revoke (precedence top)', () => {
+  const eff = resolveEffectivePermissions({ role: 'manager', isPlatformAdmin: true, revokes: ['quotes.approve'] });
+  assert.ok(eff.includes('quotes.approve'), 'platform_admin outranks revoke');
 });

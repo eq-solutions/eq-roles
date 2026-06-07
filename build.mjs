@@ -186,6 +186,36 @@ export function isEqRole(x: unknown): x is EqRole { return typeof x === 'string'
 const PERM_LABELS: Record<PermKey, string> = Object.fromEntries(PERMISSIONS.map((p) => [p.key, p.label])) as Record<PermKey, string>;
 /** Plain-English label for a permission key — what a non-technical manager reads in an admin UI. */
 export function labelFor(perm: PermKey): string { return PERM_LABELS[perm]; }
+
+const PERM_KEY_SET: ReadonlySet<PermKey> = new Set(PERMISSIONS.map((p) => p.key));
+
+/* ── Effective permission resolution ───────────────────────────────────────
+ * Combine a user's base role with the EXTRA perms from their security-group
+ * memberships into the full permission set used for an authZ decision — and for
+ * baking into the JWT claim that apps (and the app-layer can()) read. GRANT-ONLY
+ * today: effective = role defaults ∪ group grants; is_platform_admin short-
+ * circuits to ALL. revokes is RESERVED (applied last, deny-wins) so future
+ * per-user revoke semantics drop in WITHOUT an API change. Precedence:
+ * platform_admin > revoke > grant > role default. Group perms are filtered to
+ * real PermKeys (a stale/renamed group perm is ignored, never trusted). Returns
+ * keys in canonical PERMISSIONS order — deterministic, so equal inputs mint an
+ * identical claim (no token churn). */
+export interface EffectivePermsInput {
+  role: EqRole;
+  /** Union of EXTRA PermKeys from the user's security groups (already resolved from the store). */
+  groupPerms?: readonly PermKey[];
+  /** is_platform_admin short-circuits to every permission. */
+  isPlatformAdmin?: boolean;
+  /** Reserved for future per-user revokes — applied last (deny-wins). Empty today. */
+  revokes?: readonly PermKey[];
+}
+export function resolveEffectivePermissions(input: EffectivePermsInput): readonly PermKey[] {
+  if (input.isPlatformAdmin) return PERMISSIONS.map((p) => p.key);
+  const granted = new Set<PermKey>(MATRIX[input.role] ?? []);
+  for (const p of input.groupPerms ?? []) if (PERM_KEY_SET.has(p)) granted.add(p);
+  if (input.revokes) for (const p of input.revokes) granted.delete(p);
+  return PERMISSIONS.filter((p) => granted.has(p.key)).map((p) => p.key);
+}
 ` + groupsTs + aliasTs;
 
   // ── roles.js (runtime ESM, the entry consumers actually load) ──────────────
@@ -242,6 +272,19 @@ export function isEqRole(x) { return typeof x === 'string' && ROLE_KEYS.includes
 const PERM_LABELS = Object.fromEntries(PERMISSIONS.map((p) => [p.key, p.label]));
 /** Plain-English label for a permission key — what a non-technical manager reads in an admin UI. */
 export function labelFor(perm) { return PERM_LABELS[perm]; }
+
+const PERM_KEY_SET = new Set(PERMISSIONS.map((p) => p.key));
+
+/* Effective permission resolution — grant-only today (role ∪ group grants),
+ * revoke-ready (revokes applied last, deny-wins). is_platform_admin → ALL.
+ * Returns keys in canonical PERMISSIONS order (deterministic). See roles.ts for full docs. */
+export function resolveEffectivePermissions(input) {
+  if (input.isPlatformAdmin) return PERMISSIONS.map((p) => p.key);
+  const granted = new Set(MATRIX[input.role] ?? []);
+  for (const p of input.groupPerms ?? []) if (PERM_KEY_SET.has(p)) granted.add(p);
+  if (input.revokes) for (const p of input.revokes) granted.delete(p);
+  return PERMISSIONS.filter((p) => granted.has(p.key)).map((p) => p.key);
+}
 ` + groupsJs + aliasJs;
 
   return { json, ts, js, stats: { roles: roleKeys.length, permissions: permKeys.length } };
