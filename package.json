@@ -1,10 +1,10 @@
 {
   "name": "@eq-solutions/roles",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": false,
   "license": "UNLICENSED",
   "author": "CDC Solutions Pty Ltd",
-  "description": "Canonical EQ role model — the 5-tier role enum (manager / supervisor / employee / apprentice / labour_hire), the is_platform_admin override, and the permission matrix. Single source of truth across every EQ surface (Shell, Field, Service, Cards, Quotes). Outputs typed TS + resolved JSON from one JSON source.",
+  "description": "Canonical EQ role model — the 6-tier role enum (manager / supervisor / employee / apprentice / labour_hire / subcontractor), the is_platform_admin override, and the permission matrix. Single source of truth across every EQ surface (Shell, Field, Service, Cards, Quotes). Outputs typed TS + resolved JSON from one JSON source.",
   "type": "module",
   "repository": {
     "type": "git",

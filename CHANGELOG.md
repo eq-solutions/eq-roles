@@ -3,6 +3,15 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.4.0] - 2026-07-05
+
+### Added
+- **New role: `subcontractor` (rank 6)** — an external trade engaged for a job, distinct from an agency-supplied `labour_hire` worker. Same minimal baseline as `labour_hire`: `field.view` only. Found live: eq-shell's `cards-approve-staff.ts` had `'subcontractor'` hardcoded into its local `WORKER_ROLES` set for over a month with no matching DB enum value or canonical role — an app-vs-DB vocabulary drift that would have silently rejected the value the moment anyone actually tried to use it. This closes that gap at the source instead of leaving the app-side reference dangling.
+
+### Changed
+- 6-tier role model everywhere (was 5-tier): `manager / supervisor / employee / apprentice / labour_hire / subcontractor`.
+- Version bumped to `2.4.0` (additive — new role + one permission grant, fully backward compatible; existing roles' grants are unchanged).
+
 ## [2.2.0] - 2026-06-04
 
 ### Added

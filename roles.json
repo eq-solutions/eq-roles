@@ -1,5 +1,5 @@
 {
-  "version": "2.3.0",
+  "version": "2.4.0",
   "generated": true,
   "roles": [
     {
@@ -31,6 +31,12 @@
       "label": "Labour Hire",
       "rank": 5,
       "description": "Minimal — own roster / timesheet only (no shell permissions today)."
+    },
+    {
+      "key": "subcontractor",
+      "label": "Subcontractor",
+      "rank": 6,
+      "description": "External trade engaged for a job, not an agency worker. Minimal — same baseline as labour_hire."
     }
   ],
   "roleKeys": [
@@ -38,7 +44,8 @@
     "supervisor",
     "employee",
     "apprentice",
-    "labour_hire"
+    "labour_hire",
+    "subcontractor"
   ],
   "tiers": [
     "trial",
@@ -321,7 +328,8 @@
         "supervisor",
         "employee",
         "apprentice",
-        "labour_hire"
+        "labour_hire",
+        "subcontractor"
       ]
     },
     {
@@ -435,6 +443,9 @@
       "field.view"
     ],
     "labour_hire": [
+      "field.view"
+    ],
+    "subcontractor": [
       "field.view"
     ]
   },
