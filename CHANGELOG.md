@@ -3,6 +3,12 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Docs
+- Reconciled stale "5-tier" references (README, `build.mjs` header, `model.json` `$comment`) to **6-tier** — the enum has carried `subcontractor` since 2.4.0. No code or matrix change; regenerated artifacts differ only in the header comment.
+- Documented **EQ Field's** real adoption state: Field trusts the JWT `eq_role` (Phase D) and keys on canonical `EqRole`; its ~50 fine-grained in-app perms stay Field-owned (guarded against role-key drift); `subcontractor` is intentionally excluded from Field login (roster `employment_type` only).
+
 ## [2.4.0] - 2026-07-05
 
 ### Added

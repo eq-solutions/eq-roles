@@ -1,13 +1,13 @@
 # @eq-solutions/roles
 
-Canonical EQ **role model** — the single source of truth for the 5-tier role enum, the `is_platform_admin` override, and the permission matrix. The companion to [`@eq-solutions/tokens`](https://github.com/eq-solutions/eq-design-tokens): tokens own how EQ *looks*, roles own who can *do* what.
+Canonical EQ **role model** — the single source of truth for the 6-tier role enum, the `is_platform_admin` override, and the permission matrix. The companion to [`@eq-solutions/tokens`](https://github.com/eq-solutions/eq-design-tokens): tokens own how EQ *looks*, roles own who can *do* what.
 
-Today the same model is hand-redefined in `eq-shell/src/session.ts` + `src/permissions/**`, lossily squashed to 2 tiers in EQ Field, and re-invented in EQ Service. This package makes it **one definition, consumed not copied** — adding a tier or permission becomes a one-file change.
+This package exists because the same model was once hand-redefined in `eq-shell/src/session.ts` + `src/permissions/**`, re-invented in EQ Service, and squashed to a coarse mapping in EQ Field. It makes the model **one definition, consumed not copied** — adding a tier or permission becomes a one-file change. Consumer status is tracked under [Adoption plan](#adoption-plan).
 
 ## The model
 
 **Three independent axes** (don't conflate them):
-- **Role** — what you can *do*. `manager · supervisor · employee · apprentice · labour_hire`.
+- **Role** — what you can *do*. `manager · supervisor · employee · apprentice · labour_hire · subcontractor`.
 - **Tier** — what the tenant *pays for*. `trial · standard · advanced · enterprise`. Separate concern.
 - **`is_platform_admin`** — orthogonal override. When true, `can()` returns true for every permission across every tenant. EQ-internal staff only.
 
@@ -78,7 +78,7 @@ Authored in [`roles/model.json`](roles/model.json) under `defaultGroups`; the bu
 ## Adoption plan
 - **eq-shell** — replace the `EqRole` union in `session.ts` and the composed `MATRIX` in `permissions/**` with imports from here; `useCan()` calls `can()`.
 - **Netlify functions / RLS** — read `roles.json` server-side; inject `eq_role` into the JWT `app_metadata`.
-- **EQ Field** — consume `roles.json` instead of the lossy 2-tier `staff | supervisor` mapping.
+- **EQ Field** — ✅ *done (2026-07)*. Field's login now trusts the Shell-verified `eq_role` from the JWT (Phase D) and keys its access on the canonical `EqRole` enum — no more coarse `staff | supervisor` squash. The two **coarse** field gates (`field.view`, `field.dispatch`) live here and are consumed by Shell. Field's ~50 **fine-grained** in-app permissions (`roster.*`, `ts.*`, `leave.*`, `sites.*`, `reports.*`) remain **Field-owned** (a hand-maintained matrix in `scripts/permission-matrix.js`, keyed to these same roles); a Field-side startup guard warns if its role keys ever drift from `ROLE_KEYS` here. `subcontractor` is intentionally **excluded** from Field — it is a roster `employment_type`, never a Field login role.
 - **EQ Service** — map its `tenant_members.role` onto these canonical roles via `fromServiceRole()` (shipped, see *Consumer role adapters*); replace the scattered `isAdmin`/`canWrite` string checks with `can()`.
 - **Cards** — add a `roles.dart` emit (mirrors the tokens Dart path) when wired.
 
