@@ -1,11 +1,11 @@
 {
-  "version": "2.4.0",
+  "version": "2.5.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
     { "key": "supervisor",  "label": "Supervisor",  "rank": 2, "description": "Audit view, intake commit, equipment edit. No user management." },
     { "key": "employee",    "label": "Employee",    "rank": 3, "description": "Intake view + import, equipment view. No commit, no admin." },
-    { "key": "apprentice",  "label": "Apprentice",  "rank": 4, "description": "Read-mostly — intake view only." },
+    { "key": "apprentice",  "label": "Apprentice",  "rank": 4, "description": "Read-mostly — intake + equipment view." },
     { "key": "labour_hire", "label": "Labour Hire", "rank": 5, "description": "Minimal — own roster / timesheet only (no shell permissions today)." },
     { "key": "subcontractor", "label": "Subcontractor", "rank": 6, "description": "External trade engaged for a job, not an agency worker. Minimal — same baseline as labour_hire." }
   ],
@@ -16,6 +16,7 @@
   },
   "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes"],
   "$labels": "label = short plain-English name for admin UIs (what a non-technical manager reads when granting access). description = the longer developer-facing explanation. Keep labels verb-first and jargon-free per EQ voice.",
+  "$deprecated": "Optional `deprecated` string on a permission = scheduled for removal in a future major bump, kept only so existing tenant_role_overrides / consumers don't break early. State the reason + the replacement. Build still emits the key; a lint/tooling pass can warn on new usage.",
   "permissions": [
     { "key": "admin.list_users",      "module": "admin",     "label": "View users",                "description": "List tenant users.",                                  "roles": ["manager"] },
     { "key": "admin.invite_user",     "module": "admin",     "label": "Invite users",              "description": "Invite a new user to the tenant.",                    "roles": ["manager"] },
@@ -36,15 +37,15 @@
     { "key": "intake.import",         "module": "intake",    "label": "Start an import",           "description": "Initiate an import (drop file, map, validate).",      "roles": ["manager", "supervisor", "employee"] },
     { "key": "intake.commit",         "module": "intake",    "label": "Confirm an import",         "description": "Commit a validated batch to canonical (destructive).", "roles": ["manager", "supervisor"] },
 
-    { "key": "equipment.view",        "module": "equipment", "label": "View equipment",            "description": "See the Plant & Equipment list + calibration.",       "roles": ["manager", "supervisor", "employee"] },
+    { "key": "equipment.view",        "module": "equipment", "label": "View equipment",            "description": "See the Plant & Equipment list + calibration.",       "roles": ["manager", "supervisor", "employee", "apprentice"] },
     { "key": "equipment.edit",        "module": "equipment", "label": "Edit equipment",            "description": "Add / edit equipment + calibration fields.",          "roles": ["manager", "supervisor"] },
 
     { "key": "reports.view",          "module": "reports",   "label": "View reports",              "description": "View GM reports.",                                    "roles": ["manager"] },
     { "key": "reports.upload",        "module": "reports",   "label": "Upload reports",            "description": "Upload a source report.",                             "roles": ["manager"] },
     { "key": "reports.generate_briefing", "module": "reports", "label": "Generate AI briefing",    "description": "Generate the AI briefing.",                        "roles": ["manager"] },
 
-    { "key": "cards.view",            "module": "cards",     "label": "Open Cards",                "description": "Access the Cards onboarding surface.",                "roles": ["manager", "supervisor", "employee", "apprentice"] },
-    { "key": "cards.onboard",         "module": "cards",     "label": "Submit onboarding",         "description": "Submit or manage an onboarding card.",                "roles": ["manager", "supervisor"] },
+    { "key": "cards.view",            "module": "cards",     "label": "Open Cards",                "description": "Access the Cards onboarding surface.",                "roles": ["manager", "supervisor", "employee", "apprentice"], "deprecated": "Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check." },
+    { "key": "cards.onboard",         "module": "cards",     "label": "Submit onboarding",         "description": "Submit or manage an onboarding card.",                "roles": ["manager", "supervisor"], "deprecated": "Duplicates admin.review_cards (the real employer-side 'review Cards onboarding' gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards." },
 
     { "key": "service.view",          "module": "service",   "label": "View maintenance",          "description": "View the Service CMMS (work orders, defects, PPM).",  "roles": ["manager", "supervisor", "employee", "apprentice"] },
     { "key": "service.create",        "module": "service",   "label": "Raise work orders",         "description": "Create a work order or defect.",                     "roles": ["manager", "supervisor"] },
@@ -84,6 +85,12 @@
       "name": "Report viewers",
       "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
       "perms": ["reports.view"]
+    },
+    {
+      "key": "project_managers",
+      "name": "Project Managers",
+      "description": "Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.",
+      "perms": ["admin.list_users", "admin.edit_user", "admin.review_cards", "audit.view"]
     }
   ]
 }

@@ -43,7 +43,10 @@ test('apprentice: read-mostly, no import or write', () => {
   assert.equal(can('apprentice', 'entity.view'), true);
   assert.equal(can('apprentice', 'intake.view'), true);
   assert.equal(can('apprentice', 'intake.import'), false);
-  assert.equal(can('apprentice', 'equipment.view'), false);
+  // v2.5.0: promoted from a live SKS tenant_role_override — "any field tech
+  // can check whether a meter is in calibration" applies to apprentices too.
+  assert.equal(can('apprentice', 'equipment.view'), true);
+  assert.equal(can('apprentice', 'equipment.edit'), false);
   assert.equal(can('apprentice', 'quotes.view'), false);
 });
 
