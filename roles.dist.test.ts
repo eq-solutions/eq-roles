@@ -13,7 +13,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { buildArtefacts, buildModuleArtefacts } from './build.mjs';
+import { buildArtefacts, buildModuleArtefacts, buildDartArtefacts } from './build.mjs';
 import {
   ROLE_KEYS as TS_ROLE_KEYS,
   PERMISSIONS as TS_PERMISSIONS,
@@ -43,6 +43,10 @@ test('roles.ts on disk matches a fresh build (run `npm run build`)', () => {
 
 test('roles.js on disk matches a fresh build (run `npm run build`)', () => {
   assert.equal(read('roles.js'), built.js);
+});
+
+test('roles.dart on disk matches a fresh build (run `npm run build`)', () => {
+  assert.equal(read('roles.dart'), buildDartArtefacts(model));
 });
 
 test('package.json version matches model.json version', () => {

@@ -1,5 +1,5 @@
 {
-  "version": "2.4.0",
+  "version": "2.5.0",
   "generated": true,
   "roles": [
     {
@@ -24,7 +24,7 @@
       "key": "apprentice",
       "label": "Apprentice",
       "rank": 4,
-      "description": "Read-mostly — intake view only."
+      "description": "Read-mostly — intake + equipment view."
     },
     {
       "key": "labour_hire",
@@ -224,7 +224,8 @@
       "roles": [
         "manager",
         "supervisor",
-        "employee"
+        "employee",
+        "apprentice"
       ]
     },
     {
@@ -274,7 +275,8 @@
         "supervisor",
         "employee",
         "apprentice"
-      ]
+      ],
+      "deprecated": "Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check."
     },
     {
       "key": "cards.onboard",
@@ -284,7 +286,8 @@
       "roles": [
         "manager",
         "supervisor"
-      ]
+      ],
+      "deprecated": "Duplicates admin.review_cards (the real employer-side 'review Cards onboarding' gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards."
     },
     {
       "key": "service.view",
@@ -438,6 +441,7 @@
     "apprentice": [
       "entity.view",
       "intake.view",
+      "equipment.view",
       "cards.view",
       "service.view",
       "field.view"
@@ -474,6 +478,17 @@
       "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
       "perms": [
         "reports.view"
+      ]
+    },
+    {
+      "key": "project_managers",
+      "name": "Project Managers",
+      "description": "Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.",
+      "perms": [
+        "admin.list_users",
+        "admin.edit_user",
+        "admin.review_cards",
+        "audit.view"
       ]
     }
   ]

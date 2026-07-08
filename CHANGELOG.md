@@ -3,9 +3,25 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
-## [Unreleased]
+## [2.5.0] - 2026-07-08
 
-### Docs
+Access-model foundation, Phase 0 (see `eq-context/eq/identity/ACCESS-MODEL-PLAN.md`).
+Preceded by an enforcement-site inventory across Shell/Field/Service/Cards/RLS —
+findings are what shaped the scope below (see the inventory doc for detail).
+
+### Added
+- **`apprentice` gains `equipment.view`** — promoted from a live SKS `tenant_role_override`. Verified cross-app safe (Shell's client-side `EQUIPMENT_MATRIX` mirror updated in the same PR; the module's own doc comment already described the perm as "granted broadly so any field tech can check calibration").
+- **`deprecated` field on `PermissionMeta`** (optional, additive) — `cards.view` / `cards.onboard` marked deprecated with a reason + replacement (`admin.review_cards` / tenant entitlement). Still emitted and enforced for existing `tenant_role_overrides`; new consumers should not grant them. Real removal is a future major bump once all consumers are confirmed clear.
+- **`project_managers` canonical default group** — promoted from a tenant-specific (SKS) security group once it proved to be a common cross-cutting need (manage users, review Cards onboarding, view audit log) rather than a one-off.
+- **`roles.dart` emit** — a new generated artefact (Dart 2.17+ enhanced enums, zero external package deps) mirroring `roles.ts`/`roles.js` exactly, for the eventual Cards/Flutter consumer. Not yet wired into Cards (tracked separately) — this release only ships the generator + the artefact.
+- **`executive-scaffold.test.ts`** — proves the "adding a role tier is a one-file change" claim by exercising `buildArtefacts()`/`buildDartArtefacts()` against a synthetic model with an extra role spliced in, asserting zero `build.mjs` changes are needed and every generated surface (types, matrix, Dart) picks it up. Does not touch the real committed model — no new role shipped today.
+
+### Explicitly NOT changed (see the inventory)
+- `service.create` / `service.close` — a live SKS override grants these to `employee`, but the same `PermKey` also gates asset/customer-mutation rights in EQ Service's `canWrite()`. Promoting this canonically would silently change Service behaviour for every tenant. Stays tenant-local until PermKeys are split by app (Phase 3).
+- `quotes.approve` — a live SKS override grants this to `supervisor`. Kept tenant-local (no strong cross-tenant safety evidence yet); the quotes module already has its own real, in-sync client matrix (`src/modules/quotes/permissions.ts`).
+- `apprentice` → `intake.view` — reconsidered from an earlier tentative plan to remove it. Shell's own `intake/permissions.ts` documents this as a *deliberate* broad-by-design default ("view by default for all... gating tightens later"), not an oversight. SKS's denial override is a legitimate, tenant-specific tightening, not evidence the default is wrong.
+
+### Docs (carried over from the unreleased 2.4.0 follow-up — never separately versioned)
 - Reconciled stale "5-tier" references (README, `build.mjs` header, `model.json` `$comment`) to **6-tier** — the enum has carried `subcontractor` since 2.4.0. No code or matrix change; regenerated artifacts differ only in the header comment.
 - Documented **EQ Field's** real adoption state: Field trusts the JWT `eq_role` (Phase D) and keys on canonical `EqRole`; its ~50 fine-grained in-app perms stay Field-owned (guarded against role-key drift); `subcontractor` is intentionally excluded from Field login (roster `employment_type` only).
 
