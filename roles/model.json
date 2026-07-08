@@ -1,5 +1,5 @@
 {
-  "version": "2.5.0",
+  "version": "2.5.1",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
@@ -14,7 +14,7 @@
     "field": "is_platform_admin",
     "effect": "Orthogonal to role. When true, can() short-circuits to true for every permission across every tenant. EQ-internal staff only (single audit point for cross-tenant power)."
   },
-  "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes"],
+  "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes", "ops"],
   "$labels": "label = short plain-English name for admin UIs (what a non-technical manager reads when granting access). description = the longer developer-facing explanation. Keep labels verb-first and jargon-free per EQ voice.",
   "$deprecated": "Optional `deprecated` string on a permission = scheduled for removal in a future major bump, kept only so existing tenant_role_overrides / consumers don't break early. State the reason + the replacement. Build still emits the key; a lint/tooling pass can warn on new usage.",
   "permissions": [
@@ -32,6 +32,7 @@
     { "key": "entity.create",         "module": "entity",    "label": "Add records",               "description": "Create a new canonical record.",                     "roles": ["manager"] },
     { "key": "entity.edit",           "module": "entity",    "label": "Edit records",              "description": "Edit an existing canonical record.",                  "roles": ["manager", "supervisor"] },
     { "key": "entity.delete",         "module": "entity",    "label": "Delete records",            "description": "Delete a canonical record (hard delete, manager-only).", "roles": ["manager"] },
+    { "key": "entity.manage_activation", "module": "entity", "label": "Manage Field/Service activation", "description": "Toggle whether a site or customer record is active in Field / Service.", "roles": ["manager"] },
 
     { "key": "intake.view",           "module": "intake",    "label": "View imports",              "description": "See the Intake surface.",                             "roles": ["manager", "supervisor", "employee", "apprentice"] },
     { "key": "intake.import",         "module": "intake",    "label": "Start an import",           "description": "Initiate an import (drop file, map, validate).",      "roles": ["manager", "supervisor", "employee"] },
@@ -56,7 +57,10 @@
 
     { "key": "quotes.view",           "module": "quotes",    "label": "View quotes",               "description": "View quotes.",                                        "roles": ["manager", "supervisor", "employee"] },
     { "key": "quotes.create",         "module": "quotes",    "label": "Create quotes",             "description": "Create or edit a quote.",                             "roles": ["manager", "supervisor"] },
-    { "key": "quotes.approve",        "module": "quotes",    "label": "Approve quotes",            "description": "Approve and send a quote.",                           "roles": ["manager"] }
+    { "key": "quotes.approve",        "module": "quotes",    "label": "Approve quotes",            "description": "Approve and send a quote.",                           "roles": ["manager"] },
+
+    { "key": "ops.view_rates",        "module": "ops",       "label": "View labour hire rates",   "description": "View labour hire cost rate cards. Commercially sensitive — manager + supervisor (project management) only.", "roles": ["manager", "supervisor"] },
+    { "key": "ops.manage_rates",      "module": "ops",       "label": "Manage labour hire rates", "description": "Import, edit, or manually adjust labour hire cost rate cards.", "roles": ["manager", "supervisor"] }
   ],
   "roleAliases": {
     "$comment": "Foreign role vocabularies mapped onto canonical EqRole. Build validates every target is a real role. INVARIANT: no alias targets is_platform_admin — cross-tenant power is never derived from a tenant-held role, so tenants stay isolated. EQ-internal platform ops live out-of-band (service-role / audited impersonation), not in any tenant role.",

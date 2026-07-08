@@ -29,6 +29,7 @@ test('supervisor: withheld admin perms return false', () => {
   assert.equal(can('supervisor', 'audit.rollback'), false);
   assert.equal(can('supervisor', 'reports.view'), false);
   assert.equal(can('supervisor', 'quotes.approve'), false);
+  assert.equal(can('supervisor', 'entity.manage_activation'), false);
 });
 
 test('employee: read-only field and view perms', () => {
@@ -56,6 +57,28 @@ test('labour_hire: field.view only', () => {
   for (const p of others) {
     assert.equal(can('labour_hire', p), false, `labour_hire should not have ${p}`);
   }
+});
+
+// v2.5.1: ops.* promoted from Shell-local-only (src/permissions/matrix.ts
+// OPS_MATRIX) so the server-side can()/requirePerm() can finally check labour
+// hire rate actions instead of a hand-rolled role === 'manager' string check.
+test('ops.*: manager + supervisor only, matching the pre-existing Shell matrix', () => {
+  assert.equal(can('manager', 'ops.view_rates'), true);
+  assert.equal(can('manager', 'ops.manage_rates'), true);
+  assert.equal(can('supervisor', 'ops.view_rates'), true);
+  assert.equal(can('supervisor', 'ops.manage_rates'), true);
+  assert.equal(can('employee', 'ops.view_rates'), false);
+  assert.equal(can('employee', 'ops.manage_rates'), false);
+  assert.equal(can('apprentice', 'ops.manage_rates'), false);
+  assert.equal(can('labour_hire', 'ops.manage_rates'), false);
+});
+
+// v2.5.1: entity.manage_activation — new, matches the current manager-only
+// hand-rolled check in update-data-activation.ts / get-data-activation-status.ts.
+test('entity.manage_activation: manager-only', () => {
+  assert.equal(can('manager', 'entity.manage_activation'), true);
+  assert.equal(can('supervisor', 'entity.manage_activation'), false);
+  assert.equal(can('employee', 'entity.manage_activation'), false);
 });
 
 // ── platform admin override ────────────────────────────────────────────────
