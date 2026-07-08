@@ -1,6 +1,6 @@
 {
   "name": "@eq-solutions/roles",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "private": false,
   "license": "UNLICENSED",
   "author": "CDC Solutions Pty Ltd",
@@ -28,7 +28,8 @@
     "./cards": { "types": "./roles/cards.ts", "default": "./roles/cards.js" },
     "./service": { "types": "./roles/service.ts", "default": "./roles/service.js" },
     "./field": { "types": "./roles/field.ts", "default": "./roles/field.js" },
-    "./quotes": { "types": "./roles/quotes.ts", "default": "./roles/quotes.js" }
+    "./quotes": { "types": "./roles/quotes.ts", "default": "./roles/quotes.js" },
+    "./ops": { "types": "./roles/ops.ts", "default": "./roles/ops.js" }
   },
   "files": ["roles/", "roles.js", "roles.ts", "roles.json", "roles.dart", "build.mjs", "README.md"],
   "scripts": {

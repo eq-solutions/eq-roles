@@ -3,6 +3,22 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.1] - 2026-07-08
+
+Access-model foundation, Phase 1 prerequisite (see `eq-context/eq/identity/ACCESS-MODEL-PLAN.md`).
+Phase 1's plan assumed the Shell-side enforcement conversion would be a pure
+refactor with no package changes ("Shell only"). The enforcement-site inventory
+found 5 real hand-rolled `role === '…'` checks with **no existing PermKey to
+convert to** — `can()`/`requirePerm()` type their `perm` argument from this
+package's `PermKey`, so a permission has to exist here before Shell can check
+it. This release adds exactly the 3 missing keys, each matching an existing
+check's current grant set 1:1 — additive only, zero live behaviour change.
+
+### Added
+- **`ops` module + `ops.view_rates`** — promoted unchanged from Shell's local-only `OPS_MATRIX` (`src/permissions/matrix.ts`), which had no canonical package presence at all (unlike entity/intake/equipment etc., which Shell hand-mirrors from this package; `ops.*` didn't exist here in any form). manager + supervisor, matching the existing Shell grant exactly.
+- **`ops.manage_rates`** — new. Matches the current hand-rolled check in `labour-hire-commit.ts` / `labour-hire-mutate.ts` / `labour-hire-parse.ts` (`is_platform_admin || role === 'manager' || role === 'supervisor'`) exactly.
+- **`entity.manage_activation`** — new. Matches the current hand-rolled check in `update-data-activation.ts` / `get-data-activation-status.ts` (`role === 'manager' || is_platform_admin`) exactly. Manager-only.
+
 ## [2.5.0] - 2026-07-08
 
 Access-model foundation, Phase 0 (see `eq-context/eq/identity/ACCESS-MODEL-PLAN.md`).
