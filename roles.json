@@ -1,5 +1,5 @@
 {
-  "version": "2.5.2",
+  "version": "2.5.3",
   "generated": true,
   "roles": [
     {
@@ -361,6 +361,26 @@
       ]
     },
     {
+      "key": "service.reopen",
+      "module": "service",
+      "label": "Reopen a work order",
+      "description": "Reopen a closed work order. Irreversible-adjacent verb, kept with a named few so the audit log reads clean (2026-07-17 access-model cluster 3).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "service.record_tests",
+      "module": "service",
+      "label": "Log calibration results",
+      "description": "Log calibration / test results against an asset. Matches equipment.edit's manager+supervisor tier (2026-07-17 access-model cluster 3).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "field.view",
       "module": "field",
       "label": "View field resources",
@@ -409,6 +429,36 @@
       "module": "field",
       "label": "Dispatch staff",
       "description": "Dispatch staff to jobs / shifts.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.manage_roster",
+      "module": "field",
+      "label": "Build & edit the roster",
+      "description": "Build and edit the crew roster. A distinct owner from day-to-day dispatch (2026-07-17 access-model cluster 3).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.manage_licences",
+      "module": "field",
+      "label": "Manage worker licences",
+      "description": "Add / verify worker licences and compliance records. Sign-off action, matches field.view_licences' tier (2026-07-17 access-model cluster 3).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.manage_labour_hire",
+      "module": "field",
+      "label": "Manage labour-hire companies",
+      "description": "Manage labour-hire companies & their charge rates. Commercially sensitive, matches ops.manage_rates' tier (2026-07-17 access-model cluster 3).",
       "roles": [
         "manager",
         "supervisor"
@@ -473,6 +523,16 @@
         "manager",
         "supervisor"
       ]
+    },
+    {
+      "key": "ops.create_job",
+      "module": "ops",
+      "label": "Convert quote to a job",
+      "description": "Convert an approved quote into a numbered job. A commitment gate, matches quotes.create's tier (job numbers are manual/Smartsheet, never auto-generated) (2026-07-17 access-model cluster 3).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
     }
   ],
   "matrix": {
@@ -506,17 +566,23 @@
       "service.view_commercials",
       "service.create",
       "service.close",
+      "service.reopen",
+      "service.record_tests",
       "field.view",
       "field.view_hours",
       "field.view_licences",
       "field.view_rates",
       "field.dispatch",
+      "field.manage_roster",
+      "field.manage_licences",
+      "field.manage_labour_hire",
       "quotes.view",
       "quotes.create",
       "quotes.approve",
       "ops.view_rates",
       "ops.view_margins",
-      "ops.manage_rates"
+      "ops.manage_rates",
+      "ops.create_job"
     ],
     "supervisor": [
       "audit.view",
@@ -534,16 +600,22 @@
       "service.view_commercials",
       "service.create",
       "service.close",
+      "service.reopen",
+      "service.record_tests",
       "field.view",
       "field.view_hours",
       "field.view_licences",
       "field.view_rates",
       "field.dispatch",
+      "field.manage_roster",
+      "field.manage_licences",
+      "field.manage_labour_hire",
       "quotes.view",
       "quotes.create",
       "ops.view_rates",
       "ops.view_margins",
-      "ops.manage_rates"
+      "ops.manage_rates",
+      "ops.create_job"
     ],
     "employee": [
       "entity.view",

@@ -3,6 +3,28 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.3] - 2026-07-17
+
+Access-model **cluster 3** — write-split trim (see `eq-context/access-model-cluster1-build-plan-2026-07-16.md`
+for the sibling cluster-1 plan; cluster 3 follows the same key-granularity approach for writes).
+Trimmed from an original 11 candidates to 6 that map to a distinct owner or an irreversible verb —
+the rest fold back into their existing coarse tier (`field.dispatch`, `service.create`/`close`, `quotes.create`).
+
+Package-additive — no behaviour change here. All 6 grant to **manager + supervisor**, matching the
+tier of the existing action they split from or sit alongside.
+
+### Added
+- **`service.reopen`** — reopen a closed work order. Kept with a named few so the audit log reads clean.
+- **`service.record_tests`** — log calibration / test results. Matches `equipment.edit`'s tier.
+- **`field.manage_roster`** — build & edit the crew roster, distinct from day-to-day `field.dispatch`.
+- **`field.manage_licences`** — add / verify worker licences & compliance, matching `field.view_licences`'s tier.
+- **`field.manage_labour_hire`** — manage labour-hire companies & charge rates, matching `ops.manage_rates`'s tier.
+- **`ops.create_job`** — convert an approved quote into a numbered job. Matches `quotes.create`'s tier.
+
+### Not added (folded back — see the steelman in the cluster build plan)
+`field.log_hours`, `field.manage_shutdowns`, `service.edit`, `service.manage_assets`, `quotes.edit` —
+no distinct owner beyond the existing coarse tier that already covers them.
+
 ## [2.5.2] - 2026-07-16
 
 Access-model cluster 1 — sensitive-read split (see `eq-context/access-model-cluster1-build-plan-2026-07-16.md`).
