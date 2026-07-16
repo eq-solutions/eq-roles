@@ -1,5 +1,5 @@
 {
-  "version": "2.5.1",
+  "version": "2.5.2",
   "generated": true,
   "roles": [
     {
@@ -157,6 +157,16 @@
       ]
     },
     {
+      "key": "entity.view_pii",
+      "module": "entity",
+      "label": "See personal details",
+      "description": "See a record's personal / contact details (phone, DOB, emergency contact). Split out of entity.view so seeing a record no longer implies seeing its PII. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "entity.create",
       "module": "entity",
       "label": "Add records",
@@ -258,6 +268,15 @@
       ]
     },
     {
+      "key": "reports.view_financial",
+      "module": "reports",
+      "label": "See financial reports",
+      "description": "See GM / financial reports. Manager only — supervisors have no Reports base grant, so a financial sub-read would dangle (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
       "key": "reports.upload",
       "module": "reports",
       "label": "Upload reports",
@@ -312,6 +331,16 @@
       ]
     },
     {
+      "key": "service.view_commercials",
+      "module": "service",
+      "label": "See job pricing",
+      "description": "See job pricing / contract value on a work order. Split out of service.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "service.create",
       "module": "service",
       "label": "Raise work orders",
@@ -343,6 +372,36 @@
         "apprentice",
         "labour_hire",
         "subcontractor"
+      ]
+    },
+    {
+      "key": "field.view_hours",
+      "module": "field",
+      "label": "See timesheets & hours",
+      "description": "See worker timesheets / hours (pay-adjacent). Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.view_licences",
+      "module": "field",
+      "label": "See worker licences",
+      "description": "See worker licences & compliance status. Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.view_rates",
+      "module": "field",
+      "label": "See charge rates",
+      "description": "See labour-hire / charge rates (commercial). Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager",
+        "supervisor"
       ]
     },
     {
@@ -396,6 +455,16 @@
       ]
     },
     {
+      "key": "ops.view_margins",
+      "module": "ops",
+      "label": "See cost & margin",
+      "description": "See cost and margin on a quote / job. Split out of quotes.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "ops.manage_rates",
       "module": "ops",
       "label": "Manage labour hire rates",
@@ -417,6 +486,7 @@
       "audit.view",
       "audit.rollback",
       "entity.view",
+      "entity.view_pii",
       "entity.create",
       "entity.edit",
       "entity.delete",
@@ -427,24 +497,31 @@
       "equipment.view",
       "equipment.edit",
       "reports.view",
+      "reports.view_financial",
       "reports.upload",
       "reports.generate_briefing",
       "cards.view",
       "cards.onboard",
       "service.view",
+      "service.view_commercials",
       "service.create",
       "service.close",
       "field.view",
+      "field.view_hours",
+      "field.view_licences",
+      "field.view_rates",
       "field.dispatch",
       "quotes.view",
       "quotes.create",
       "quotes.approve",
       "ops.view_rates",
+      "ops.view_margins",
       "ops.manage_rates"
     ],
     "supervisor": [
       "audit.view",
       "entity.view",
+      "entity.view_pii",
       "entity.edit",
       "intake.view",
       "intake.import",
@@ -454,13 +531,18 @@
       "cards.view",
       "cards.onboard",
       "service.view",
+      "service.view_commercials",
       "service.create",
       "service.close",
       "field.view",
+      "field.view_hours",
+      "field.view_licences",
+      "field.view_rates",
       "field.dispatch",
       "quotes.view",
       "quotes.create",
       "ops.view_rates",
+      "ops.view_margins",
       "ops.manage_rates"
     ],
     "employee": [
