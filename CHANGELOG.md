@@ -3,6 +3,27 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.2] - 2026-07-16
+
+Access-model cluster 1 — sensitive-read split (see `eq-context/access-model-cluster1-build-plan-2026-07-16.md`).
+Splits 7 sensitive reads out of the coarse `*.view` keys so opening an app no longer implies
+visibility of the pay / margins / PII / commercials inside it. **Package-additive — no behaviour
+change here**; the split only bites when consumers gate on the new keys (eq-shell Phase 2,
+eq-field / eq-service Phase 3, tenant RLS Phase 4).
+
+Default grant is **manager + supervisor, hard cutover** — roles that today see these via the
+coarse key lose them on rollout until re-granted. `reports.view_financial` is **manager only**
+(supervisor has no Reports base grant, so a financial sub-read would dangle).
+
+### Added
+- **`entity.view_pii`** (mgr, sup) — a record's personal / contact details (phone, DOB, emergency contact), split out of `entity.view`.
+- **`field.view_hours`** (mgr, sup) — worker timesheets / hours (pay-adjacent), split out of `field.view`.
+- **`field.view_licences`** (mgr, sup) — worker licences & compliance status, split out of `field.view`.
+- **`field.view_rates`** (mgr, sup) — labour-hire / charge rates (commercial), split out of `field.view`.
+- **`service.view_commercials`** (mgr, sup) — job pricing / contract value, split out of `service.view`.
+- **`ops.view_margins`** (mgr, sup) — cost & margin on a quote / job, split out of `quotes.view`.
+- **`reports.view_financial`** (mgr) — GM / financial reports.
+
 ## [2.5.1] - 2026-07-08
 
 Access-model foundation, Phase 1 prerequisite (see `eq-context/eq/identity/ACCESS-MODEL-PLAN.md`).
