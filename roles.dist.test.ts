@@ -45,8 +45,8 @@ test('roles.js on disk matches a fresh build (run `npm run build`)', () => {
   assert.equal(read('roles.js'), built.js);
 });
 
-test('roles.dart on disk matches a fresh build (run `npm run build`)', () => {
-  assert.equal(read('roles.dart'), buildDartArtefacts(model));
+test('lib/eq_roles.dart on disk matches a fresh build (run `npm run build`)', () => {
+  assert.equal(read('lib/eq_roles.dart'), buildDartArtefacts(model));
 });
 
 test('package.json version matches model.json version', () => {

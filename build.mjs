@@ -7,7 +7,7 @@
 // (return artefact strings, throw on invalid input) so roles.dist.test.ts can
 // assert committed files are not stale. Only the CLI section touches the fs.
 
-import { readFileSync, writeFileSync, realpathSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -565,7 +565,12 @@ if (invokedDirectly) {
   writeFileSync(join(here, 'roles.json'), artefacts.json);
   writeFileSync(join(here, 'roles.ts'), artefacts.ts);
   writeFileSync(join(here, 'roles.js'), artefacts.js);
-  writeFileSync(join(here, 'roles.dart'), buildDartArtefacts(model));
+  // lib/ is where a Dart package's importable library file must live (pub's
+  // git-dependency resolution requires a valid package layout, not a loose
+  // file at repo root) — this is what lets Cards depend on this repo the
+  // same way it already depends on eq-design-tokens.
+  mkdirSync(join(here, 'lib'), { recursive: true });
+  writeFileSync(join(here, 'lib', 'eq_roles.dart'), buildDartArtefacts(model));
 
   // Per-module slices (roles/<module>.ts + roles/<module>.js)
   for (const moduleKey of model.modules) {
@@ -577,6 +582,6 @@ if (invokedDirectly) {
   console.log(
     `@eq-solutions/roles v${model.version} built: ` +
     `${artefacts.stats.roles} roles, ${artefacts.stats.permissions} permissions -> ` +
-    `roles.ts + roles.js + roles.json + roles.dart + ${model.modules.length} module slices`,
+    `roles.ts + roles.js + roles.json + lib/eq_roles.dart + ${model.modules.length} module slices`,
   );
 }

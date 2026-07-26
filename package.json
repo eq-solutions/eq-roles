@@ -1,6 +1,6 @@
 {
   "name": "@eq-solutions/roles",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "private": false,
   "license": "UNLICENSED",
   "author": "CDC Solutions Pty Ltd",
@@ -31,7 +31,7 @@
     "./quotes": { "types": "./roles/quotes.ts", "default": "./roles/quotes.js" },
     "./ops": { "types": "./roles/ops.ts", "default": "./roles/ops.js" }
   },
-  "files": ["roles/", "roles.js", "roles.ts", "roles.json", "roles.dart", "build.mjs", "README.md"],
+  "files": ["roles/", "lib/", "roles.js", "roles.ts", "roles.json", "build.mjs", "README.md", "pubspec.yaml"],
   "scripts": {
     "build": "node build.mjs",
     "test": "node --import tsx/esm --test roles.test.ts roles.dist.test.ts executive-scaffold.test.ts",
