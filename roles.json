@@ -1,5 +1,5 @@
 {
-  "version": "2.5.3",
+  "version": "2.5.4",
   "generated": true,
   "roles": [
     {
@@ -533,6 +533,26 @@
         "manager",
         "supervisor"
       ]
+    },
+    {
+      "key": "ops.view_suppliers",
+      "module": "ops",
+      "label": "View suppliers directory",
+      "description": "View the trade suppliers/wholesalers/hire companies directory. Matches ops.view_rates' tier (2026-07-26 access-model Phase 3). Promotes a key eq-shell's own client matrix already declared but the package didn't yet have — see suppliers-mutate.ts.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "ops.manage_suppliers",
+      "module": "ops",
+      "label": "Manage suppliers directory",
+      "description": "Add / edit / delete suppliers directory entries. Was reusing ops.manage_rates as an interim server-side gate until this key existed in the package (2026-07-26 access-model Phase 3).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
     }
   ],
   "matrix": {
@@ -582,7 +602,9 @@
       "ops.view_rates",
       "ops.view_margins",
       "ops.manage_rates",
-      "ops.create_job"
+      "ops.create_job",
+      "ops.view_suppliers",
+      "ops.manage_suppliers"
     ],
     "supervisor": [
       "audit.view",
@@ -615,7 +637,9 @@
       "ops.view_rates",
       "ops.view_margins",
       "ops.manage_rates",
-      "ops.create_job"
+      "ops.create_job",
+      "ops.view_suppliers",
+      "ops.manage_suppliers"
     ],
     "employee": [
       "entity.view",

@@ -3,6 +3,28 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.4] - 2026-07-26
+
+Access-Model Foundation Plan, Phase 3 ("Guardrails") — promotes 2 keys eq-shell's own client
+matrix (`src/permissions/matrix.ts`'s `OPS_MATRIX`) already declared for its Suppliers directory
+UI, but which never existed in this package. `suppliers-mutate.ts`'s server-side write gate has
+been reusing `ops.manage_rates` as a documented interim measure ("needs a release in that separate
+repo first") since the Suppliers directory shipped — this closes that gap. Also fixes eq-shell's
+`check-perm-sync.mjs` drift-guard, which had a blind spot that let this exact class of gap go
+undetected (merged the full package matrix into its client-side comparison set, making it
+structurally unable to catch a local module declaring a key the package didn't have).
+
+**`service.create`/`service.close`/`quotes.approve` deliberately NOT split this round** — SKS has a
+live, enabled tenant override granting `service.create`/`service.close` to `employee` and
+`quotes.approve` to `supervisor` (verified live on jvkn 2026-07-26). Renaming these keys would
+silently break those 3 real grants mid-onboarding. Splitting by app is only actionable once/if a
+canonical broadening is actually proposed for one of them — until then they stay tenant-local, per
+the standing decision in v2.5.0's "Explicitly NOT changed" note.
+
+### Added
+- **`ops.view_suppliers`** — view the trade suppliers/wholesalers/hire companies directory. Manager + supervisor, matching `ops.view_rates`' tier.
+- **`ops.manage_suppliers`** — add/edit/delete suppliers directory entries. Manager + supervisor, matching `ops.manage_rates`' tier.
+
 ## [2.5.3] - 2026-07-17
 
 Access-model **cluster 3** — write-split trim (see `eq-context/access-model-cluster1-build-plan-2026-07-16.md`
