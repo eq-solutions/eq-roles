@@ -1,5 +1,5 @@
 {
-  "version": "2.5.3",
+  "version": "2.5.4",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
@@ -73,7 +73,9 @@
     { "key": "ops.view_rates",        "module": "ops",       "label": "View labour hire rates",   "description": "View labour hire cost rate cards. Commercially sensitive — manager + supervisor (project management) only.", "roles": ["manager", "supervisor"] },
     { "key": "ops.view_margins",      "module": "ops",       "label": "See cost & margin",         "description": "See cost and margin on a quote / job. Split out of quotes.view. Manager + supervisor only (2026-07-16 access-model cluster 1).", "roles": ["manager", "supervisor"] },
     { "key": "ops.manage_rates",      "module": "ops",       "label": "Manage labour hire rates", "description": "Import, edit, or manually adjust labour hire cost rate cards.", "roles": ["manager", "supervisor"] },
-    { "key": "ops.create_job",        "module": "ops",       "label": "Convert quote to a job",   "description": "Convert an approved quote into a numbered job. A commitment gate, matches quotes.create's tier (job numbers are manual/Smartsheet, never auto-generated) (2026-07-17 access-model cluster 3).", "roles": ["manager", "supervisor"] }
+    { "key": "ops.create_job",        "module": "ops",       "label": "Convert quote to a job",   "description": "Convert an approved quote into a numbered job. A commitment gate, matches quotes.create's tier (job numbers are manual/Smartsheet, never auto-generated) (2026-07-17 access-model cluster 3).", "roles": ["manager", "supervisor"] },
+    { "key": "ops.view_suppliers",    "module": "ops",       "label": "View suppliers directory",  "description": "View the trade suppliers/wholesalers/hire companies directory. Matches ops.view_rates' tier (2026-07-26 access-model Phase 3). Promotes a key eq-shell's own client matrix already declared but the package didn't yet have — see suppliers-mutate.ts.", "roles": ["manager", "supervisor"] },
+    { "key": "ops.manage_suppliers",  "module": "ops",       "label": "Manage suppliers directory", "description": "Add / edit / delete suppliers directory entries. Was reusing ops.manage_rates as an interim server-side gate until this key existed in the package (2026-07-26 access-model Phase 3).", "roles": ["manager", "supervisor"] }
   ],
   "roleAliases": {
     "$comment": "Foreign role vocabularies mapped onto canonical EqRole. Build validates every target is a real role. INVARIANT: no alias targets is_platform_admin — cross-tenant power is never derived from a tenant-held role, so tenants stay isolated. EQ-internal platform ops live out-of-band (service-role / audited impersonation), not in any tenant role.",
