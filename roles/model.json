@@ -1,5 +1,5 @@
 {
-  "version": "2.5.5",
+  "version": "2.5.6",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
@@ -65,6 +65,7 @@
     { "key": "field.manage_roster",   "module": "field",     "label": "Build & edit the roster",   "description": "Build and edit the crew roster. A distinct owner from day-to-day dispatch (2026-07-17 access-model cluster 3).", "roles": ["manager", "supervisor"] },
     { "key": "field.manage_licences", "module": "field",     "label": "Manage worker licences",    "description": "Add / verify worker licences and compliance records. Sign-off action, matches field.view_licences' tier (2026-07-17 access-model cluster 3).", "roles": ["manager", "supervisor"] },
     { "key": "field.manage_labour_hire", "module": "field",  "label": "Manage labour-hire companies", "description": "Manage labour-hire companies & their charge rates. Commercially sensitive, matches ops.manage_rates' tier (2026-07-17 access-model cluster 3).", "roles": ["manager", "supervisor"] },
+    { "key": "field.manage_people",   "module": "field",     "label": "Add / remove / edit workers", "description": "Add, edit, remove, restore, or permanently delete a worker record, and manage their PIN. Distinct owner from field.view/view_licences, matches field.manage_roster's manager+supervisor tier — preserves the coarse isManager-gated behaviour these actions had in Field before Phase 3 (2026-07-26 access-model Phase 3 guardrails).", "roles": ["manager", "supervisor"] },
 
     { "key": "quotes.view",           "module": "quotes",    "label": "View quotes",               "description": "View quotes.",                                        "roles": ["manager", "supervisor", "employee"] },
     { "key": "quotes.create",         "module": "quotes",    "label": "Create quotes",             "description": "Create or edit a quote.",                             "roles": ["manager", "supervisor"] },

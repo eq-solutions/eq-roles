@@ -3,6 +3,22 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.6] - 2026-07-26
+
+Access-model **Phase 3** — first guardrails conversion. eq-field's `leave.js`/`timesheets.js` had
+existing perm-key infrastructure (`leave.approve`, `leave.archive`, `ts.approve`, `ts.view_completion`)
+and converted their remaining raw `isManager` hard-gates onto it directly (no key change needed —
+those pairs already grant identically to manager + supervisor). `people.js`'s worker-record actions
+(add / edit / remove / restore / hard-delete / PIN management) had no matching key: the existing
+`people.add_new` / `people.edit_others` / `people.deactivate` / `people.assign_role` are manager-only,
+and using them would have silently stripped supervisors of access they hold today via `isManager`.
+
+### Added
+- **`field.manage_people`** — add / edit / remove / restore / permanently delete a worker record,
+  manage their PIN. Manager + supervisor, matching `field.manage_roster`'s tier — preserves today's
+  `isManager`-gated behaviour rather than narrowing it (Royce's call: package-additive, no policy
+  change bundled into a mechanical refactor).
+
 ## [2.5.5] - 2026-07-26
 
 Makes this repo an actual, consumable Dart package — `roles.dart` was a loose

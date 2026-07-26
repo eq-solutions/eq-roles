@@ -1,5 +1,5 @@
 {
-  "version": "2.5.5",
+  "version": "2.5.6",
   "generated": true,
   "roles": [
     {
@@ -465,6 +465,16 @@
       ]
     },
     {
+      "key": "field.manage_people",
+      "module": "field",
+      "label": "Add / remove / edit workers",
+      "description": "Add, edit, remove, restore, or permanently delete a worker record, and manage their PIN. Distinct owner from field.view/view_licences, matches field.manage_roster's manager+supervisor tier — preserves the coarse isManager-gated behaviour these actions had in Field before Phase 3 (2026-07-26 access-model Phase 3 guardrails).",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "quotes.view",
       "module": "quotes",
       "label": "View quotes",
@@ -596,6 +606,7 @@
       "field.manage_roster",
       "field.manage_licences",
       "field.manage_labour_hire",
+      "field.manage_people",
       "quotes.view",
       "quotes.create",
       "quotes.approve",
@@ -632,6 +643,7 @@
       "field.manage_roster",
       "field.manage_licences",
       "field.manage_labour_hire",
+      "field.manage_people",
       "quotes.view",
       "quotes.create",
       "ops.view_rates",
