@@ -1,5 +1,5 @@
 {
-  "version": "2.5.6",
+  "version": "2.5.7",
   "generated": true,
   "roles": [
     {
@@ -245,7 +245,8 @@
         "manager",
         "supervisor",
         "employee",
-        "apprentice"
+        "apprentice",
+        "labour_hire"
       ]
     },
     {
@@ -672,6 +673,7 @@
       "field.view"
     ],
     "labour_hire": [
+      "equipment.view",
       "field.view"
     ],
     "subcontractor": [

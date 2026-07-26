@@ -1,5 +1,5 @@
 {
-  "version": "2.5.6",
+  "version": "2.5.7",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full admin — user management, audit view + rollback, every module action." },
@@ -39,7 +39,7 @@
     { "key": "intake.import",         "module": "intake",    "label": "Start an import",           "description": "Initiate an import (drop file, map, validate).",      "roles": ["manager", "supervisor", "employee"] },
     { "key": "intake.commit",         "module": "intake",    "label": "Confirm an import",         "description": "Commit a validated batch to canonical (destructive).", "roles": ["manager", "supervisor"] },
 
-    { "key": "equipment.view",        "module": "equipment", "label": "View equipment",            "description": "See the Plant & Equipment list + calibration.",       "roles": ["manager", "supervisor", "employee", "apprentice"] },
+    { "key": "equipment.view",        "module": "equipment", "label": "View equipment",            "description": "See the Plant & Equipment list + calibration.",       "roles": ["manager", "supervisor", "employee", "apprentice", "labour_hire"] },
     { "key": "equipment.edit",        "module": "equipment", "label": "Edit equipment",            "description": "Add / edit equipment + calibration fields.",          "roles": ["manager", "supervisor"] },
 
     { "key": "reports.view",          "module": "reports",   "label": "View reports",              "description": "View GM reports.",                                    "roles": ["manager"] },
