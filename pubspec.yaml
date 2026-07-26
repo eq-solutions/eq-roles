@@ -1,0 +1,10 @@
+name: eq_roles
+description: >
+  Canonical EQ 6-tier role model + permission matrix, generated from
+  roles/model.json — the Flutter/Dart consumer (EQ Cards). Mirrors roles.ts /
+  roles.js exactly. Pure Dart, no external package dependency.
+version: 2.5.5
+homepage: https://github.com/eq-solutions/eq-roles
+
+environment:
+  sdk: '>=2.17.0 <4.0.0'

@@ -3,6 +3,24 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.5] - 2026-07-26
+
+Makes this repo an actual, consumable Dart package — `roles.dart` was a loose
+generated file at repo root with no `pubspec.yaml`, so `pub`'s git-dependency
+resolution (the same mechanism eq-cards already uses for `eq_design_tokens`)
+couldn't resolve it. Adds `pubspec.yaml` (`name: eq_roles`, pure Dart, no
+external dependency) and moves the emit to `lib/eq_roles.dart` — the
+conventional layout a Dart package's importable library file must live at.
+
+No content change to the generated Dart artefact itself beyond its new path;
+`buildDartArtefacts()` is untouched. Confirmed nothing consumed the old
+root-level `roles.dart` path, so this is a safe relocation, not a breaking
+change for any existing consumer.
+
+### Changed
+- `roles.dart` → `lib/eq_roles.dart` (Dart package layout).
+- Added `pubspec.yaml`.
+
 ## [2.5.4] - 2026-07-26
 
 Access-Model Foundation Plan, Phase 3 ("Guardrails") — promotes 2 keys eq-shell's own client

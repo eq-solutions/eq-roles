@@ -59,8 +59,8 @@ test('the new role flows through to every generated surface', () => {
 
 test('the Dart emit picks up the new role with no generator change', () => {
   const dart = buildDartArtefacts(scaffolded);
-  assert.ok(dart.includes("executive('executive'"), 'roles.dart enum is missing the new role');
-  assert.ok(dart.includes('EqRole.executive:'), 'roles.dart kMatrix is missing an executive entry');
+  assert.ok(dart.includes("executive('executive'"), 'eq_roles.dart enum is missing the new role');
+  assert.ok(dart.includes('EqRole.executive:'), 'eq_roles.dart kMatrix is missing an executive entry');
   // Dart source must stay syntactically sound in shape — every enum entry
   // still ends the constructor list with a semicolon before the body.
   assert.match(dart, /enum EqRole \{[\s\S]*executive\('executive'[\s\S]*;\n\n  const EqRole/);
