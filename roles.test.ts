@@ -51,9 +51,13 @@ test('apprentice: read-mostly, no import or write', () => {
   assert.equal(can('apprentice', 'quotes.view'), false);
 });
 
-test('labour_hire: field.view only', () => {
+test('labour_hire: field.view + equipment.view only', () => {
   assert.equal(can('labour_hire', 'field.view'), true);
-  const others = PERMISSIONS.map(p => p.key).filter(k => k !== 'field.view');
+  // v2.5.7: promoted from a live SKS tenant_role_override — viewing equipment
+  // isn't sensitive, so it applies to labour_hire everywhere (Royce's call).
+  assert.equal(can('labour_hire', 'equipment.view'), true);
+  assert.equal(can('labour_hire', 'equipment.edit'), false);
+  const others = PERMISSIONS.map(p => p.key).filter(k => k !== 'field.view' && k !== 'equipment.view');
   for (const p of others) {
     assert.equal(can('labour_hire', p), false, `labour_hire should not have ${p}`);
   }

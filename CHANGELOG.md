@@ -3,6 +3,19 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.7] - 2026-07-26
+
+Access-model Phase 3 — `tenant_role_overrides` drain, row 1 of 1 requiring a canonical decision.
+Audited all 10 live SKS overrides on jvkn against the 2026-07-08 `ACCESS-MODEL-PLAN.md` decisions:
+9 of 10 already had a locked resolution (4 Cards-smear artifacts to dissolve per D4, 1 redundant
+no-op, 4 staying tenant-local by design — `intake.view` deny, `service.create`/`close`, `quotes.approve`).
+`labour_hire`/`equipment.view` was the one row with no precedent — not part of D2's apprentice-only
+promotion, not a Cards-smear artifact. Royce's call: promote it (viewing equipment isn't sensitive).
+
+### Added
+- **`labour_hire`** added to `equipment.view`'s role list — labour-hire workers can now see the
+  Plant & Equipment list + calibration, matching apprentice's existing grant. No `equipment.edit`.
+
 ## [2.5.6] - 2026-07-26
 
 Access-model **Phase 3** — first guardrails conversion. eq-field's `leave.js`/`timesheets.js` had
