@@ -1,5 +1,5 @@
 {
-  "version": "2.5.7",
+  "version": "2.5.8",
   "generated": true,
   "roles": [
     {
@@ -564,6 +564,16 @@
         "manager",
         "supervisor"
       ]
+    },
+    {
+      "key": "ops.view_supplier_credentials",
+      "module": "ops",
+      "label": "See supplier login/password",
+      "description": "See the login/password stored against a supplier directory entry. Split out of ops.view_suppliers so viewing the directory no longer implies seeing stored credentials — matches entity.view_pii/field.view_hours' split-permission pattern (2026-07-27). Replaces a hardcoded manager/supervisor/platform-admin check in eq-shell's eq_list_suppliers RPC that predated this key existing.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
     }
   ],
   "matrix": {
@@ -616,7 +626,8 @@
       "ops.manage_rates",
       "ops.create_job",
       "ops.view_suppliers",
-      "ops.manage_suppliers"
+      "ops.manage_suppliers",
+      "ops.view_supplier_credentials"
     ],
     "supervisor": [
       "audit.view",
@@ -652,7 +663,8 @@
       "ops.manage_rates",
       "ops.create_job",
       "ops.view_suppliers",
-      "ops.manage_suppliers"
+      "ops.manage_suppliers",
+      "ops.view_supplier_credentials"
     ],
     "employee": [
       "entity.view",

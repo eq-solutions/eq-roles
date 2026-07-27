@@ -3,6 +3,15 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.5.8] - 2026-07-27
+
+### Added
+- **`ops.view_supplier_credentials`** — split out of `ops.view_suppliers`, same manager+supervisor
+  tier. eq-shell's Suppliers directory RPC (`eq_list_suppliers`) redacted the login/password columns
+  server-side with a hardcoded manager/supervisor/platform-admin check that predated this key's
+  existence; that check now maps onto a real, Security-Groups-configurable permission instead of
+  being fixed at the role level.
+
 ## [2.5.7] - 2026-07-26
 
 Access-model Phase 3 — `tenant_role_overrides` drain, row 1 of 1 requiring a canonical decision.
