@@ -70,6 +70,7 @@ Authored in [`roles/model.json`](roles/model.json) under `defaultGroups`; the bu
 |---|---|---|---|
 | `equipment_editors` | Equipment editors | `equipment.view`, `equipment.edit` | Editing the plant list is manager/supervisor-only; this hands it to a few employees/apprentices who maintain equipment. |
 | `report_viewers` | Report viewers | `reports.view` | GM reports are manager-only; this lets a supervisor or lead read them without being made a manager. |
+| `project_managers` | Project Managers | `admin.list_users`, `admin.edit_user`, `admin.review_cards`, `audit.view` | Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific (originally SKS) group once it proved to be a common cross-cutting need (v2.5.0). |
 
 **These are templates, not duplicates of a role.** Each grants only perms that cut *across* the role hierarchy — a group that merely re-grants what a role already has would blur the role-vs-group line and is intentionally excluded.
 

@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EQ Suite — Security Groups &amp; Permission Model</title>
+<style>
+  :root {
+    --sky: #3DA8D8; --deep: #2986B4; --ice: #EAF5FB; --ink: #1A1A2E;
+    --bg: #ffffff; --fg: var(--ink); --border: #d9e6ee; --muted: #5b6b7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14141f; --fg: #eef3f7; --ice: #1c2b36; --border: #2a3a46; --muted: #9fb0bd; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--fg); margin: 0; padding: 2.5rem 1.5rem 4rem;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  header { border-bottom: 2px solid var(--sky); padding-bottom: 1.25rem; margin-bottom: 2rem; }
+  h1 { font-size: 1.7rem; margin: 0 0 0.35rem; color: var(--deep); }
+  .meta { color: var(--muted); font-size: 0.9rem; }
+  h2 { font-size: 1.25rem; color: var(--deep); border-top: 1px solid var(--border); padding-top: 1.75rem; margin-top: 2rem; }
+  h3 { font-size: 1rem; color: var(--fg); margin: 1.5rem 0 0.5rem; }
+  .lede { color: var(--muted); font-size: 0.92rem; max-width: 70ch; }
+  table { border-collapse: collapse; width: 100%; margin: 0.75rem 0 1.5rem; font-size: 0.85rem; }
+  th, td { border: 1px solid var(--border); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+  thead th { background: var(--ice); font-weight: 600; }
+  .role-name { font-weight: 600; white-space: nowrap; }
+  .num { text-align: center; }
+  .matrix th.rot { text-align: center; white-space: nowrap; font-size: 0.78rem; }
+  .grant-cell { text-align: center; }
+  .grant-yes { color: var(--deep); font-weight: 700; }
+  .perm-name code { font-size: 0.82rem; }
+  .perm-label { color: var(--muted); font-size: 0.8rem; margin-top: 0.15rem; }
+  .perm-chip { display: inline-block; background: var(--ice); border-radius: 4px; padding: 0.1rem 0.4rem; margin: 0.1rem 0.15rem 0.1rem 0; font-size: 0.78rem; }
+  .deprecated { color: #b3541e; font-size: 0.76rem; margin-top: 0.2rem; }
+  code { font-family: 'SFMono-Regular', Consolas, Menlo, monospace; }
+  .scope-note { background: var(--ice); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1.1rem; font-size: 0.87rem; margin-top: 2rem; }
+  .scope-note strong { color: var(--deep); }
+  footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>EQ Suite — Security Groups &amp; Permission Model</h1>
+    <div class="meta">Canonical model &middot; @eq-solutions/roles v2.5.8 &middot; generated 2026-08-05</div>
+  </header>
+
+  
+    <section>
+      <h2>1. Roles</h2>
+      <p class="lede">The 6-tier role enum. No inheritance — every grant below is explicit.</p>
+      <table>
+        <thead><tr><th>Role</th><th>Rank</th><th>Description</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="role-name">Manager</td>
+        <td class="num">1</td>
+        <td>Full admin — user management, audit view + rollback, every module action.</td>
+      </tr>
+      <tr>
+        <td class="role-name">Supervisor</td>
+        <td class="num">2</td>
+        <td>Audit view, intake commit, equipment edit. No user management.</td>
+      </tr>
+      <tr>
+        <td class="role-name">Employee</td>
+        <td class="num">3</td>
+        <td>Intake view + import, equipment view. No commit, no admin.</td>
+      </tr>
+      <tr>
+        <td class="role-name">Apprentice</td>
+        <td class="num">4</td>
+        <td>Read-mostly — intake + equipment view.</td>
+      </tr>
+      <tr>
+        <td class="role-name">Labour Hire</td>
+        <td class="num">5</td>
+        <td>Minimal — own roster / timesheet only (no shell permissions today).</td>
+      </tr>
+      <tr>
+        <td class="role-name">Subcontractor</td>
+        <td class="num">6</td>
+        <td>External trade engaged for a job, not an agency worker. Minimal — same baseline as labour_hire.</td>
+      </tr></tbody>
+      </table>
+    </section>
+  
+    <section>
+      <h2>2. Permission matrix</h2>
+      <p class="lede">Every permission key, grouped by module, with which roles hold it by default. &#10003; = granted.</p>
+      
+      <h3>Admin (Shell)</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>admin.list_users</code><div class="perm-label">View users</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>admin.invite_user</code><div class="perm-label">Invite users</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>admin.edit_user</code><div class="perm-label">Edit users</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>admin.deactivate_user</code><div class="perm-label">Deactivate users</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>admin.review_cards</code><div class="perm-label">Review onboarding</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>admin.manage_groups</code><div class="perm-label">Manage access groups</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Audit</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>audit.view</code><div class="perm-label">View activity log</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>audit.rollback</code><div class="perm-label">Undo changes</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Records (Entity)</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>entity.view</code><div class="perm-label">View records</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>entity.view_pii</code><div class="perm-label">See personal details</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>entity.create</code><div class="perm-label">Add records</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>entity.edit</code><div class="perm-label">Edit records</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>entity.delete</code><div class="perm-label">Delete records</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>entity.manage_activation</code><div class="perm-label">Manage Field/Service activation</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Intake</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>intake.view</code><div class="perm-label">View imports</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>intake.import</code><div class="perm-label">Start an import</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>intake.commit</code><div class="perm-label">Confirm an import</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Equipment</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>equipment.view</code><div class="perm-label">View equipment</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>equipment.edit</code><div class="perm-label">Edit equipment</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Reports</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>reports.view</code><div class="perm-label">View reports</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>reports.view_financial</code><div class="perm-label">See financial reports</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>reports.upload</code><div class="perm-label">Upload reports</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>reports.generate_briefing</code><div class="perm-label">Generate AI briefing</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Cards</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>cards.view</code><div class="perm-label">Open Cards</div><div class="deprecated">Deprecated — Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check.</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>cards.onboard</code><div class="perm-label">Submit onboarding</div><div class="deprecated">Deprecated — Duplicates admin.review_cards (the real employer-side &#39;review Cards onboarding&#39; gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards.</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Service (CMMS)</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>service.view</code><div class="perm-label">View maintenance</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>service.view_commercials</code><div class="perm-label">See job pricing</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>service.create</code><div class="perm-label">Raise work orders</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>service.close</code><div class="perm-label">Close work orders</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>service.reopen</code><div class="perm-label">Reopen a work order</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>service.record_tests</code><div class="perm-label">Log calibration results</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Field</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>field.view</code><div class="perm-label">View field resources</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.view_hours</code><div class="perm-label">See timesheets &amp; hours</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.view_licences</code><div class="perm-label">See worker licences</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.view_rates</code><div class="perm-label">See charge rates</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.dispatch</code><div class="perm-label">Dispatch staff</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.manage_roster</code><div class="perm-label">Build &amp; edit the roster</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.manage_licences</code><div class="perm-label">Manage worker licences</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.manage_labour_hire</code><div class="perm-label">Manage labour-hire companies</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>field.manage_people</code><div class="perm-label">Add / remove / edit workers</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Quotes</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>quotes.view</code><div class="perm-label">View quotes</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>quotes.create</code><div class="perm-label">Create quotes</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>quotes.approve</code><div class="perm-label">Approve quotes</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+      <h3>Ops</h3>
+      <table class="matrix">
+        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="perm-name"><code>ops.view_rates</code><div class="perm-label">View labour hire rates</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>ops.view_margins</code><div class="perm-label">See cost &amp; margin</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>ops.manage_rates</code><div class="perm-label">Manage labour hire rates</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>ops.create_job</code><div class="perm-label">Convert quote to a job</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>ops.view_suppliers</code><div class="perm-label">View suppliers directory</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>ops.manage_suppliers</code><div class="perm-label">Manage suppliers directory</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr>
+      <tr>
+        <td class="perm-name"><code>ops.view_supplier_credentials</code><div class="perm-label">See supplier login/password</div></td>
+        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
+      </tr></tbody>
+      </table>
+    </section>
+  
+    <section>
+      <h2>3. Default security groups</h2>
+      <p class="lede">Named bundles of <em>extra</em> permission keys, additive on top of a user's base role — not a role themselves. A fresh tenant starts with zero groups; these are the canonical starter templates eq-shell seeds on tenant creation.</p>
+      <table>
+        <thead><tr><th>Group</th><th>Why it's cross-cutting</th><th>Grants</th></tr></thead>
+        <tbody>
+      <tr>
+        <td class="role-name"><code>equipment_editors</code><div class="perm-label">Equipment editors</div></td>
+        <td>Edit the plant &amp; equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.</td>
+        <td><code class="perm-chip">equipment.view</code> <code class="perm-chip">equipment.edit</code></td>
+      </tr>
+      <tr>
+        <td class="role-name"><code>report_viewers</code><div class="perm-label">Report viewers</div></td>
+        <td>View GM reports without being made a manager. Add supervisors or leads here who need to read reports.</td>
+        <td><code class="perm-chip">reports.view</code></td>
+      </tr>
+      <tr>
+        <td class="role-name"><code>project_managers</code><div class="perm-label">Project Managers</div></td>
+        <td>Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.</td>
+        <td><code class="perm-chip">admin.list_users</code> <code class="perm-chip">admin.edit_user</code> <code class="perm-chip">admin.review_cards</code> <code class="perm-chip">audit.view</code></td>
+      </tr></tbody>
+      </table>
+    </section>
+
+  <div class="scope-note">
+    <strong>Scope of this document:</strong> the canonical model only — the 6 roles, the full permission matrix, and the 3 default security-group templates, as defined in <code>eq-roles</code>. It does <strong>not</strong> include live, per-tenant group membership or tenant-specific (non-default) groups — those are created and managed per tenant in eq-shell's Access Control page (<code>admin.manage_groups</code>) and are not exported here.
+  </div>
+
+  <footer>Generated by <code>scripts/export-security-groups.mjs</code> from <code>roles.json</code>. Re-run after any <code>roles/model.json</code> change to keep this current.</footer>
+</div>
+</body>
+</html>
