@@ -35,6 +35,7 @@
   "scripts": {
     "build": "node build.mjs",
     "test": "node --import tsx/esm --test roles.test.ts roles.dist.test.ts executive-scaffold.test.ts",
+    "export:html": "node scripts/export-security-groups.mjs",
     "prepublishOnly": "node build.mjs && npm test"
   },
   "devDependencies": {
