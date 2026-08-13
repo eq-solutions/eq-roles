@@ -41,15 +41,73 @@
   .scope-note { background: var(--ice); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1.1rem; font-size: 0.87rem; margin-top: 2rem; }
   .scope-note strong { color: var(--deep); }
   footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; }
+
+  /* workflow diagram */
+  .flow-figure { margin: 0 0 2rem; }
+  .flow-diagram { display: flex; align-items: stretch; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.9rem; }
+  .flow-step { flex: 1 1 160px; border: 1.5px solid var(--sky); border-radius: 8px; padding: 0.85rem 1rem; background: var(--ice); text-align: center; }
+  .flow-step--accent { border-color: var(--deep); background: var(--deep); }
+  .flow-step--accent .flow-title, .flow-step--accent .flow-sub { color: #fff; }
+  .flow-title { font-weight: 700; font-size: 0.92rem; color: var(--deep); }
+  .flow-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+  .flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; color: var(--muted); flex: 0 0 auto; padding: 0 0.15rem; }
+
+  /* collapsible group cards */
+  .group-cards { display: flex; flex-direction: column; gap: 0.7rem; margin: 0.75rem 0 1.5rem; }
+  .group-card { border: 1px solid var(--border); border-radius: 8px; padding: 0 1rem; background: var(--bg); }
+  .group-card summary { cursor: pointer; padding: 0.75rem 0; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; list-style: none; }
+  .group-card summary::-webkit-details-marker { display: none; }
+  .group-card summary::marker { content: ''; }
+  .group-card summary::before { content: '\25B8'; color: var(--deep); display: inline-block; transition: transform 0.15s; flex: 0 0 auto; }
+  .group-card[open] summary::before { transform: rotate(90deg); }
+  .group-card summary code { color: var(--muted); font-size: 0.82rem; }
+  .group-count { margin-left: auto; font-size: 0.76rem; color: var(--muted); background: var(--ice); border-radius: 4px; padding: 0.1rem 0.5rem; }
+  .group-body { padding: 0 0 1rem; }
+  .group-body p { margin: 0 0 0.6rem; font-size: 0.88rem; }
+  .group-perms { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
+  /* sortable table */
+  table.sortable th { cursor: pointer; user-select: none; }
+  table.sortable th:hover { background: var(--sky); color: #fff; }
+  table.sortable th[aria-sort]::after { margin-left: 0.35rem; font-size: 0.7rem; }
+  table.sortable th[aria-sort="ascending"]::after { content: '\25B2'; }
+  table.sortable th[aria-sort="descending"]::after { content: '\25BC'; }
+  .role-count { font-weight: 700; color: var(--deep); }
+  .role-chips { margin-top: 0.2rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>EQ Suite — Security Groups &amp; Permission Model</h1>
-    <div class="meta">Canonical model &middot; @eq-solutions/roles v2.5.8 &middot; generated 2026-08-05</div>
+    <div class="meta">Canonical model &middot; @eq-solutions/roles v2.5.8 &middot; generated 2026-08-13</div>
   </header>
 
+  
+    <figure class="flow-figure">
+      <figcaption class="lede">How access is resolved, end to end — a user's effective permission set is their base role's grants unioned with any security group(s) they've been added to, checked module-by-module at the point of action.</figcaption>
+      <div class="flow-diagram">
+        <div class="flow-step">
+          <div class="flow-title">Base role</div>
+          <div class="flow-sub">1 of 6 &middot; ranked, no inheritance</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">+</div>
+        <div class="flow-step">
+          <div class="flow-title">Security group(s)</div>
+          <div class="flow-sub">0 or more &middot; additive, optional</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">=</div>
+        <div class="flow-step flow-step--accent">
+          <div class="flow-title">Effective permissions</div>
+          <div class="flow-sub">role grants &cup; group grants</div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">&rarr;</div>
+        <div class="flow-step">
+          <div class="flow-title">Module gate</div>
+          <div class="flow-sub">11 modules &middot; checked per action</div>
+        </div>
+      </div>
+    </figure>
   
     <section>
       <h2>1. Roles</h2>
@@ -352,27 +410,358 @@
     </section>
   
     <section>
-      <h2>3. Default security groups</h2>
-      <p class="lede">Named bundles of <em>extra</em> permission keys, additive on top of a user's base role — not a role themselves. A fresh tenant starts with zero groups; these are the canonical starter templates eq-shell seeds on tenant creation.</p>
-      <table>
-        <thead><tr><th>Group</th><th>Why it's cross-cutting</th><th>Grants</th></tr></thead>
+      <h2>3. All permissions</h2>
+      <p class="lede">Every permission key in one flat table, independent of module grouping. Click a column header to sort; click again to reverse.</p>
+      <table class="sortable" id="all-perms">
+        <thead>
+          <tr>
+            <th data-type="text">Permission</th>
+            <th data-type="text">Module</th>
+            <th data-type="number">Roles granted</th>
+            <th data-type="text">Status</th>
+          </tr>
+        </thead>
         <tbody>
       <tr>
-        <td class="role-name"><code>equipment_editors</code><div class="perm-label">Equipment editors</div></td>
-        <td>Edit the plant &amp; equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.</td>
-        <td><code class="perm-chip">equipment.view</code> <code class="perm-chip">equipment.edit</code></td>
+        <td data-sort="admin.deactivate_user"><code>admin.deactivate_user</code><div class="perm-label">Deactivate users</div></td>
+        <td data-sort="Admin (Shell)">Admin (Shell)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
       </tr>
       <tr>
-        <td class="role-name"><code>report_viewers</code><div class="perm-label">Report viewers</div></td>
-        <td>View GM reports without being made a manager. Add supervisors or leads here who need to read reports.</td>
-        <td><code class="perm-chip">reports.view</code></td>
+        <td data-sort="admin.edit_user"><code>admin.edit_user</code><div class="perm-label">Edit users</div></td>
+        <td data-sort="Admin (Shell)">Admin (Shell)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
       </tr>
       <tr>
-        <td class="role-name"><code>project_managers</code><div class="perm-label">Project Managers</div></td>
-        <td>Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.</td>
-        <td><code class="perm-chip">admin.list_users</code> <code class="perm-chip">admin.edit_user</code> <code class="perm-chip">admin.review_cards</code> <code class="perm-chip">audit.view</code></td>
+        <td data-sort="admin.invite_user"><code>admin.invite_user</code><div class="perm-label">Invite users</div></td>
+        <td data-sort="Admin (Shell)">Admin (Shell)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="admin.list_users"><code>admin.list_users</code><div class="perm-label">View users</div></td>
+        <td data-sort="Admin (Shell)">Admin (Shell)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="admin.manage_groups"><code>admin.manage_groups</code><div class="perm-label">Manage access groups</div></td>
+        <td data-sort="Admin (Shell)">Admin (Shell)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="admin.review_cards"><code>admin.review_cards</code><div class="perm-label">Review onboarding</div></td>
+        <td data-sort="Admin (Shell)">Admin (Shell)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="audit.rollback"><code>audit.rollback</code><div class="perm-label">Undo changes</div></td>
+        <td data-sort="Audit">Audit</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="audit.view"><code>audit.view</code><div class="perm-label">View activity log</div></td>
+        <td data-sort="Audit">Audit</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="cards.onboard"><code>cards.onboard</code><div class="perm-label">Submit onboarding</div><div class="deprecated">Deprecated — Duplicates admin.review_cards (the real employer-side &#39;review Cards onboarding&#39; gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards.</div></td>
+        <td data-sort="Cards">Cards</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Deprecated">Deprecated</td>
+      </tr>
+      <tr>
+        <td data-sort="cards.view"><code>cards.view</code><div class="perm-label">Open Cards</div><div class="deprecated">Deprecated — Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check.</div></td>
+        <td data-sort="Cards">Cards</td>
+        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
+        <td data-sort="Deprecated">Deprecated</td>
+      </tr>
+      <tr>
+        <td data-sort="entity.create"><code>entity.create</code><div class="perm-label">Add records</div></td>
+        <td data-sort="Records (Entity)">Records (Entity)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="entity.delete"><code>entity.delete</code><div class="perm-label">Delete records</div></td>
+        <td data-sort="Records (Entity)">Records (Entity)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="entity.edit"><code>entity.edit</code><div class="perm-label">Edit records</div></td>
+        <td data-sort="Records (Entity)">Records (Entity)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="entity.manage_activation"><code>entity.manage_activation</code><div class="perm-label">Manage Field/Service activation</div></td>
+        <td data-sort="Records (Entity)">Records (Entity)</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="entity.view"><code>entity.view</code><div class="perm-label">View records</div></td>
+        <td data-sort="Records (Entity)">Records (Entity)</td>
+        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="entity.view_pii"><code>entity.view_pii</code><div class="perm-label">See personal details</div></td>
+        <td data-sort="Records (Entity)">Records (Entity)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="equipment.edit"><code>equipment.edit</code><div class="perm-label">Edit equipment</div></td>
+        <td data-sort="Equipment">Equipment</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="equipment.view"><code>equipment.view</code><div class="perm-label">View equipment</div></td>
+        <td data-sort="Equipment">Equipment</td>
+        <td data-sort="5"><span class="role-count">5</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code> <code class="perm-chip">Labour Hire</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.dispatch"><code>field.dispatch</code><div class="perm-label">Dispatch staff</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.manage_labour_hire"><code>field.manage_labour_hire</code><div class="perm-label">Manage labour-hire companies</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.manage_licences"><code>field.manage_licences</code><div class="perm-label">Manage worker licences</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.manage_people"><code>field.manage_people</code><div class="perm-label">Add / remove / edit workers</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.manage_roster"><code>field.manage_roster</code><div class="perm-label">Build &amp; edit the roster</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.view"><code>field.view</code><div class="perm-label">View field resources</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="6"><span class="role-count">6</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code> <code class="perm-chip">Labour Hire</code> <code class="perm-chip">Subcontractor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.view_hours"><code>field.view_hours</code><div class="perm-label">See timesheets &amp; hours</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.view_licences"><code>field.view_licences</code><div class="perm-label">See worker licences</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="field.view_rates"><code>field.view_rates</code><div class="perm-label">See charge rates</div></td>
+        <td data-sort="Field">Field</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="intake.commit"><code>intake.commit</code><div class="perm-label">Confirm an import</div></td>
+        <td data-sort="Intake">Intake</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="intake.import"><code>intake.import</code><div class="perm-label">Start an import</div></td>
+        <td data-sort="Intake">Intake</td>
+        <td data-sort="3"><span class="role-count">3</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="intake.view"><code>intake.view</code><div class="perm-label">View imports</div></td>
+        <td data-sort="Intake">Intake</td>
+        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.create_job"><code>ops.create_job</code><div class="perm-label">Convert quote to a job</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.manage_rates"><code>ops.manage_rates</code><div class="perm-label">Manage labour hire rates</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.manage_suppliers"><code>ops.manage_suppliers</code><div class="perm-label">Manage suppliers directory</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.view_margins"><code>ops.view_margins</code><div class="perm-label">See cost &amp; margin</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.view_rates"><code>ops.view_rates</code><div class="perm-label">View labour hire rates</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.view_supplier_credentials"><code>ops.view_supplier_credentials</code><div class="perm-label">See supplier login/password</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="ops.view_suppliers"><code>ops.view_suppliers</code><div class="perm-label">View suppliers directory</div></td>
+        <td data-sort="Ops">Ops</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="quotes.approve"><code>quotes.approve</code><div class="perm-label">Approve quotes</div></td>
+        <td data-sort="Quotes">Quotes</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="quotes.create"><code>quotes.create</code><div class="perm-label">Create quotes</div></td>
+        <td data-sort="Quotes">Quotes</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="quotes.view"><code>quotes.view</code><div class="perm-label">View quotes</div></td>
+        <td data-sort="Quotes">Quotes</td>
+        <td data-sort="3"><span class="role-count">3</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="reports.generate_briefing"><code>reports.generate_briefing</code><div class="perm-label">Generate AI briefing</div></td>
+        <td data-sort="Reports">Reports</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="reports.upload"><code>reports.upload</code><div class="perm-label">Upload reports</div></td>
+        <td data-sort="Reports">Reports</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="reports.view"><code>reports.view</code><div class="perm-label">View reports</div></td>
+        <td data-sort="Reports">Reports</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="reports.view_financial"><code>reports.view_financial</code><div class="perm-label">See financial reports</div></td>
+        <td data-sort="Reports">Reports</td>
+        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="service.close"><code>service.close</code><div class="perm-label">Close work orders</div></td>
+        <td data-sort="Service (CMMS)">Service (CMMS)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="service.create"><code>service.create</code><div class="perm-label">Raise work orders</div></td>
+        <td data-sort="Service (CMMS)">Service (CMMS)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="service.record_tests"><code>service.record_tests</code><div class="perm-label">Log calibration results</div></td>
+        <td data-sort="Service (CMMS)">Service (CMMS)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="service.reopen"><code>service.reopen</code><div class="perm-label">Reopen a work order</div></td>
+        <td data-sort="Service (CMMS)">Service (CMMS)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="service.view"><code>service.view</code><div class="perm-label">View maintenance</div></td>
+        <td data-sort="Service (CMMS)">Service (CMMS)</td>
+        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
+        <td data-sort="Active">Active</td>
+      </tr>
+      <tr>
+        <td data-sort="service.view_commercials"><code>service.view_commercials</code><div class="perm-label">See job pricing</div></td>
+        <td data-sort="Service (CMMS)">Service (CMMS)</td>
+        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
+        <td data-sort="Active">Active</td>
       </tr></tbody>
       </table>
+    </section>
+  
+    <section>
+      <h2>4. Default security groups</h2>
+      <p class="lede">Named bundles of <em>extra</em> permission keys, additive on top of a user's base role — not a role themselves. A fresh tenant starts with zero groups; these are the canonical starter templates eq-shell seeds on tenant creation.</p>
+      <div class="group-cards">
+      <details class="group-card" open>
+        <summary>
+          <span class="role-name">Equipment editors</span>
+          <code>equipment_editors</code>
+          <span class="group-count">2 grants</span>
+        </summary>
+        <div class="group-body">
+          <p>Edit the plant &amp; equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.</p>
+          <div class="group-perms"><code class="perm-chip" title="Equipment">equipment.view</code> <code class="perm-chip" title="Equipment">equipment.edit</code></div>
+        </div>
+      </details>
+      <details class="group-card">
+        <summary>
+          <span class="role-name">Report viewers</span>
+          <code>report_viewers</code>
+          <span class="group-count">1 grant</span>
+        </summary>
+        <div class="group-body">
+          <p>View GM reports without being made a manager. Add supervisors or leads here who need to read reports.</p>
+          <div class="group-perms"><code class="perm-chip" title="Reports">reports.view</code></div>
+        </div>
+      </details>
+      <details class="group-card">
+        <summary>
+          <span class="role-name">Project Managers</span>
+          <code>project_managers</code>
+          <span class="group-count">4 grants</span>
+        </summary>
+        <div class="group-body">
+          <p>Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.</p>
+          <div class="group-perms"><code class="perm-chip" title="Admin (Shell)">admin.list_users</code> <code class="perm-chip" title="Admin (Shell)">admin.edit_user</code> <code class="perm-chip" title="Admin (Shell)">admin.review_cards</code> <code class="perm-chip" title="Audit">audit.view</code></div>
+        </div>
+      </details></div>
     </section>
 
   <div class="scope-note">
@@ -381,5 +770,32 @@
 
   <footer>Generated by <code>scripts/export-security-groups.mjs</code> from <code>roles.json</code>. Re-run after any <code>roles/model.json</code> change to keep this current.</footer>
 </div>
+<script>
+(function () {
+  document.querySelectorAll('table.sortable').forEach(function (table) {
+    var thead = table.tHead, tbody = table.tBodies[0];
+    if (!thead || !tbody) return;
+    Array.prototype.forEach.call(thead.querySelectorAll('th'), function (th) {
+      th.addEventListener('click', function () {
+        var type = th.dataset.type || 'text';
+        var dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+        Array.prototype.forEach.call(thead.querySelectorAll('th'), function (h) { h.removeAttribute('aria-sort'); });
+        th.setAttribute('aria-sort', dir);
+        var mult = dir === 'ascending' ? 1 : -1;
+        var idx = th.cellIndex;
+        var rows = Array.prototype.slice.call(tbody.rows);
+        rows.sort(function (ra, rb) {
+          var ca = ra.cells[idx], cb = rb.cells[idx];
+          var av = ca.dataset.sort != null ? ca.dataset.sort : ca.textContent.trim();
+          var bv = cb.dataset.sort != null ? cb.dataset.sort : cb.textContent.trim();
+          if (type === 'number') return (parseFloat(av) - parseFloat(bv)) * mult;
+          return av.localeCompare(bv, undefined, { sensitivity: 'base', numeric: true }) * mult;
+        });
+        rows.forEach(function (r) { tbody.appendChild(r); });
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
