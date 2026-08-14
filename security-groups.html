@@ -8,18 +8,19 @@
   :root {
     --sky: #3DA8D8; --deep: #2986B4; --ice: #EAF5FB; --ink: #1A1A2E;
     --bg: #ffffff; --fg: var(--ink); --border: #d9e6ee; --muted: #5b6b7a;
+    --danger: #b3541e; --danger-bg: #fbeee5; --danger-border: #e0c2ac;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #14141f; --fg: #eef3f7; --ice: #1c2b36; --border: #2a3a46; --muted: #9fb0bd; }
+    :root { --bg: #14141f; --fg: #eef3f7; --ice: #1c2b36; --border: #2a3a46; --muted: #9fb0bd; --danger-bg: #2e2013; }
   }
   * { box-sizing: border-box; }
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg); color: var(--fg); margin: 0; padding: 2.5rem 1.5rem 4rem;
+    background: var(--bg); color: var(--fg); margin: 0; padding: 2.5rem 1.5rem 6rem;
     line-height: 1.5;
   }
   .wrap { max-width: 980px; margin: 0 auto; }
-  header { border-bottom: 2px solid var(--sky); padding-bottom: 1.25rem; margin-bottom: 2rem; }
+  header { border-bottom: 2px solid var(--sky); padding-bottom: 1.25rem; margin-bottom: 1.25rem; }
   h1 { font-size: 1.7rem; margin: 0 0 0.35rem; color: var(--deep); }
   .meta { color: var(--muted); font-size: 0.9rem; }
   h2 { font-size: 1.25rem; color: var(--deep); border-top: 1px solid var(--border); padding-top: 1.75rem; margin-top: 2rem; }
@@ -36,10 +37,11 @@
   .perm-name code { font-size: 0.82rem; }
   .perm-label { color: var(--muted); font-size: 0.8rem; margin-top: 0.15rem; }
   .perm-chip { display: inline-block; background: var(--ice); border-radius: 4px; padding: 0.1rem 0.4rem; margin: 0.1rem 0.15rem 0.1rem 0; font-size: 0.78rem; }
-  .deprecated { color: #b3541e; font-size: 0.76rem; margin-top: 0.2rem; }
+  .deprecated { color: var(--danger); font-size: 0.76rem; margin-top: 0.2rem; }
   code { font-family: 'SFMono-Regular', Consolas, Menlo, monospace; }
   .scope-note { background: var(--ice); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1.1rem; font-size: 0.87rem; margin-top: 2rem; }
   .scope-note strong { color: var(--deep); }
+  .scope-note a { color: var(--deep); }
   footer { margin-top: 2.5rem; color: var(--muted); font-size: 0.8rem; }
 
   /* workflow diagram */
@@ -52,19 +54,53 @@
   .flow-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
   .flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; color: var(--muted); flex: 0 0 auto; padding: 0 0.15rem; }
 
-  /* collapsible group cards */
-  .group-cards { display: flex; flex-direction: column; gap: 0.7rem; margin: 0.75rem 0 1.5rem; }
-  .group-card { border: 1px solid var(--border); border-radius: 8px; padding: 0 1rem; background: var(--bg); }
-  .group-card summary { cursor: pointer; padding: 0.75rem 0; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; list-style: none; }
-  .group-card summary::-webkit-details-marker { display: none; }
-  .group-card summary::marker { content: ''; }
-  .group-card summary::before { content: '\25B8'; color: var(--deep); display: inline-block; transition: transform 0.15s; flex: 0 0 auto; }
-  .group-card[open] summary::before { transform: rotate(90deg); }
-  .group-card summary code { color: var(--muted); font-size: 0.82rem; }
-  .group-count { margin-left: auto; font-size: 0.76rem; color: var(--muted); background: var(--ice); border-radius: 4px; padding: 0.1rem 0.5rem; }
-  .group-body { padding: 0 0 1rem; }
-  .group-body p { margin: 0 0 0.6rem; font-size: 0.88rem; }
-  .group-perms { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  /* sandbox note */
+  .sandbox-note { background: var(--bg); border: 1.5px solid var(--sky); border-radius: 6px; padding: 0.9rem 1.1rem; font-size: 0.87rem; margin: 0 0 1.75rem; }
+  .sandbox-note strong { color: var(--deep); }
+
+  /* controls */
+  .controls-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin: 0.5rem 0 1rem; }
+  .search-input { border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.65rem; font-size: 0.85rem; background: var(--bg); color: var(--fg); min-width: 260px; font-family: inherit; }
+  .search-input:focus { outline: 2px solid var(--sky); outline-offset: 1px; }
+  input[type="checkbox"] { width: 1rem; height: 1rem; accent-color: var(--deep); cursor: pointer; }
+  .icon-btn { border: 1px solid var(--border); background: var(--bg); color: var(--muted); border-radius: 5px; width: 1.7rem; height: 1.7rem; line-height: 1; cursor: pointer; font-size: 0.95rem; }
+  .icon-btn:hover { border-color: var(--danger); color: var(--danger); }
+  .remove-cell { text-align: center; width: 2.2rem; }
+  .add-row td { border-top: 1px dashed var(--border); background: var(--ice); }
+  .add-form { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; padding: 0.4rem 0; }
+  .add-form-prefix { font-family: 'SFMono-Regular', Consolas, Menlo, monospace; font-size: 0.82rem; color: var(--muted); }
+  .add-form input[type=text] { border: 1px solid var(--border); border-radius: 5px; padding: 0.3rem 0.55rem; font-size: 0.82rem; background: var(--bg); color: var(--fg); font-family: inherit; }
+  .add-form input[name=key] { width: 9rem; }
+  .add-form input[name=label] { width: 14rem; }
+  .btn { border: 1px solid var(--sky); background: var(--sky); color: #fff; border-radius: 6px; padding: 0.35rem 0.85rem; font-size: 0.82rem; cursor: pointer; font-weight: 600; font-family: inherit; }
+  .btn:hover { background: var(--deep); border-color: var(--deep); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--deep); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--ice); }
+  .btn-danger-ghost { background: transparent; color: var(--danger); border-color: var(--danger-border); }
+  .btn-danger-ghost:hover { background: var(--danger-bg); }
+  .form-error { color: var(--danger); font-size: 0.78rem; }
+  .badge-new { display: inline-block; background: var(--deep); color: #fff; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; border-radius: 3px; padding: 0.05rem 0.35rem; margin-left: 0.4rem; vertical-align: middle; }
+
+  /* group cards */
+  .group-cards { display: flex; flex-direction: column; gap: 0.9rem; margin: 0.75rem 0 1.5rem; }
+  .group-card { border: 1px solid var(--border); border-radius: 8px; padding: 1rem; background: var(--bg); }
+  .group-card-edit { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.6rem; }
+  .group-card-edit input[type=text] { border: 1px solid var(--border); border-radius: 5px; padding: 0.4rem 0.6rem; font-size: 0.85rem; background: var(--bg); color: var(--fg); width: 100%; font-family: inherit; }
+  .group-name-input { font-weight: 600; font-size: 0.95rem; }
+  .group-meta-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+  .group-meta-row code { color: var(--muted); font-size: 0.82rem; }
+  .group-count { font-size: 0.76rem; color: var(--muted); background: var(--ice); border-radius: 4px; padding: 0.1rem 0.5rem; }
+  .group-perm-picker { display: flex; flex-direction: column; gap: 0.15rem; max-height: 260px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem 0.8rem; background: var(--ice); }
+  .group-perm-module { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 0.5rem 0 0.15rem; }
+  .group-perm-module:first-child { margin-top: 0; }
+  .group-perm-row { display: flex; align-items: center; gap: 0.4rem; font-size: 0.83rem; padding: 0.1rem 0; cursor: pointer; }
+  .group-perm-row code { font-size: 0.78rem; }
+  .add-group-card { border: 1.5px dashed var(--border); }
+  .add-group-form { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .add-group-form input[type=text] { border: 1px solid var(--border); border-radius: 5px; padding: 0.35rem 0.6rem; font-size: 0.84rem; background: var(--bg); color: var(--fg); font-family: inherit; }
+  .add-group-form input[name=name] { width: 12rem; }
+  .add-group-form input[name=description] { width: 20rem; }
 
   /* sortable table */
   table.sortable th { cursor: pointer; user-select: none; }
@@ -74,15 +110,27 @@
   table.sortable th[aria-sort="descending"]::after { content: '\25BC'; }
   .role-count { font-weight: 700; color: var(--deep); }
   .role-chips { margin-top: 0.2rem; }
+
+  /* changes bar */
+  .changes-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--ice); border-top: 1px solid var(--border); padding: 0.7rem 1.5rem; }
+  .changes-bar-inner { max-width: 980px; margin: 0 auto; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .changes-count { font-weight: 700; color: var(--deep); font-size: 0.85rem; }
+  .changes-count.is-zero { color: var(--muted); font-weight: 600; }
+  .changes-bar .spacer { flex: 1 1 auto; }
+  .changes-bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>EQ Suite — Security Groups &amp; Permission Model</h1>
-    <div class="meta">Canonical model &middot; @eq-solutions/roles v2.5.8 &middot; generated 2026-08-13</div>
+    <div class="meta">Canonical model &middot; @eq-solutions/roles v2.5.8 &middot; generated 2026-08-14 &middot; interactive sandbox</div>
   </header>
 
+  
+    <div class="sandbox-note">
+      <strong>This page is an interactive sandbox.</strong> Tick a box to grant or revoke a permission, use <em>+ Add permission</em> to try a new key in any area, or edit/add security groups below. Everything stays in this browser (saved to local storage on this device only) until you export it — nothing here is sent anywhere or written back to <code>roles.json</code>. Use <em>Export changes</em> to download a JSON diff you can review and apply by hand through the repo's normal versioned change process.
+    </div>
   
     <figure class="flow-figure">
       <figcaption class="lede">How access is resolved, end to end — a user's effective permission set is their base role's grants unioned with any security group(s) they've been added to, checked module-by-module at the point of action.</figcaption>
@@ -111,7 +159,7 @@
   
     <section>
       <h2>1. Roles</h2>
-      <p class="lede">The 6-tier role enum. No inheritance — every grant below is explicit.</p>
+      <p class="lede">The 6-tier role enum. No inheritance — every grant below is explicit. Roles themselves aren't editable in this sandbox; only permission grants and security groups are.</p>
       <table>
         <thead><tr><th>Role</th><th>Rank</th><th>Description</th></tr></thead>
         <tbody>
@@ -150,651 +198,412 @@
   
     <section>
       <h2>2. Permission matrix</h2>
-      <p class="lede">Every permission key, grouped by module, with which roles hold it by default. &#10003; = granted.</p>
-      
-      <h3>Admin (Shell)</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>admin.list_users</code><div class="perm-label">View users</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>admin.invite_user</code><div class="perm-label">Invite users</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>admin.edit_user</code><div class="perm-label">Edit users</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>admin.deactivate_user</code><div class="perm-label">Deactivate users</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>admin.review_cards</code><div class="perm-label">Review onboarding</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>admin.manage_groups</code><div class="perm-label">Manage access groups</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Audit</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>audit.view</code><div class="perm-label">View activity log</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>audit.rollback</code><div class="perm-label">Undo changes</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Records (Entity)</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>entity.view</code><div class="perm-label">View records</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>entity.view_pii</code><div class="perm-label">See personal details</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>entity.create</code><div class="perm-label">Add records</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>entity.edit</code><div class="perm-label">Edit records</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>entity.delete</code><div class="perm-label">Delete records</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>entity.manage_activation</code><div class="perm-label">Manage Field/Service activation</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Intake</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>intake.view</code><div class="perm-label">View imports</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>intake.import</code><div class="perm-label">Start an import</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>intake.commit</code><div class="perm-label">Confirm an import</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Equipment</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>equipment.view</code><div class="perm-label">View equipment</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>equipment.edit</code><div class="perm-label">Edit equipment</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Reports</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>reports.view</code><div class="perm-label">View reports</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>reports.view_financial</code><div class="perm-label">See financial reports</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>reports.upload</code><div class="perm-label">Upload reports</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>reports.generate_briefing</code><div class="perm-label">Generate AI briefing</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Cards</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>cards.view</code><div class="perm-label">Open Cards</div><div class="deprecated">Deprecated — Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check.</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>cards.onboard</code><div class="perm-label">Submit onboarding</div><div class="deprecated">Deprecated — Duplicates admin.review_cards (the real employer-side &#39;review Cards onboarding&#39; gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards.</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Service (CMMS)</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>service.view</code><div class="perm-label">View maintenance</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>service.view_commercials</code><div class="perm-label">See job pricing</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>service.create</code><div class="perm-label">Raise work orders</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>service.close</code><div class="perm-label">Close work orders</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>service.reopen</code><div class="perm-label">Reopen a work order</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>service.record_tests</code><div class="perm-label">Log calibration results</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Field</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>field.view</code><div class="perm-label">View field resources</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.view_hours</code><div class="perm-label">See timesheets &amp; hours</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.view_licences</code><div class="perm-label">See worker licences</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.view_rates</code><div class="perm-label">See charge rates</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.dispatch</code><div class="perm-label">Dispatch staff</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.manage_roster</code><div class="perm-label">Build &amp; edit the roster</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.manage_licences</code><div class="perm-label">Manage worker licences</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.manage_labour_hire</code><div class="perm-label">Manage labour-hire companies</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>field.manage_people</code><div class="perm-label">Add / remove / edit workers</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Quotes</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>quotes.view</code><div class="perm-label">View quotes</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>quotes.create</code><div class="perm-label">Create quotes</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>quotes.approve</code><div class="perm-label">Approve quotes</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
-      <h3>Ops</h3>
-      <table class="matrix">
-        <thead><tr><th>Permission</th><th class="rot">Manager</th><th class="rot">Supervisor</th><th class="rot">Employee</th><th class="rot">Apprentice</th><th class="rot">Labour Hire</th><th class="rot">Subcontractor</th></tr></thead>
-        <tbody>
-      <tr>
-        <td class="perm-name"><code>ops.view_rates</code><div class="perm-label">View labour hire rates</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>ops.view_margins</code><div class="perm-label">See cost &amp; margin</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>ops.manage_rates</code><div class="perm-label">Manage labour hire rates</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>ops.create_job</code><div class="perm-label">Convert quote to a job</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>ops.view_suppliers</code><div class="perm-label">View suppliers directory</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>ops.manage_suppliers</code><div class="perm-label">Manage suppliers directory</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr>
-      <tr>
-        <td class="perm-name"><code>ops.view_supplier_credentials</code><div class="perm-label">See supplier login/password</div></td>
-        <td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"><span class="grant-yes">&#10003;</span></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td><td class="grant-cell"></td>
-      </tr></tbody>
-      </table>
+      <p class="lede">Every permission key, grouped by area, with which roles hold it. &#10003; = granted. Toggle a box to change a grant, or use the row's &times; to remove that permission entirely.</p>
+      <div class="controls-row">
+        <input type="search" id="perm-search" class="search-input" placeholder="Filter permissions by key or label&hellip;" aria-label="Filter permissions">
+      </div>
+      <div id="matrix-root"></div>
     </section>
   
     <section>
       <h2>3. All permissions</h2>
-      <p class="lede">Every permission key in one flat table, independent of module grouping. Click a column header to sort; click again to reverse.</p>
-      <table class="sortable" id="all-perms">
-        <thead>
-          <tr>
-            <th data-type="text">Permission</th>
-            <th data-type="text">Module</th>
-            <th data-type="number">Roles granted</th>
-            <th data-type="text">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-      <tr>
-        <td data-sort="admin.deactivate_user"><code>admin.deactivate_user</code><div class="perm-label">Deactivate users</div></td>
-        <td data-sort="Admin (Shell)">Admin (Shell)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="admin.edit_user"><code>admin.edit_user</code><div class="perm-label">Edit users</div></td>
-        <td data-sort="Admin (Shell)">Admin (Shell)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="admin.invite_user"><code>admin.invite_user</code><div class="perm-label">Invite users</div></td>
-        <td data-sort="Admin (Shell)">Admin (Shell)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="admin.list_users"><code>admin.list_users</code><div class="perm-label">View users</div></td>
-        <td data-sort="Admin (Shell)">Admin (Shell)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="admin.manage_groups"><code>admin.manage_groups</code><div class="perm-label">Manage access groups</div></td>
-        <td data-sort="Admin (Shell)">Admin (Shell)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="admin.review_cards"><code>admin.review_cards</code><div class="perm-label">Review onboarding</div></td>
-        <td data-sort="Admin (Shell)">Admin (Shell)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="audit.rollback"><code>audit.rollback</code><div class="perm-label">Undo changes</div></td>
-        <td data-sort="Audit">Audit</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="audit.view"><code>audit.view</code><div class="perm-label">View activity log</div></td>
-        <td data-sort="Audit">Audit</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="cards.onboard"><code>cards.onboard</code><div class="perm-label">Submit onboarding</div><div class="deprecated">Deprecated — Duplicates admin.review_cards (the real employer-side &#39;review Cards onboarding&#39; gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards.</div></td>
-        <td data-sort="Cards">Cards</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Deprecated">Deprecated</td>
-      </tr>
-      <tr>
-        <td data-sort="cards.view"><code>cards.view</code><div class="perm-label">Open Cards</div><div class="deprecated">Deprecated — Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check.</div></td>
-        <td data-sort="Cards">Cards</td>
-        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
-        <td data-sort="Deprecated">Deprecated</td>
-      </tr>
-      <tr>
-        <td data-sort="entity.create"><code>entity.create</code><div class="perm-label">Add records</div></td>
-        <td data-sort="Records (Entity)">Records (Entity)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="entity.delete"><code>entity.delete</code><div class="perm-label">Delete records</div></td>
-        <td data-sort="Records (Entity)">Records (Entity)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="entity.edit"><code>entity.edit</code><div class="perm-label">Edit records</div></td>
-        <td data-sort="Records (Entity)">Records (Entity)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="entity.manage_activation"><code>entity.manage_activation</code><div class="perm-label">Manage Field/Service activation</div></td>
-        <td data-sort="Records (Entity)">Records (Entity)</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="entity.view"><code>entity.view</code><div class="perm-label">View records</div></td>
-        <td data-sort="Records (Entity)">Records (Entity)</td>
-        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="entity.view_pii"><code>entity.view_pii</code><div class="perm-label">See personal details</div></td>
-        <td data-sort="Records (Entity)">Records (Entity)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="equipment.edit"><code>equipment.edit</code><div class="perm-label">Edit equipment</div></td>
-        <td data-sort="Equipment">Equipment</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="equipment.view"><code>equipment.view</code><div class="perm-label">View equipment</div></td>
-        <td data-sort="Equipment">Equipment</td>
-        <td data-sort="5"><span class="role-count">5</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code> <code class="perm-chip">Labour Hire</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.dispatch"><code>field.dispatch</code><div class="perm-label">Dispatch staff</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.manage_labour_hire"><code>field.manage_labour_hire</code><div class="perm-label">Manage labour-hire companies</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.manage_licences"><code>field.manage_licences</code><div class="perm-label">Manage worker licences</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.manage_people"><code>field.manage_people</code><div class="perm-label">Add / remove / edit workers</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.manage_roster"><code>field.manage_roster</code><div class="perm-label">Build &amp; edit the roster</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.view"><code>field.view</code><div class="perm-label">View field resources</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="6"><span class="role-count">6</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code> <code class="perm-chip">Labour Hire</code> <code class="perm-chip">Subcontractor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.view_hours"><code>field.view_hours</code><div class="perm-label">See timesheets &amp; hours</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.view_licences"><code>field.view_licences</code><div class="perm-label">See worker licences</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="field.view_rates"><code>field.view_rates</code><div class="perm-label">See charge rates</div></td>
-        <td data-sort="Field">Field</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="intake.commit"><code>intake.commit</code><div class="perm-label">Confirm an import</div></td>
-        <td data-sort="Intake">Intake</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="intake.import"><code>intake.import</code><div class="perm-label">Start an import</div></td>
-        <td data-sort="Intake">Intake</td>
-        <td data-sort="3"><span class="role-count">3</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="intake.view"><code>intake.view</code><div class="perm-label">View imports</div></td>
-        <td data-sort="Intake">Intake</td>
-        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.create_job"><code>ops.create_job</code><div class="perm-label">Convert quote to a job</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.manage_rates"><code>ops.manage_rates</code><div class="perm-label">Manage labour hire rates</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.manage_suppliers"><code>ops.manage_suppliers</code><div class="perm-label">Manage suppliers directory</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.view_margins"><code>ops.view_margins</code><div class="perm-label">See cost &amp; margin</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.view_rates"><code>ops.view_rates</code><div class="perm-label">View labour hire rates</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.view_supplier_credentials"><code>ops.view_supplier_credentials</code><div class="perm-label">See supplier login/password</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="ops.view_suppliers"><code>ops.view_suppliers</code><div class="perm-label">View suppliers directory</div></td>
-        <td data-sort="Ops">Ops</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="quotes.approve"><code>quotes.approve</code><div class="perm-label">Approve quotes</div></td>
-        <td data-sort="Quotes">Quotes</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="quotes.create"><code>quotes.create</code><div class="perm-label">Create quotes</div></td>
-        <td data-sort="Quotes">Quotes</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="quotes.view"><code>quotes.view</code><div class="perm-label">View quotes</div></td>
-        <td data-sort="Quotes">Quotes</td>
-        <td data-sort="3"><span class="role-count">3</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="reports.generate_briefing"><code>reports.generate_briefing</code><div class="perm-label">Generate AI briefing</div></td>
-        <td data-sort="Reports">Reports</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="reports.upload"><code>reports.upload</code><div class="perm-label">Upload reports</div></td>
-        <td data-sort="Reports">Reports</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="reports.view"><code>reports.view</code><div class="perm-label">View reports</div></td>
-        <td data-sort="Reports">Reports</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="reports.view_financial"><code>reports.view_financial</code><div class="perm-label">See financial reports</div></td>
-        <td data-sort="Reports">Reports</td>
-        <td data-sort="1"><span class="role-count">1</span><div class="role-chips"><code class="perm-chip">Manager</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="service.close"><code>service.close</code><div class="perm-label">Close work orders</div></td>
-        <td data-sort="Service (CMMS)">Service (CMMS)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="service.create"><code>service.create</code><div class="perm-label">Raise work orders</div></td>
-        <td data-sort="Service (CMMS)">Service (CMMS)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="service.record_tests"><code>service.record_tests</code><div class="perm-label">Log calibration results</div></td>
-        <td data-sort="Service (CMMS)">Service (CMMS)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="service.reopen"><code>service.reopen</code><div class="perm-label">Reopen a work order</div></td>
-        <td data-sort="Service (CMMS)">Service (CMMS)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="service.view"><code>service.view</code><div class="perm-label">View maintenance</div></td>
-        <td data-sort="Service (CMMS)">Service (CMMS)</td>
-        <td data-sort="4"><span class="role-count">4</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code> <code class="perm-chip">Employee</code> <code class="perm-chip">Apprentice</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr>
-      <tr>
-        <td data-sort="service.view_commercials"><code>service.view_commercials</code><div class="perm-label">See job pricing</div></td>
-        <td data-sort="Service (CMMS)">Service (CMMS)</td>
-        <td data-sort="2"><span class="role-count">2</span><div class="role-chips"><code class="perm-chip">Manager</code> <code class="perm-chip">Supervisor</code></div></td>
-        <td data-sort="Active">Active</td>
-      </tr></tbody>
-      </table>
+      <p class="lede">Every permission key in one flat table, independent of area grouping, reflecting your current sandbox state. Click a column header to sort; click again to reverse.</p>
+      <div id="allperms-root"></div>
     </section>
   
     <section>
       <h2>4. Default security groups</h2>
-      <p class="lede">Named bundles of <em>extra</em> permission keys, additive on top of a user's base role — not a role themselves. A fresh tenant starts with zero groups; these are the canonical starter templates eq-shell seeds on tenant creation.</p>
-      <div class="group-cards">
-      <details class="group-card" open>
-        <summary>
-          <span class="role-name">Equipment editors</span>
-          <code>equipment_editors</code>
-          <span class="group-count">2 grants</span>
-        </summary>
-        <div class="group-body">
-          <p>Edit the plant &amp; equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.</p>
-          <div class="group-perms"><code class="perm-chip" title="Equipment">equipment.view</code> <code class="perm-chip" title="Equipment">equipment.edit</code></div>
-        </div>
-      </details>
-      <details class="group-card">
-        <summary>
-          <span class="role-name">Report viewers</span>
-          <code>report_viewers</code>
-          <span class="group-count">1 grant</span>
-        </summary>
-        <div class="group-body">
-          <p>View GM reports without being made a manager. Add supervisors or leads here who need to read reports.</p>
-          <div class="group-perms"><code class="perm-chip" title="Reports">reports.view</code></div>
-        </div>
-      </details>
-      <details class="group-card">
-        <summary>
-          <span class="role-name">Project Managers</span>
-          <code>project_managers</code>
-          <span class="group-count">4 grants</span>
-        </summary>
-        <div class="group-body">
-          <p>Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.</p>
-          <div class="group-perms"><code class="perm-chip" title="Admin (Shell)">admin.list_users</code> <code class="perm-chip" title="Admin (Shell)">admin.edit_user</code> <code class="perm-chip" title="Admin (Shell)">admin.review_cards</code> <code class="perm-chip" title="Audit">audit.view</code></div>
-        </div>
-      </details></div>
+      <p class="lede">Named bundles of <em>extra</em> permission keys, additive on top of a user's base role — not a role themselves. A fresh tenant starts with zero groups; these are the canonical starter templates eq-shell seeds on tenant creation. Edit a card's name, description, or grants, remove one, or add a new bundle below.</p>
+      <div id="groups-root"></div>
     </section>
 
   <div class="scope-note">
-    <strong>Scope of this document:</strong> the canonical model only — the 6 roles, the full permission matrix, and the 3 default security-group templates, as defined in <code>eq-roles</code>. It does <strong>not</strong> include live, per-tenant group membership or tenant-specific (non-default) groups — those are created and managed per tenant in eq-shell's Access Control page (<code>admin.manage_groups</code>) and are not exported here.
+    <strong>Scope of this document:</strong> the canonical model only — the 6 roles, the full permission matrix, and the default security-group templates, as defined in <code>eq-roles</code>. Changes you make on this page are local to your browser and exploratory only; they do <strong>not</strong> touch live, per-tenant group membership or tenant-specific (non-default) groups — those are created and managed per tenant in eq-shell's <a href="https://core.eq.solutions/sks/admin/access-control" target="_blank" rel="noopener">Access Control page</a> (<code>admin.manage_groups</code>).
   </div>
 
-  <footer>Generated by <code>scripts/export-security-groups.mjs</code> from <code>roles.json</code>. Re-run after any <code>roles/model.json</code> change to keep this current.</footer>
+  <footer>Generated by <code>scripts/export-security-groups.mjs</code> from <code>roles.json</code>. Re-run after any <code>roles/model.json</code> change to keep the canonical baseline current — your sandbox edits live only in this browser's local storage.</footer>
 </div>
+<div class="changes-bar" id="changes-bar"></div>
+<script type="application/json" id="eq-canonical-data">{"version":"2.5.8","generated":true,"roles":[{"key":"manager","label":"Manager","rank":1,"description":"Full admin — user management, audit view + rollback, every module action."},{"key":"supervisor","label":"Supervisor","rank":2,"description":"Audit view, intake commit, equipment edit. No user management."},{"key":"employee","label":"Employee","rank":3,"description":"Intake view + import, equipment view. No commit, no admin."},{"key":"apprentice","label":"Apprentice","rank":4,"description":"Read-mostly — intake + equipment view."},{"key":"labour_hire","label":"Labour Hire","rank":5,"description":"Minimal — own roster / timesheet only (no shell permissions today)."},{"key":"subcontractor","label":"Subcontractor","rank":6,"description":"External trade engaged for a job, not an agency worker. Minimal — same baseline as labour_hire."}],"roleKeys":["manager","supervisor","employee","apprentice","labour_hire","subcontractor"],"tiers":["trial","standard","advanced","enterprise"],"platformAdmin":{"field":"is_platform_admin","effect":"Orthogonal to role. When true, can() short-circuits to true for every permission across every tenant. EQ-internal staff only (single audit point for cross-tenant power)."},"modules":["admin","audit","entity","intake","equipment","reports","cards","service","field","quotes","ops"],"permissions":[{"key":"admin.list_users","module":"admin","label":"View users","description":"List tenant users.","roles":["manager"]},{"key":"admin.invite_user","module":"admin","label":"Invite users","description":"Invite a new user to the tenant.","roles":["manager"]},{"key":"admin.edit_user","module":"admin","label":"Edit users","description":"Edit a user's role / details.","roles":["manager"]},{"key":"admin.deactivate_user","module":"admin","label":"Deactivate users","description":"Deactivate a user.","roles":["manager"]},{"key":"admin.review_cards","module":"admin","label":"Review onboarding","description":"Review Cards onboarding submissions.","roles":["manager"]},{"key":"admin.manage_groups","module":"admin","label":"Manage access groups","description":"Create and manage security groups + membership.","roles":["manager"]},{"key":"audit.view","module":"audit","label":"View activity log","description":"View the audit log.","roles":["manager","supervisor"]},{"key":"audit.rollback","module":"audit","label":"Undo changes","description":"Roll back an audited change.","roles":["manager"]},{"key":"entity.view","module":"entity","label":"View records","description":"View canonical records (customers, sites, contacts, assets).","roles":["manager","supervisor","employee","apprentice"]},{"key":"entity.view_pii","module":"entity","label":"See personal details","description":"See a record's personal / contact details (phone, DOB, emergency contact). Split out of entity.view so seeing a record no longer implies seeing its PII. Manager + supervisor only (2026-07-16 access-model cluster 1).","roles":["manager","supervisor"]},{"key":"entity.create","module":"entity","label":"Add records","description":"Create a new canonical record.","roles":["manager"]},{"key":"entity.edit","module":"entity","label":"Edit records","description":"Edit an existing canonical record.","roles":["manager","supervisor"]},{"key":"entity.delete","module":"entity","label":"Delete records","description":"Delete a canonical record (hard delete, manager-only).","roles":["manager"]},{"key":"entity.manage_activation","module":"entity","label":"Manage Field/Service activation","description":"Toggle whether a site or customer record is active in Field / Service.","roles":["manager"]},{"key":"intake.view","module":"intake","label":"View imports","description":"See the Intake surface.","roles":["manager","supervisor","employee","apprentice"]},{"key":"intake.import","module":"intake","label":"Start an import","description":"Initiate an import (drop file, map, validate).","roles":["manager","supervisor","employee"]},{"key":"intake.commit","module":"intake","label":"Confirm an import","description":"Commit a validated batch to canonical (destructive).","roles":["manager","supervisor"]},{"key":"equipment.view","module":"equipment","label":"View equipment","description":"See the Plant & Equipment list + calibration.","roles":["manager","supervisor","employee","apprentice","labour_hire"]},{"key":"equipment.edit","module":"equipment","label":"Edit equipment","description":"Add / edit equipment + calibration fields.","roles":["manager","supervisor"]},{"key":"reports.view","module":"reports","label":"View reports","description":"View GM reports.","roles":["manager"]},{"key":"reports.view_financial","module":"reports","label":"See financial reports","description":"See GM / financial reports. Manager only — supervisors have no Reports base grant, so a financial sub-read would dangle (2026-07-16 access-model cluster 1).","roles":["manager"]},{"key":"reports.upload","module":"reports","label":"Upload reports","description":"Upload a source report.","roles":["manager"]},{"key":"reports.generate_briefing","module":"reports","label":"Generate AI briefing","description":"Generate the AI briefing.","roles":["manager"]},{"key":"cards.view","module":"cards","label":"Open Cards","description":"Access the Cards onboarding surface.","roles":["manager","supervisor","employee","apprentice"],"deprecated":"Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check."},{"key":"cards.onboard","module":"cards","label":"Submit onboarding","description":"Submit or manage an onboarding card.","roles":["manager","supervisor"],"deprecated":"Duplicates admin.review_cards (the real employer-side 'review Cards onboarding' gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards."},{"key":"service.view","module":"service","label":"View maintenance","description":"View the Service CMMS (work orders, defects, PPM).","roles":["manager","supervisor","employee","apprentice"]},{"key":"service.view_commercials","module":"service","label":"See job pricing","description":"See job pricing / contract value on a work order. Split out of service.view. Manager + supervisor only (2026-07-16 access-model cluster 1).","roles":["manager","supervisor"]},{"key":"service.create","module":"service","label":"Raise work orders","description":"Create a work order or defect.","roles":["manager","supervisor"]},{"key":"service.close","module":"service","label":"Close work orders","description":"Close / resolve a work order.","roles":["manager","supervisor"]},{"key":"service.reopen","module":"service","label":"Reopen a work order","description":"Reopen a closed work order. Irreversible-adjacent verb, kept with a named few so the audit log reads clean (2026-07-17 access-model cluster 3).","roles":["manager","supervisor"]},{"key":"service.record_tests","module":"service","label":"Log calibration results","description":"Log calibration / test results against an asset. Matches equipment.edit's manager+supervisor tier (2026-07-17 access-model cluster 3).","roles":["manager","supervisor"]},{"key":"field.view","module":"field","label":"View field resources","description":"View Field resources — staff, licences, availability, assignments.","roles":["manager","supervisor","employee","apprentice","labour_hire","subcontractor"]},{"key":"field.view_hours","module":"field","label":"See timesheets & hours","description":"See worker timesheets / hours (pay-adjacent). Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).","roles":["manager","supervisor"]},{"key":"field.view_licences","module":"field","label":"See worker licences","description":"See worker licences & compliance status. Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).","roles":["manager","supervisor"]},{"key":"field.view_rates","module":"field","label":"See charge rates","description":"See labour-hire / charge rates (commercial). Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).","roles":["manager","supervisor"]},{"key":"field.dispatch","module":"field","label":"Dispatch staff","description":"Dispatch staff to jobs / shifts.","roles":["manager","supervisor"]},{"key":"field.manage_roster","module":"field","label":"Build & edit the roster","description":"Build and edit the crew roster. A distinct owner from day-to-day dispatch (2026-07-17 access-model cluster 3).","roles":["manager","supervisor"]},{"key":"field.manage_licences","module":"field","label":"Manage worker licences","description":"Add / verify worker licences and compliance records. Sign-off action, matches field.view_licences' tier (2026-07-17 access-model cluster 3).","roles":["manager","supervisor"]},{"key":"field.manage_labour_hire","module":"field","label":"Manage labour-hire companies","description":"Manage labour-hire companies & their charge rates. Commercially sensitive, matches ops.manage_rates' tier (2026-07-17 access-model cluster 3).","roles":["manager","supervisor"]},{"key":"field.manage_people","module":"field","label":"Add / remove / edit workers","description":"Add, edit, remove, restore, or permanently delete a worker record, and manage their PIN. Distinct owner from field.view/view_licences, matches field.manage_roster's manager+supervisor tier — preserves the coarse isManager-gated behaviour these actions had in Field before Phase 3 (2026-07-26 access-model Phase 3 guardrails).","roles":["manager","supervisor"]},{"key":"quotes.view","module":"quotes","label":"View quotes","description":"View quotes.","roles":["manager","supervisor","employee"]},{"key":"quotes.create","module":"quotes","label":"Create quotes","description":"Create or edit a quote.","roles":["manager","supervisor"]},{"key":"quotes.approve","module":"quotes","label":"Approve quotes","description":"Approve and send a quote.","roles":["manager"]},{"key":"ops.view_rates","module":"ops","label":"View labour hire rates","description":"View labour hire cost rate cards. Commercially sensitive — manager + supervisor (project management) only.","roles":["manager","supervisor"]},{"key":"ops.view_margins","module":"ops","label":"See cost & margin","description":"See cost and margin on a quote / job. Split out of quotes.view. Manager + supervisor only (2026-07-16 access-model cluster 1).","roles":["manager","supervisor"]},{"key":"ops.manage_rates","module":"ops","label":"Manage labour hire rates","description":"Import, edit, or manually adjust labour hire cost rate cards.","roles":["manager","supervisor"]},{"key":"ops.create_job","module":"ops","label":"Convert quote to a job","description":"Convert an approved quote into a numbered job. A commitment gate, matches quotes.create's tier (job numbers are manual/Smartsheet, never auto-generated) (2026-07-17 access-model cluster 3).","roles":["manager","supervisor"]},{"key":"ops.view_suppliers","module":"ops","label":"View suppliers directory","description":"View the trade suppliers/wholesalers/hire companies directory. Matches ops.view_rates' tier (2026-07-26 access-model Phase 3). Promotes a key eq-shell's own client matrix already declared but the package didn't yet have — see suppliers-mutate.ts.","roles":["manager","supervisor"]},{"key":"ops.manage_suppliers","module":"ops","label":"Manage suppliers directory","description":"Add / edit / delete suppliers directory entries. Was reusing ops.manage_rates as an interim server-side gate until this key existed in the package (2026-07-26 access-model Phase 3).","roles":["manager","supervisor"]},{"key":"ops.view_supplier_credentials","module":"ops","label":"See supplier login/password","description":"See the login/password stored against a supplier directory entry. Split out of ops.view_suppliers so viewing the directory no longer implies seeing stored credentials — matches entity.view_pii/field.view_hours' split-permission pattern (2026-07-27). Replaces a hardcoded manager/supervisor/platform-admin check in eq-shell's eq_list_suppliers RPC that predated this key existing.","roles":["manager","supervisor"]}],"matrix":{"manager":["admin.list_users","admin.invite_user","admin.edit_user","admin.deactivate_user","admin.review_cards","admin.manage_groups","audit.view","audit.rollback","entity.view","entity.view_pii","entity.create","entity.edit","entity.delete","entity.manage_activation","intake.view","intake.import","intake.commit","equipment.view","equipment.edit","reports.view","reports.view_financial","reports.upload","reports.generate_briefing","cards.view","cards.onboard","service.view","service.view_commercials","service.create","service.close","service.reopen","service.record_tests","field.view","field.view_hours","field.view_licences","field.view_rates","field.dispatch","field.manage_roster","field.manage_licences","field.manage_labour_hire","field.manage_people","quotes.view","quotes.create","quotes.approve","ops.view_rates","ops.view_margins","ops.manage_rates","ops.create_job","ops.view_suppliers","ops.manage_suppliers","ops.view_supplier_credentials"],"supervisor":["audit.view","entity.view","entity.view_pii","entity.edit","intake.view","intake.import","intake.commit","equipment.view","equipment.edit","cards.view","cards.onboard","service.view","service.view_commercials","service.create","service.close","service.reopen","service.record_tests","field.view","field.view_hours","field.view_licences","field.view_rates","field.dispatch","field.manage_roster","field.manage_licences","field.manage_labour_hire","field.manage_people","quotes.view","quotes.create","ops.view_rates","ops.view_margins","ops.manage_rates","ops.create_job","ops.view_suppliers","ops.manage_suppliers","ops.view_supplier_credentials"],"employee":["entity.view","intake.view","intake.import","equipment.view","cards.view","service.view","field.view","quotes.view"],"apprentice":["entity.view","intake.view","equipment.view","cards.view","service.view","field.view"],"labour_hire":["equipment.view","field.view"],"subcontractor":["field.view"]},"roleAliases":{"service":{"super_admin":"manager","admin":"manager","supervisor":"supervisor","technician":"employee","read_only":"apprentice"}},"defaultGroups":[{"key":"equipment_editors","name":"Equipment editors","description":"Edit the plant & equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.","perms":["equipment.view","equipment.edit"]},{"key":"report_viewers","name":"Report viewers","description":"View GM reports without being made a manager. Add supervisors or leads here who need to read reports.","perms":["reports.view"]},{"key":"project_managers","name":"Project Managers","description":"Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.","perms":["admin.list_users","admin.edit_user","admin.review_cards","audit.view"]}]}</script>
 <script>
 (function () {
-  document.querySelectorAll('table.sortable').forEach(function (table) {
-    var thead = table.tHead, tbody = table.tBodies[0];
-    if (!thead || !tbody) return;
-    Array.prototype.forEach.call(thead.querySelectorAll('th'), function (th) {
-      th.addEventListener('click', function () {
-        var type = th.dataset.type || 'text';
-        var dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
-        Array.prototype.forEach.call(thead.querySelectorAll('th'), function (h) { h.removeAttribute('aria-sort'); });
-        th.setAttribute('aria-sort', dir);
-        var mult = dir === 'ascending' ? 1 : -1;
-        var idx = th.cellIndex;
-        var rows = Array.prototype.slice.call(tbody.rows);
-        rows.sort(function (ra, rb) {
-          var ca = ra.cells[idx], cb = rb.cells[idx];
-          var av = ca.dataset.sort != null ? ca.dataset.sort : ca.textContent.trim();
-          var bv = cb.dataset.sort != null ? cb.dataset.sort : cb.textContent.trim();
-          if (type === 'number') return (parseFloat(av) - parseFloat(bv)) * mult;
-          return av.localeCompare(bv, undefined, { sensitivity: 'base', numeric: true }) * mult;
-        });
-        rows.forEach(function (r) { tbody.appendChild(r); });
-      });
+  'use strict';
+  var canonical = JSON.parse(document.getElementById('eq-canonical-data').textContent);
+  var STORAGE_KEY = 'eq-secgroups-sandbox-v' + canonical.version;
+  var MODULE_LABELS = {"admin":"Admin (Shell)","audit":"Audit","entity":"Records (Entity)","intake":"Intake","equipment":"Equipment","reports":"Reports","cards":"Cards","service":"Service (CMMS)","field":"Field","quotes":"Quotes","ops":"Ops"};
+  var searchTerm = '';
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      var map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      return map[c];
     });
+  }
+
+  function slug(s) {
+    return String(s).toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  }
+
+  function cloneCanonical() {
+    return {
+      permissions: canonical.permissions.map(function (p) {
+        return { key: p.key, module: p.module, label: p.label, description: p.description, roles: p.roles.slice(), deprecated: p.deprecated || null };
+      }),
+      groups: canonical.defaultGroups.map(function (g) {
+        return { key: g.key, name: g.name, description: g.description, perms: g.perms.slice() };
+      })
+    };
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.permissions) && Array.isArray(parsed.groups)) return parsed;
+      }
+    } catch (e) {}
+    return cloneCanonical();
+  }
+
+  var state = loadState();
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function findPerm(key) {
+    for (var i = 0; i < state.permissions.length; i++) if (state.permissions[i].key === key) return state.permissions[i];
+    return null;
+  }
+
+  function findGroup(key) {
+    for (var i = 0; i < state.groups.length; i++) if (state.groups[i].key === key) return state.groups[i];
+    return null;
+  }
+
+  function computeDiff() {
+    var canonPermByKey = {}, i;
+    for (i = 0; i < canonical.permissions.length; i++) canonPermByKey[canonical.permissions[i].key] = canonical.permissions[i];
+    var statePermByKey = {};
+    for (i = 0; i < state.permissions.length; i++) statePermByKey[state.permissions[i].key] = state.permissions[i];
+    var canonGroupByKey = {};
+    for (i = 0; i < canonical.defaultGroups.length; i++) canonGroupByKey[canonical.defaultGroups[i].key] = canonical.defaultGroups[i];
+    var stateGroupByKey = {};
+    for (i = 0; i < state.groups.length; i++) stateGroupByKey[state.groups[i].key] = state.groups[i];
+
+    var addedPerms = state.permissions.filter(function (p) { return !canonPermByKey[p.key]; });
+    var removedPerms = canonical.permissions.filter(function (p) { return !statePermByKey[p.key]; });
+    var changedGrants = [];
+    state.permissions.forEach(function (p) {
+      var c = canonPermByKey[p.key];
+      if (!c) return;
+      var before = c.roles.slice().sort().join(',');
+      var after = p.roles.slice().sort().join(',');
+      if (before !== after) changedGrants.push({ key: p.key, before: c.roles.slice(), after: p.roles.slice() });
+    });
+
+    var addedGroups = state.groups.filter(function (g) { return !canonGroupByKey[g.key]; });
+    var removedGroups = canonical.defaultGroups.filter(function (g) { return !stateGroupByKey[g.key]; });
+    var changedGroups = [];
+    state.groups.forEach(function (g) {
+      var c = canonGroupByKey[g.key];
+      if (!c) return;
+      var permsBefore = c.perms.slice().sort().join(',');
+      var permsAfter = g.perms.slice().sort().join(',');
+      if (permsBefore !== permsAfter || c.name !== g.name || c.description !== g.description) {
+        changedGroups.push({ key: g.key, before: { name: c.name, description: c.description, perms: c.perms.slice() }, after: { name: g.name, description: g.description, perms: g.perms.slice() } });
+      }
+    });
+
+    return { addedPerms: addedPerms, removedPerms: removedPerms, changedGrants: changedGrants, addedGroups: addedGroups, removedGroups: removedGroups, changedGroups: changedGroups };
+  }
+
+  function changeCount(diff) {
+    return diff.addedPerms.length + diff.removedPerms.length + diff.changedGrants.length + diff.addedGroups.length + diff.removedGroups.length + diff.changedGroups.length;
+  }
+
+  // ---------------------------------------------------------------- matrix
+  function renderMatrix() {
+    var root = document.getElementById('matrix-root');
+    var html = '';
+    var term = searchTerm.trim().toLowerCase();
+    canonical.modules.forEach(function (moduleKey) {
+      var perms = state.permissions.filter(function (p) { return p.module === moduleKey; });
+      if (term) {
+        perms = perms.filter(function (p) { return (p.key + ' ' + p.label).toLowerCase().indexOf(term) !== -1; });
+        if (perms.length === 0) return;
+      }
+      var headerCells = canonical.roles.map(function (r) { return '<th class="rot">' + esc(r.label) + '</th>'; }).join('');
+      var rows = perms.map(function (p) {
+        var isNew = !canonical.permissions.some(function (cp) { return cp.key === p.key; });
+        var cells = canonical.roleKeys.map(function (rk) {
+          var checked = p.roles.indexOf(rk) !== -1 ? ' checked' : '';
+          return '<td class="grant-cell"><input type="checkbox" data-action="toggle-grant" data-perm="' + esc(p.key) + '" data-role="' + esc(rk) + '"' + checked + '></td>';
+        }).join('');
+        var deprecated = p.deprecated ? '<div class="deprecated">Deprecated — ' + esc(p.deprecated) + '</div>' : '';
+        var badge = isNew ? '<span class="badge-new">New</span>' : '';
+        return '<tr><td class="perm-name"><code>' + esc(p.key) + '</code>' + badge + '<div class="perm-label">' + esc(p.label) + '</div>' + deprecated + '</td>' + cells +
+          '<td class="remove-cell"><button type="button" class="icon-btn" data-action="remove-perm" data-perm="' + esc(p.key) + '" title="Remove this permission" aria-label="Remove ' + esc(p.key) + '">&times;</button></td></tr>';
+      }).join('');
+      var addRow = '<tr class="add-row"><td colspan="' + (canonical.roles.length + 2) + '">' +
+        '<form class="add-form" data-action="add-perm" data-module="' + esc(moduleKey) + '">' +
+        '<span class="add-form-prefix">' + esc(moduleKey) + '.</span>' +
+        '<input type="text" name="key" placeholder="new_key" aria-label="New permission key suffix">' +
+        '<input type="text" name="label" placeholder="Label" aria-label="New permission label">' +
+        '<button type="submit" class="btn btn-ghost">+ Add permission</button>' +
+        '<span class="form-error" data-role="error"></span>' +
+        '</form></td></tr>';
+      html += '<h3>' + esc(MODULE_LABELS[moduleKey] || moduleKey) + '</h3>' +
+        '<table class="matrix"><thead><tr><th>Permission</th>' + headerCells + '<th></th></tr></thead><tbody>' + rows + addRow + '</tbody></table>';
+    });
+    if (!html) html = '<p class="lede">No permissions match &ldquo;' + esc(searchTerm) + '&rdquo;.</p>';
+    root.innerHTML = html;
+  }
+
+  // ------------------------------------------------------------ all perms
+  var allPermsSort = { index: 0, dir: 'ascending' };
+  function allPermsRows() {
+    var canonKeys = {};
+    canonical.permissions.forEach(function (p) { canonKeys[p.key] = true; });
+    return state.permissions.slice().sort(function (a, b) { return a.key.localeCompare(b.key); }).map(function (p) {
+      var modLabel = MODULE_LABELS[p.module] || p.module;
+      var roleChips = p.roles.map(function (rk) {
+        var role = canonical.roles.filter(function (r) { return r.key === rk; })[0];
+        return '<code class="perm-chip">' + esc(role ? role.label : rk) + '</code>';
+      }).join(' ');
+      var status = p.deprecated ? 'Deprecated' : (canonKeys[p.key] ? 'Active' : 'Added');
+      var deprecatedNote = p.deprecated ? '<div class="deprecated">Deprecated — ' + esc(p.deprecated) + '</div>' : '';
+      return { key: p.key, module: modLabel, roleCount: p.roles.length, status: status,
+        html: '<tr><td data-sort="' + esc(p.key) + '"><code>' + esc(p.key) + '</code><div class="perm-label">' + esc(p.label) + '</div>' + deprecatedNote + '</td>' +
+          '<td data-sort="' + esc(modLabel) + '">' + esc(modLabel) + '</td>' +
+          '<td data-sort="' + p.roles.length + '"><span class="role-count">' + p.roles.length + '</span><div class="role-chips">' + roleChips + '</div></td>' +
+          '<td data-sort="' + esc(status) + '">' + esc(status) + '</td></tr>' };
+    });
+  }
+
+  function renderAllPerms() {
+    var root = document.getElementById('allperms-root');
+    var rows = allPermsRows();
+    var cols = ['Permission', 'Module', 'Roles granted', 'Status'];
+    var types = ['text', 'text', 'number', 'text'];
+    var head = cols.map(function (c, i) {
+      var isSorted = allPermsSort.index === i;
+      var sortAttr = isSorted ? ' aria-sort="' + allPermsSort.dir + '"' : '';
+      return '<th data-type="' + types[i] + '" data-idx="' + i + '"' + sortAttr + '>' + c + '</th>';
+    }).join('');
+    var sortedRows = sortRowsHtml(rows, allPermsSort);
+    root.innerHTML = '<table class="sortable" id="all-perms"><thead><tr>' + head + '</tr></thead><tbody>' + sortedRows + '</tbody></table>';
+  }
+
+  function sortRowsHtml(rows, sort) {
+    var idx = sort.index;
+    var mult = sort.dir === 'ascending' ? 1 : -1;
+    var type = idx === 2 ? 'number' : 'text';
+    var keyFor = function (r) { return idx === 0 ? r.key : idx === 1 ? r.module : idx === 2 ? r.roleCount : r.status; };
+    var copy = rows.slice().sort(function (ra, rb) {
+      var av = keyFor(ra), bv = keyFor(rb);
+      if (type === 'number') return (av - bv) * mult;
+      return String(av).localeCompare(String(bv), undefined, { sensitivity: 'base', numeric: true }) * mult;
+    });
+    return copy.map(function (r) { return r.html; }).join('');
+  }
+
+  // ---------------------------------------------------------------- groups
+  function renderGroups() {
+    var root = document.getElementById('groups-root');
+    var cards = state.groups.map(function (g, i) {
+      var picker = canonical.modules.map(function (moduleKey) {
+        var perms = state.permissions.filter(function (p) { return p.module === moduleKey; });
+        if (perms.length === 0) return '';
+        var rows = perms.map(function (p) {
+          var checked = g.perms.indexOf(p.key) !== -1 ? ' checked' : '';
+          return '<label class="group-perm-row"><input type="checkbox" data-action="toggle-group-perm" data-group="' + esc(g.key) + '" data-perm="' + esc(p.key) + '"' + checked + '> <code>' + esc(p.key) + '</code></label>';
+        }).join('');
+        return '<div class="group-perm-module">' + esc(MODULE_LABELS[moduleKey] || moduleKey) + '</div>' + rows;
+      }).join('');
+      return '<div class="group-card" open>' +
+        '<div class="group-card-edit">' +
+        '<input type="text" class="group-name-input" data-action="edit-group-name" data-group="' + esc(g.key) + '" value="' + esc(g.name) + '" aria-label="Group name">' +
+        '<input type="text" data-action="edit-group-desc" data-group="' + esc(g.key) + '" value="' + esc(g.description) + '" aria-label="Group description">' +
+        '</div>' +
+        '<div class="group-meta-row"><code>' + esc(g.key) + '</code><span class="group-count">' + g.perms.length + ' grant' + (g.perms.length === 1 ? '' : 's') + '</span>' +
+        '<button type="button" class="btn btn-danger-ghost" data-action="remove-group" data-group="' + esc(g.key) + '">Remove group</button></div>' +
+        '<div class="group-perm-picker">' + picker + '</div>' +
+        '</div>';
+    }).join('');
+    var addCard = '<div class="group-card add-group-card">' +
+      '<form data-action="add-group" class="add-group-form">' +
+      '<input type="text" name="name" placeholder="New group name" aria-label="New group name">' +
+      '<input type="text" name="description" placeholder="Description" aria-label="New group description">' +
+      '<button type="submit" class="btn btn-ghost">+ Add security group</button>' +
+      '<span class="form-error" data-role="error"></span>' +
+      '</form></div>';
+    root.innerHTML = '<div class="group-cards">' + cards + addCard + '</div>';
+  }
+
+  // ---------------------------------------------------------- changes bar
+  function renderChangesBar() {
+    var bar = document.getElementById('changes-bar');
+    var diff = computeDiff();
+    var n = changeCount(diff);
+    var countHtml = n === 0
+      ? '<span class="changes-count is-zero">No changes — matches the canonical model</span>'
+      : '<span class="changes-count">' + n + ' unsaved change' + (n === 1 ? '' : 's') + ' &middot; saved to this browser only</span>';
+    bar.innerHTML = '<div class="changes-bar-inner">' + countHtml +
+      '<span class="spacer"></span>' +
+      '<div class="changes-bar-actions">' +
+      '<button type="button" class="btn btn-ghost" data-action="reset-sandbox"' + (n === 0 ? ' disabled' : '') + '>Reset to canonical</button>' +
+      '<button type="button" class="btn" data-action="export-changes"' + (n === 0 ? ' disabled' : '') + '>Export changes (.json)</button>' +
+      '</div></div>';
+  }
+
+  function render() {
+    renderMatrix();
+    renderAllPerms();
+    renderGroups();
+    renderChangesBar();
+    saveState();
+  }
+
+  // -------------------------------------------------------------- actions
+  function toggleGrant(permKey, roleKey, granted) {
+    var p = findPerm(permKey);
+    if (!p) return;
+    var idx = p.roles.indexOf(roleKey);
+    if (granted && idx === -1) p.roles.push(roleKey);
+    if (!granted && idx !== -1) p.roles.splice(idx, 1);
+  }
+
+  function removePerm(permKey) {
+    state.permissions = state.permissions.filter(function (p) { return p.key !== permKey; });
+    state.groups.forEach(function (g) { g.perms = g.perms.filter(function (k) { return k !== permKey; }); });
+  }
+
+  function addPerm(moduleKey, keySuffix, label, formEl) {
+    var errEl = formEl.querySelector('[data-role=error]');
+    var suffix = slug(keySuffix);
+    if (!suffix) { errEl.textContent = 'Enter a key.'; return false; }
+    var fullKey = moduleKey + '.' + suffix;
+    if (findPerm(fullKey)) { errEl.textContent = 'That key already exists.'; return false; }
+    state.permissions.push({ key: fullKey, module: moduleKey, label: label.trim() || fullKey, description: '', roles: [], deprecated: null });
+    return true;
+  }
+
+  function removeGroup(groupKey) {
+    state.groups = state.groups.filter(function (g) { return g.key !== groupKey; });
+  }
+
+  function addGroup(name, description, formEl) {
+    var errEl = formEl.querySelector('[data-role=error]');
+    var trimmedName = name.trim();
+    if (!trimmedName) { errEl.textContent = 'Enter a name.'; return false; }
+    var key = slug(trimmedName);
+    if (findGroup(key)) { errEl.textContent = 'A group with that key already exists.'; return false; }
+    state.groups.push({ key: key, name: trimmedName, description: description.trim(), perms: [] });
+    return true;
+  }
+
+  function resetSandbox() {
+    if (!window.confirm('Discard all sandbox changes and reset to the canonical model?')) return;
+    state = cloneCanonical();
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    render();
+  }
+
+  function exportChanges() {
+    var diff = computeDiff();
+    var payload = {
+      exportedAt: new Date().toISOString(),
+      baseVersion: canonical.version,
+      summary: {
+        permissionsAdded: diff.addedPerms.length,
+        permissionsRemoved: diff.removedPerms.length,
+        grantsChanged: diff.changedGrants.length,
+        groupsAdded: diff.addedGroups.length,
+        groupsRemoved: diff.removedGroups.length,
+        groupsChanged: diff.changedGroups.length
+      },
+      addedPermissions: diff.addedPerms,
+      removedPermissions: diff.removedPerms.map(function (p) { return p.key; }),
+      changedGrants: diff.changedGrants,
+      addedGroups: diff.addedGroups,
+      removedGroups: diff.removedGroups.map(function (g) { return g.key; }),
+      changedGroups: diff.changedGroups
+    };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'eq-security-groups-changes-' + canonical.version + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  // --------------------------------------------------------------- events
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-action]') : null;
+    if (!el) return;
+    var action = el.getAttribute('data-action');
+    if (action === 'remove-perm') { removePerm(el.getAttribute('data-perm')); render(); }
+    else if (action === 'remove-group') { removeGroup(el.getAttribute('data-group')); render(); }
+    else if (action === 'reset-sandbox') { resetSandbox(); }
+    else if (action === 'export-changes') { exportChanges(); }
   });
+
+  document.addEventListener('change', function (e) {
+    var el = e.target;
+    var action = el.getAttribute && el.getAttribute('data-action');
+    if (!action) return;
+    if (action === 'toggle-grant') { toggleGrant(el.getAttribute('data-perm'), el.getAttribute('data-role'), el.checked); render(); }
+    else if (action === 'toggle-group-perm') {
+      var g = findGroup(el.getAttribute('data-group'));
+      if (!g) return;
+      var pk = el.getAttribute('data-perm');
+      var idx = g.perms.indexOf(pk);
+      if (el.checked && idx === -1) g.perms.push(pk);
+      if (!el.checked && idx !== -1) g.perms.splice(idx, 1);
+      render();
+    }
+    else if (action === 'edit-group-name') { var gn = findGroup(el.getAttribute('data-group')); if (gn) { gn.name = el.value; renderChangesBar(); saveState(); } }
+    else if (action === 'edit-group-desc') { var gd = findGroup(el.getAttribute('data-group')); if (gd) { gd.description = el.value; renderChangesBar(); saveState(); } }
+  });
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target;
+    var action = form.getAttribute && form.getAttribute('data-action');
+    if (!action) return;
+    e.preventDefault();
+    if (action === 'add-perm') {
+      var keyInput = form.querySelector('[name=key]');
+      var labelInput = form.querySelector('[name=label]');
+      if (addPerm(form.getAttribute('data-module'), keyInput.value, labelInput.value, form)) render();
+    } else if (action === 'add-group') {
+      var nameInput = form.querySelector('[name=name]');
+      var descInput = form.querySelector('[name=description]');
+      if (addGroup(nameInput.value, descInput.value, form)) render();
+    }
+  });
+
+  document.addEventListener('input', function (e) {
+    if (e.target && e.target.id === 'perm-search') {
+      searchTerm = e.target.value;
+      renderMatrix();
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    var th = e.target.closest ? e.target.closest('#all-perms thead th') : null;
+    if (!th) return;
+    var idx = parseInt(th.getAttribute('data-idx'), 10);
+    allPermsSort.dir = (allPermsSort.index === idx && allPermsSort.dir === 'ascending') ? 'descending' : 'ascending';
+    allPermsSort.index = idx;
+    renderAllPerms();
+  });
+
+  render();
 })();
 </script>
 </body>
