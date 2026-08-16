@@ -51,18 +51,22 @@ test('apprentice: read-mostly, no import or write', () => {
   assert.equal(can('apprentice', 'quotes.view'), false);
 });
 
-test('labour_hire: field.view + equipment.view + two suite-wide reads only', () => {
+test('labour_hire: field.view + equipment.view + documents.view only', () => {
   assert.equal(can('labour_hire', 'field.view'), true);
   // v2.5.7: promoted from a live SKS tenant_role_override — viewing equipment
   // isn't sensitive, so it applies to labour_hire everywhere (Royce's call).
   assert.equal(can('labour_hire', 'equipment.view'), true);
   assert.equal(can('labour_hire', 'equipment.edit'), false);
-  // v2.7.0: documents.view and ai.view_briefing are granted to all six roles
-  // by design — neither carries anything that needs restricting (Royce's
-  // call, permission-key-register review). Everything else stays withheld.
+  // v2.7.0: documents.view granted to all six roles by design — nothing in
+  // it needs restricting (Royce's call, permission-key-register review).
   assert.equal(can('labour_hire', 'documents.view'), true);
-  assert.equal(can('labour_hire', 'ai.view_briefing'), true);
-  const held = new Set(['field.view', 'equipment.view', 'documents.view', 'ai.view_briefing']);
+  // v2.7.0 initially granted ai.view_briefing the same way, on the assumption
+  // the daily brief carried nothing sensitive. v2.7.2 corrected that: the
+  // brief embeds named workers' licence numbers/expiry dates and quote/
+  // pipeline dollar values, so it's manager+supervisor like everything else
+  // of that shape (Royce's call once the actual content was checked).
+  assert.equal(can('labour_hire', 'ai.view_briefing'), false);
+  const held = new Set(['field.view', 'equipment.view', 'documents.view']);
   const others = PERMISSIONS.map(p => p.key).filter(k => !held.has(k));
   for (const p of others) {
     assert.equal(can('labour_hire', p), false, `labour_hire should not have ${p}`);
