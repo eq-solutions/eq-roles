@@ -1,42 +1,42 @@
 {
-  "version": "2.5.8",
+  "version": "2.6.0",
   "generated": true,
   "roles": [
     {
       "key": "manager",
       "label": "Manager",
       "rank": 1,
-      "description": "Full admin — user management, audit view + rollback, every module action."
+      "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report."
     },
     {
       "key": "supervisor",
       "label": "Supervisor",
       "rank": 2,
-      "description": "Audit view, intake commit, equipment edit. No user management."
+      "description": "Runs the day-to-day. Views and edits records, runs and confirms imports, manages workers, licences, rosters and dispatch, creates quotes, and sees cost, margin, rates and supplier logins. Cannot manage user accounts, open reports, undo changes, or delete records."
     },
     {
       "key": "employee",
       "label": "Employee",
       "rank": 3,
-      "description": "Intake view + import, equipment view. No commit, no admin."
+      "description": "Everyday staff access. Views records, quotes, maintenance, equipment and field information, and can start an import. Cannot see personal details, hours, licences, cost or margin."
     },
     {
       "key": "apprentice",
       "label": "Apprentice",
       "rank": 4,
-      "description": "Read-mostly — intake + equipment view."
+      "description": "Read-only across records, maintenance, equipment and field information. Can see imports but not start one, and cannot view quotes."
     },
     {
       "key": "labour_hire",
       "label": "Labour Hire",
       "rank": 5,
-      "description": "Minimal — own roster / timesheet only (no shell permissions today)."
+      "description": "Agency worker. Sees field information and the equipment list, nothing else."
     },
     {
       "key": "subcontractor",
       "label": "Subcontractor",
       "rank": 6,
-      "description": "External trade engaged for a job, not an agency worker. Minimal — same baseline as labour_hire."
+      "description": "External trade engaged for a job, not an agency worker. Sees field information only."
     }
   ],
   "roleKeys": [
@@ -75,7 +75,7 @@
       "key": "admin.list_users",
       "module": "admin",
       "label": "View users",
-      "description": "List tenant users.",
+      "description": "See everyone who can sign in to your organisation, with their role and status.",
       "roles": [
         "manager"
       ]
@@ -84,7 +84,7 @@
       "key": "admin.invite_user",
       "module": "admin",
       "label": "Invite users",
-      "description": "Invite a new user to the tenant.",
+      "description": "Send someone an invitation to join and set up their sign-in.",
       "roles": [
         "manager"
       ]
@@ -93,7 +93,7 @@
       "key": "admin.edit_user",
       "module": "admin",
       "label": "Edit users",
-      "description": "Edit a user's role / details.",
+      "description": "Change someone's role, name, or contact details.",
       "roles": [
         "manager"
       ]
@@ -102,7 +102,7 @@
       "key": "admin.deactivate_user",
       "module": "admin",
       "label": "Deactivate users",
-      "description": "Deactivate a user.",
+      "description": "Switch off someone’s access so they can no longer sign in. Their records are kept.",
       "roles": [
         "manager"
       ]
@@ -111,7 +111,7 @@
       "key": "admin.review_cards",
       "module": "admin",
       "label": "Review onboarding",
-      "description": "Review Cards onboarding submissions.",
+      "description": "Review and approve the details new workers submit when they join — licences, contact details, and documents.",
       "roles": [
         "manager"
       ]
@@ -120,7 +120,7 @@
       "key": "admin.manage_groups",
       "module": "admin",
       "label": "Manage access groups",
-      "description": "Create and manage security groups + membership.",
+      "description": "Create access groups and choose who belongs to them. Groups add permissions on top of someone’s role.",
       "roles": [
         "manager"
       ]
@@ -129,7 +129,7 @@
       "key": "audit.view",
       "module": "audit",
       "label": "View activity log",
-      "description": "View the audit log.",
+      "description": "See what changed, who changed it, and when.",
       "roles": [
         "manager",
         "supervisor"
@@ -139,7 +139,7 @@
       "key": "audit.rollback",
       "module": "audit",
       "label": "Undo changes",
-      "description": "Roll back an audited change.",
+      "description": "Reverse a change shown in the activity log, putting the record back as it was.",
       "roles": [
         "manager"
       ]
@@ -148,7 +148,7 @@
       "key": "entity.view",
       "module": "entity",
       "label": "View records",
-      "description": "View canonical records (customers, sites, contacts, assets).",
+      "description": "See customers, sites, contacts, and assets. Personal contact details are controlled separately.",
       "roles": [
         "manager",
         "supervisor",
@@ -160,7 +160,7 @@
       "key": "entity.view_pii",
       "module": "entity",
       "label": "See personal details",
-      "description": "See a record's personal / contact details (phone, DOB, emergency contact). Split out of entity.view so seeing a record no longer implies seeing its PII. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "description": "See someone’s phone number, date of birth, and emergency contact. Kept separate from viewing records so people can look up a customer or site without seeing personal information.",
       "roles": [
         "manager",
         "supervisor"
@@ -170,7 +170,7 @@
       "key": "entity.create",
       "module": "entity",
       "label": "Add records",
-      "description": "Create a new canonical record.",
+      "description": "Add a new customer, site, contact, or asset.",
       "roles": [
         "manager"
       ]
@@ -179,7 +179,7 @@
       "key": "entity.edit",
       "module": "entity",
       "label": "Edit records",
-      "description": "Edit an existing canonical record.",
+      "description": "Change the details on an existing customer, site, contact, or asset.",
       "roles": [
         "manager",
         "supervisor"
@@ -189,7 +189,7 @@
       "key": "entity.delete",
       "module": "entity",
       "label": "Delete records",
-      "description": "Delete a canonical record (hard delete, manager-only).",
+      "description": "Permanently remove a customer, site, contact, or asset. This cannot be undone.",
       "roles": [
         "manager"
       ]
@@ -197,8 +197,8 @@
     {
       "key": "entity.manage_activation",
       "module": "entity",
-      "label": "Manage Field/Service activation",
-      "description": "Toggle whether a site or customer record is active in Field / Service.",
+      "label": "Show records in Field & Service",
+      "description": "Choose whether a site or customer appears in EQ Field and EQ Service.",
       "roles": [
         "manager"
       ]
@@ -207,7 +207,7 @@
       "key": "intake.view",
       "module": "intake",
       "label": "View imports",
-      "description": "See the Intake surface.",
+      "description": "See imports that have been started and how they went.",
       "roles": [
         "manager",
         "supervisor",
@@ -219,7 +219,7 @@
       "key": "intake.import",
       "module": "intake",
       "label": "Start an import",
-      "description": "Initiate an import (drop file, map, validate).",
+      "description": "Upload a spreadsheet, match its columns, and check it for errors — without saving anything yet.",
       "roles": [
         "manager",
         "supervisor",
@@ -230,7 +230,7 @@
       "key": "intake.commit",
       "module": "intake",
       "label": "Confirm an import",
-      "description": "Commit a validated batch to canonical (destructive).",
+      "description": "Save a checked import into your live records. This overwrites existing data and cannot be undone.",
       "roles": [
         "manager",
         "supervisor"
@@ -240,7 +240,7 @@
       "key": "equipment.view",
       "module": "equipment",
       "label": "View equipment",
-      "description": "See the Plant & Equipment list + calibration.",
+      "description": "See the plant and equipment list, including calibration dates.",
       "roles": [
         "manager",
         "supervisor",
@@ -253,7 +253,7 @@
       "key": "equipment.edit",
       "module": "equipment",
       "label": "Edit equipment",
-      "description": "Add / edit equipment + calibration fields.",
+      "description": "Add equipment, change its details, or update calibration dates.",
       "roles": [
         "manager",
         "supervisor"
@@ -263,7 +263,7 @@
       "key": "reports.view",
       "module": "reports",
       "label": "View reports",
-      "description": "View GM reports.",
+      "description": "Open the management reports.",
       "roles": [
         "manager"
       ]
@@ -272,7 +272,7 @@
       "key": "reports.view_financial",
       "module": "reports",
       "label": "See financial reports",
-      "description": "See GM / financial reports. Manager only — supervisors have no Reports base grant, so a financial sub-read would dangle (2026-07-16 access-model cluster 1).",
+      "description": "See reports that include revenue, cost, and margin figures.",
       "roles": [
         "manager"
       ]
@@ -281,7 +281,7 @@
       "key": "reports.upload",
       "module": "reports",
       "label": "Upload reports",
-      "description": "Upload a source report.",
+      "description": "Upload a source file that reports are built from.",
       "roles": [
         "manager"
       ]
@@ -290,7 +290,7 @@
       "key": "reports.generate_briefing",
       "module": "reports",
       "label": "Generate AI briefing",
-      "description": "Generate the AI briefing.",
+      "description": "Produce the AI-written summary of recent activity.",
       "roles": [
         "manager"
       ]
@@ -299,31 +299,31 @@
       "key": "cards.view",
       "module": "cards",
       "label": "Open Cards",
-      "description": "Access the Cards onboarding surface.",
+      "description": "Open the worker onboarding app.",
       "roles": [
         "manager",
         "supervisor",
         "employee",
         "apprentice"
       ],
-      "deprecated": "Cards is a worker-facing app gated by tenant entitlement (org_module_entitlements.cards), not a per-user employer permission. Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: entitlement check."
+      "deprecated": "No longer used. EQ Cards is switched on for a whole organisation rather than per person. Existing settings still work — do not apply this to anyone new."
     },
     {
       "key": "cards.onboard",
       "module": "cards",
       "label": "Submit onboarding",
-      "description": "Submit or manage an onboarding card.",
+      "description": "Fill in or manage a worker’s onboarding details.",
       "roles": [
         "manager",
         "supervisor"
       ],
-      "deprecated": "Duplicates admin.review_cards (the real employer-side 'review Cards onboarding' gate, already in use). Kept for existing tenant_role_overrides; do not grant to new consumers. Replacement: admin.review_cards."
+      "deprecated": "No longer used — “Review onboarding” does this job. Existing settings still work — do not apply this to anyone new."
     },
     {
       "key": "service.view",
       "module": "service",
       "label": "View maintenance",
-      "description": "View the Service CMMS (work orders, defects, PPM).",
+      "description": "See work orders, faults, and scheduled maintenance.",
       "roles": [
         "manager",
         "supervisor",
@@ -335,7 +335,7 @@
       "key": "service.view_commercials",
       "module": "service",
       "label": "See job pricing",
-      "description": "See job pricing / contract value on a work order. Split out of service.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "description": "See what a job is worth — its price and contract value. Kept separate from viewing maintenance so people can do the work without seeing the money.",
       "roles": [
         "manager",
         "supervisor"
@@ -345,7 +345,7 @@
       "key": "service.create",
       "module": "service",
       "label": "Raise work orders",
-      "description": "Create a work order or defect.",
+      "description": "Raise a new work order or report a fault.",
       "roles": [
         "manager",
         "supervisor"
@@ -355,7 +355,7 @@
       "key": "service.close",
       "module": "service",
       "label": "Close work orders",
-      "description": "Close / resolve a work order.",
+      "description": "Mark a work order as finished.",
       "roles": [
         "manager",
         "supervisor"
@@ -365,7 +365,7 @@
       "key": "service.reopen",
       "module": "service",
       "label": "Reopen a work order",
-      "description": "Reopen a closed work order. Irreversible-adjacent verb, kept with a named few so the audit log reads clean (2026-07-17 access-model cluster 3).",
+      "description": "Reopen a work order that was already closed. Kept to a small group so the activity log stays meaningful.",
       "roles": [
         "manager",
         "supervisor"
@@ -375,7 +375,7 @@
       "key": "service.record_tests",
       "module": "service",
       "label": "Log calibration results",
-      "description": "Log calibration / test results against an asset. Matches equipment.edit's manager+supervisor tier (2026-07-17 access-model cluster 3).",
+      "description": "Record calibration or test results against a piece of equipment.",
       "roles": [
         "manager",
         "supervisor"
@@ -384,8 +384,8 @@
     {
       "key": "field.view",
       "module": "field",
-      "label": "View field resources",
-      "description": "View Field resources — staff, licences, availability, assignments.",
+      "label": "View field information",
+      "description": "See staff, licences, availability, and job assignments in EQ Field.",
       "roles": [
         "manager",
         "supervisor",
@@ -399,7 +399,7 @@
       "key": "field.view_hours",
       "module": "field",
       "label": "See timesheets & hours",
-      "description": "See worker timesheets / hours (pay-adjacent). Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "description": "See the hours workers have logged. Kept separate because hours affect pay.",
       "roles": [
         "manager",
         "supervisor"
@@ -409,7 +409,7 @@
       "key": "field.view_licences",
       "module": "field",
       "label": "See worker licences",
-      "description": "See worker licences & compliance status. Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "description": "See workers’ licences and tickets, and whether they are current.",
       "roles": [
         "manager",
         "supervisor"
@@ -419,7 +419,7 @@
       "key": "field.view_rates",
       "module": "field",
       "label": "See charge rates",
-      "description": "See labour-hire / charge rates (commercial). Split out of field.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "description": "See what labour-hire workers are charged out at.",
       "roles": [
         "manager",
         "supervisor"
@@ -429,7 +429,7 @@
       "key": "field.dispatch",
       "module": "field",
       "label": "Dispatch staff",
-      "description": "Dispatch staff to jobs / shifts.",
+      "description": "Send staff to jobs and shifts.",
       "roles": [
         "manager",
         "supervisor"
@@ -439,7 +439,7 @@
       "key": "field.manage_roster",
       "module": "field",
       "label": "Build & edit the roster",
-      "description": "Build and edit the crew roster. A distinct owner from day-to-day dispatch (2026-07-17 access-model cluster 3).",
+      "description": "Build and change the crew roster. Separate from day-to-day dispatch because it sets the plan rather than following it.",
       "roles": [
         "manager",
         "supervisor"
@@ -449,7 +449,7 @@
       "key": "field.manage_licences",
       "module": "field",
       "label": "Manage worker licences",
-      "description": "Add / verify worker licences and compliance records. Sign-off action, matches field.view_licences' tier (2026-07-17 access-model cluster 3).",
+      "description": "Add a worker’s licence or confirm you have sighted it. This is a sign-off — it records that someone checked.",
       "roles": [
         "manager",
         "supervisor"
@@ -459,7 +459,7 @@
       "key": "field.manage_labour_hire",
       "module": "field",
       "label": "Manage labour-hire companies",
-      "description": "Manage labour-hire companies & their charge rates. Commercially sensitive, matches ops.manage_rates' tier (2026-07-17 access-model cluster 3).",
+      "description": "Add or change the labour-hire companies you use and what they charge.",
       "roles": [
         "manager",
         "supervisor"
@@ -469,7 +469,7 @@
       "key": "field.manage_people",
       "module": "field",
       "label": "Add / remove / edit workers",
-      "description": "Add, edit, remove, restore, or permanently delete a worker record, and manage their PIN. Distinct owner from field.view/view_licences, matches field.manage_roster's manager+supervisor tier — preserves the coarse isManager-gated behaviour these actions had in Field before Phase 3 (2026-07-26 access-model Phase 3 guardrails).",
+      "description": "Add a worker, change their details, remove or restore them, and reset their PIN.",
       "roles": [
         "manager",
         "supervisor"
@@ -479,7 +479,7 @@
       "key": "quotes.view",
       "module": "quotes",
       "label": "View quotes",
-      "description": "View quotes.",
+      "description": "See quotes and their status. Cost and margin are controlled separately.",
       "roles": [
         "manager",
         "supervisor",
@@ -490,7 +490,7 @@
       "key": "quotes.create",
       "module": "quotes",
       "label": "Create quotes",
-      "description": "Create or edit a quote.",
+      "description": "Write a new quote or change an existing one.",
       "roles": [
         "manager",
         "supervisor"
@@ -500,7 +500,7 @@
       "key": "quotes.approve",
       "module": "quotes",
       "label": "Approve quotes",
-      "description": "Approve and send a quote.",
+      "description": "Approve a quote and send it to the customer.",
       "roles": [
         "manager"
       ]
@@ -508,8 +508,8 @@
     {
       "key": "ops.view_rates",
       "module": "ops",
-      "label": "View labour hire rates",
-      "description": "View labour hire cost rate cards. Commercially sensitive — manager + supervisor (project management) only.",
+      "label": "View rates & pricing setup",
+      "description": "See what labour-hire agencies charge, and open Setup — where pricing, the rate library, quote templates, and estimators are configured.",
       "roles": [
         "manager",
         "supervisor"
@@ -519,7 +519,7 @@
       "key": "ops.view_margins",
       "module": "ops",
       "label": "See cost & margin",
-      "description": "See cost and margin on a quote / job. Split out of quotes.view. Manager + supervisor only (2026-07-16 access-model cluster 1).",
+      "description": "See what a job costs and what you make on it. Kept separate from viewing quotes so people can work on a quote without seeing the margin.",
       "roles": [
         "manager",
         "supervisor"
@@ -528,8 +528,8 @@
     {
       "key": "ops.manage_rates",
       "module": "ops",
-      "label": "Manage labour hire rates",
-      "description": "Import, edit, or manually adjust labour hire cost rate cards.",
+      "label": "Manage rates & pricing setup",
+      "description": "Add, import, or change labour-hire rate cards and the pricing setup.",
       "roles": [
         "manager",
         "supervisor"
@@ -539,7 +539,7 @@
       "key": "ops.create_job",
       "module": "ops",
       "label": "Convert quote to a job",
-      "description": "Convert an approved quote into a numbered job. A commitment gate, matches quotes.create's tier (job numbers are manual/Smartsheet, never auto-generated) (2026-07-17 access-model cluster 3).",
+      "description": "Turn an accepted quote into a numbered job. Job numbers are entered by hand, so this is a deliberate commitment step.",
       "roles": [
         "manager",
         "supervisor"
@@ -549,7 +549,7 @@
       "key": "ops.view_suppliers",
       "module": "ops",
       "label": "View suppliers directory",
-      "description": "View the trade suppliers/wholesalers/hire companies directory. Matches ops.view_rates' tier (2026-07-26 access-model Phase 3). Promotes a key eq-shell's own client matrix already declared but the package didn't yet have — see suppliers-mutate.ts.",
+      "description": "See the list of trade suppliers, wholesalers, and hire companies.",
       "roles": [
         "manager",
         "supervisor"
@@ -559,7 +559,7 @@
       "key": "ops.manage_suppliers",
       "module": "ops",
       "label": "Manage suppliers directory",
-      "description": "Add / edit / delete suppliers directory entries. Was reusing ops.manage_rates as an interim server-side gate until this key existed in the package (2026-07-26 access-model Phase 3).",
+      "description": "Add, change, or remove entries in the suppliers list.",
       "roles": [
         "manager",
         "supervisor"
@@ -569,7 +569,7 @@
       "key": "ops.view_supplier_credentials",
       "module": "ops",
       "label": "See supplier login/password",
-      "description": "See the login/password stored against a supplier directory entry. Split out of ops.view_suppliers so viewing the directory no longer implies seeing stored credentials — matches entity.view_pii/field.view_hours' split-permission pattern (2026-07-27). Replaces a hardcoded manager/supervisor/platform-admin check in eq-shell's eq_list_suppliers RPC that predated this key existing.",
+      "description": "See the account login and password saved against a supplier. Kept separate so people can use the supplier list without seeing stored passwords.",
       "roles": [
         "manager",
         "supervisor"
