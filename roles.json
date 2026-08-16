@@ -1,5 +1,5 @@
 {
-  "version": "2.6.0",
+  "version": "2.7.0",
   "generated": true,
   "roles": [
     {
@@ -68,7 +68,9 @@
     "service",
     "field",
     "quotes",
-    "ops"
+    "ops",
+    "documents",
+    "ai"
   ],
   "permissions": [
     {
@@ -93,7 +95,7 @@
       "key": "admin.edit_user",
       "module": "admin",
       "label": "Edit users",
-      "description": "Change someone's role, name, or contact details.",
+      "description": "Change someone's name or contact details. Changing their role or permanently deleting them are their own separate permissions.",
       "roles": [
         "manager"
       ]
@@ -111,7 +113,7 @@
       "key": "admin.review_cards",
       "module": "admin",
       "label": "Review onboarding",
-      "description": "Review and approve the details new workers submit when they join — licences, contact details, and documents.",
+      "description": "Review and approve the details a new worker submits when they join, before they're added as staff.",
       "roles": [
         "manager"
       ]
@@ -142,7 +144,8 @@
       "description": "Reverse a change shown in the activity log, putting the record back as it was.",
       "roles": [
         "manager"
-      ]
+      ],
+      "deprecated": "The undo action does not currently work — the system always refuses it. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back once undo is rebuilt."
     },
     {
       "key": "entity.view",
@@ -275,7 +278,8 @@
       "description": "See reports that include revenue, cost, and margin figures.",
       "roles": [
         "manager"
-      ]
+      ],
+      "deprecated": "Every report today includes financial figures, so this grants nothing that reports.view doesn't already. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back if a non-financial report is ever added."
     },
     {
       "key": "reports.upload",
@@ -423,7 +427,8 @@
       "roles": [
         "manager",
         "supervisor"
-      ]
+      ],
+      "deprecated": "Labour-hire rates are actually controlled by ops.view_rates, in both the app and the database — this key is never checked. Kept only so nobody's existing access breaks; do not grant to anyone new. Use ops.view_rates instead."
     },
     {
       "key": "field.dispatch",
@@ -574,6 +579,112 @@
         "manager",
         "supervisor"
       ]
+    },
+    {
+      "key": "documents.view",
+      "module": "documents",
+      "label": "View documents",
+      "description": "See the document library, and the documents assigned to you to read or sign.",
+      "roles": [
+        "manager",
+        "supervisor",
+        "employee",
+        "apprentice",
+        "labour_hire",
+        "subcontractor"
+      ]
+    },
+    {
+      "key": "documents.manage",
+      "module": "documents",
+      "label": "Manage documents",
+      "description": "Upload document versions, archive documents, and add, rename, or delete categories.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "documents.assign",
+      "module": "documents",
+      "label": "Require a sign-off",
+      "description": "Push a document to a role, crew, or person so they must read or sign it, and see who has and who hasn't completed it yet.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "admin.assign_role",
+      "module": "admin",
+      "label": "Change someone's role",
+      "description": "Set or change what role a person holds — wherever that happens, including through EQ Cards.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "admin.delete_user",
+      "module": "admin",
+      "label": "Permanently delete a user",
+      "description": "Permanently delete a person's account. This cannot be undone.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "intake.edit_canonical",
+      "module": "intake",
+      "label": "Edit imported records",
+      "description": "Change a record that came in through an import, archive or dismiss a duplicate, or work the review queue.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "service.do_work",
+      "module": "service",
+      "label": "Carry out and record work",
+      "description": "Run test procedures and record their results, and raise an on-site check, in EQ Service.",
+      "roles": [
+        "manager",
+        "supervisor",
+        "employee"
+      ]
+    },
+    {
+      "key": "reports.manage",
+      "module": "reports",
+      "label": "Archive or delete reports",
+      "description": "Archive a reporting period, or permanently delete one and its job rows. This cannot be undone.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "ai.view_briefing",
+      "module": "ai",
+      "label": "View the daily briefing",
+      "description": "See the daily AI-written activity summary, and dismiss or mark your own action items done.",
+      "roles": [
+        "manager",
+        "supervisor",
+        "employee",
+        "apprentice",
+        "labour_hire",
+        "subcontractor"
+      ]
+    },
+    {
+      "key": "ai.use",
+      "module": "ai",
+      "label": "Use AI tools",
+      "description": "Use the AI assistant, ask questions about jobs and licences, and run licence-photo recognition.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
     }
   ],
   "matrix": {
@@ -627,7 +738,17 @@
       "ops.create_job",
       "ops.view_suppliers",
       "ops.manage_suppliers",
-      "ops.view_supplier_credentials"
+      "ops.view_supplier_credentials",
+      "documents.view",
+      "documents.manage",
+      "documents.assign",
+      "admin.assign_role",
+      "admin.delete_user",
+      "intake.edit_canonical",
+      "service.do_work",
+      "reports.manage",
+      "ai.view_briefing",
+      "ai.use"
     ],
     "supervisor": [
       "audit.view",
@@ -664,7 +785,14 @@
       "ops.create_job",
       "ops.view_suppliers",
       "ops.manage_suppliers",
-      "ops.view_supplier_credentials"
+      "ops.view_supplier_credentials",
+      "documents.view",
+      "documents.manage",
+      "documents.assign",
+      "intake.edit_canonical",
+      "service.do_work",
+      "ai.view_briefing",
+      "ai.use"
     ],
     "employee": [
       "entity.view",
@@ -674,7 +802,10 @@
       "cards.view",
       "service.view",
       "field.view",
-      "quotes.view"
+      "quotes.view",
+      "documents.view",
+      "service.do_work",
+      "ai.view_briefing"
     ],
     "apprentice": [
       "entity.view",
@@ -682,14 +813,20 @@
       "equipment.view",
       "cards.view",
       "service.view",
-      "field.view"
+      "field.view",
+      "documents.view",
+      "ai.view_briefing"
     ],
     "labour_hire": [
       "equipment.view",
-      "field.view"
+      "field.view",
+      "documents.view",
+      "ai.view_briefing"
     ],
     "subcontractor": [
-      "field.view"
+      "field.view",
+      "documents.view",
+      "ai.view_briefing"
     ]
   },
   "roleAliases": {
