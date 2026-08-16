@@ -1,6 +1,6 @@
 {
   "name": "@eq-solutions/roles",
-  "version": "2.7.2",
+  "version": "2.7.3",
   "private": false,
   "license": "UNLICENSED",
   "author": "CDC Solutions Pty Ltd",
@@ -79,6 +79,10 @@
     "./ai": {
       "types": "./roles/ai.ts",
       "default": "./roles/ai.js"
+    },
+    "./tender": {
+      "types": "./roles/tender.ts",
+      "default": "./roles/tender.js"
     }
   },
   "files": [

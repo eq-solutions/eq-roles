@@ -3,6 +3,21 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.7.3] - 2026-08-16
+
+### Added
+- **`tender.view`** (new `tender` module) — see tenders and their pipeline stage, including
+  estimated value. Manager + supervisor, matching the tier every other $-bearing key in this
+  model uses (`ops.view_margins`, `service.view_commercials`, `field.view_hours`,
+  `field.view_licences`) rather than the broader `entity.view` tier — eq-shell's tender rows
+  carry `estimated_value_cents` inline with no separate redaction path, so the view key itself
+  has to be the boundary. `tender` was already reserved as a module name in eq-shell's own
+  permission-matrix convention comment (`<module>.<verb>`, module list includes `tender`) but
+  nothing had ever built it — found while gating `entity-rows.ts`'s generic entity browser,
+  which had `tender` reachable to any signed-in role with no permission check at all (`asset`
+  had the identical gap; fixed separately by reusing the existing `entity.view`, since its
+  description already covered assets — tenders had no equivalent home to reuse).
+
 ## [2.5.8] - 2026-07-27
 
 ### Added

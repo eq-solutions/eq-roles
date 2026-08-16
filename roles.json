@@ -1,5 +1,5 @@
 {
-  "version": "2.7.2",
+  "version": "2.7.3",
   "generated": true,
   "roles": [
     {
@@ -70,7 +70,8 @@
     "quotes",
     "ops",
     "documents",
-    "ai"
+    "ai",
+    "tender"
   ],
   "permissions": [
     {
@@ -681,6 +682,16 @@
         "manager",
         "supervisor"
       ]
+    },
+    {
+      "key": "tender.view",
+      "module": "tender",
+      "label": "View tenders",
+      "description": "See tenders and their pipeline stage, including estimated value.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
     }
   ],
   "matrix": {
@@ -744,7 +755,8 @@
       "service.do_work",
       "reports.manage",
       "ai.view_briefing",
-      "ai.use"
+      "ai.use",
+      "tender.view"
     ],
     "supervisor": [
       "audit.view",
@@ -788,7 +800,8 @@
       "intake.edit_canonical",
       "service.do_work",
       "ai.view_briefing",
-      "ai.use"
+      "ai.use",
+      "tender.view"
     ],
     "employee": [
       "entity.view",
