@@ -1,5 +1,5 @@
 {
-  "version": "2.7.2",
+  "version": "2.7.3",
   "generated": true,
   "roles": [
     {
@@ -275,11 +275,10 @@
       "key": "reports.view_financial",
       "module": "reports",
       "label": "See financial reports",
-      "description": "See reports that include revenue, cost, and margin figures.",
+      "description": "See the cash, cost, and margin figures inside GM Reports. Kept separate from reports.view so a security group can grant someone reports without also handing them the money.",
       "roles": [
         "manager"
-      ],
-      "deprecated": "Every report today includes financial figures, so this grants nothing that reports.view doesn't already. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back if a non-financial report is ever added."
+      ]
     },
     {
       "key": "reports.upload",
@@ -845,7 +844,8 @@
       "name": "Report viewers",
       "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
       "perms": [
-        "reports.view"
+        "reports.view",
+        "reports.view_financial"
       ]
     },
     {
