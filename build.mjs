@@ -579,6 +579,29 @@ if (invokedDirectly) {
     writeFileSync(join(here, 'roles', `${moduleKey}.js`), mod.js);
   }
 
+  // package.json's "exports" map needs one subpath entry per module so a
+  // consumer can `import ... from '@eq-solutions/roles/<module>'`. This was
+  // a hand-maintained list until v2.7.1 — it silently fell one release behind
+  // model.modules (documents/ai shipped in v2.7.0 with generated files on
+  // disk but no exports entry, so nothing could import them: found live
+  // 2026-08-16 bumping eq-shell's pin). Generating it here from model.modules
+  // means the two can never drift again. Only the "exports" key is touched;
+  // everything else in package.json passes through unchanged.
+  const pkgPath = join(here, 'package.json');
+  const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
+  const moduleExports = Object.fromEntries(
+    model.modules.map((m) => [`./${m}`, { types: `./roles/${m}.ts`, default: `./roles/${m}.js` }]),
+  );
+  pkg.exports = {
+    '.': { types: './roles.ts', default: './roles.js' },
+    './roles.js': './roles.js',
+    './roles.ts': './roles.ts',
+    './roles.json': './roles.json',
+    './package.json': './package.json',
+    ...moduleExports,
+  };
+  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+
   console.log(
     `@eq-solutions/roles v${model.version} built: ` +
     `${artefacts.stats.roles} roles, ${artefacts.stats.permissions} permissions -> ` +
