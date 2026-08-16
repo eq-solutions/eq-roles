@@ -1,5 +1,5 @@
 {
-  "version": "2.7.2",
+  "version": "2.7.3",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -14,7 +14,7 @@
     "field": "is_platform_admin",
     "effect": "Orthogonal to role. When true, can() short-circuits to true for every permission across every tenant. EQ-internal staff only (single audit point for cross-tenant power)."
   },
-  "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes", "ops", "documents", "ai"],
+  "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes", "ops", "documents", "ai", "tender"],
   "$labels": "label = short plain-English name for admin UIs (what a non-technical manager reads when granting access). description = the longer developer-facing explanation. Keep labels verb-first and jargon-free per EQ voice.",
   "$deprecated": "Optional `deprecated` string on a permission = scheduled for removal in a future major bump, kept only so existing tenant_role_overrides / consumers don't break early. State the reason + the replacement. Build still emits the key; a lint/tooling pass can warn on new usage.",
   "permissions": [
@@ -87,7 +87,8 @@
     { "key": "service.do_work",      "module": "service",   "label": "Carry out and record work",  "description": "Run test procedures and record their results, and raise an on-site check, in EQ Service.", "roles": ["manager", "supervisor", "employee"] },
     { "key": "reports.manage",       "module": "reports",   "label": "Archive or delete reports",  "description": "Archive a reporting period, or permanently delete one and its job rows. This cannot be undone.", "roles": ["manager"] },
     { "key": "ai.view_briefing",     "module": "ai",        "label": "View the daily briefing",    "description": "See the daily AI-written activity summary, and dismiss or mark your own action items done. Manager and supervisor only — the brief names workers alongside their licence numbers and expiry dates, and includes quote and pipeline dollar values.", "roles": ["manager", "supervisor"] },
-    { "key": "ai.use",               "module": "ai",        "label": "Use AI tools",               "description": "Use the AI assistant, ask questions about jobs and licences, and run licence-photo recognition.", "roles": ["manager", "supervisor"] }
+    { "key": "ai.use",               "module": "ai",        "label": "Use AI tools",               "description": "Use the AI assistant, ask questions about jobs and licences, and run licence-photo recognition.", "roles": ["manager", "supervisor"] },
+    { "key": "tender.view",          "module": "tender",    "label": "View tenders",               "description": "See tenders and their pipeline stage, including estimated value.", "roles": ["manager", "supervisor"] }
   ],
   "roleAliases": {
     "$comment": "Foreign role vocabularies mapped onto canonical EqRole. Build validates every target is a real role. INVARIANT: no alias targets is_platform_admin — cross-tenant power is never derived from a tenant-held role, so tenants stay isolated. EQ-internal platform ops live out-of-band (service-role / audited impersonation), not in any tenant role.",
