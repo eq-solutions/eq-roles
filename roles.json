@@ -1,5 +1,5 @@
 {
-  "version": "2.7.1",
+  "version": "2.7.2",
   "generated": true,
   "roles": [
     {
@@ -666,14 +666,10 @@
       "key": "ai.view_briefing",
       "module": "ai",
       "label": "View the daily briefing",
-      "description": "See the daily AI-written activity summary, and dismiss or mark your own action items done.",
+      "description": "See the daily AI-written activity summary, and dismiss or mark your own action items done. Manager and supervisor only — the brief names workers alongside their licence numbers and expiry dates, and includes quote and pipeline dollar values.",
       "roles": [
         "manager",
-        "supervisor",
-        "employee",
-        "apprentice",
-        "labour_hire",
-        "subcontractor"
+        "supervisor"
       ]
     },
     {
@@ -804,8 +800,7 @@
       "field.view",
       "quotes.view",
       "documents.view",
-      "service.do_work",
-      "ai.view_briefing"
+      "service.do_work"
     ],
     "apprentice": [
       "entity.view",
@@ -814,19 +809,16 @@
       "cards.view",
       "service.view",
       "field.view",
-      "documents.view",
-      "ai.view_briefing"
+      "documents.view"
     ],
     "labour_hire": [
       "equipment.view",
       "field.view",
-      "documents.view",
-      "ai.view_briefing"
+      "documents.view"
     ],
     "subcontractor": [
       "field.view",
-      "documents.view",
-      "ai.view_briefing"
+      "documents.view"
     ]
   },
   "roleAliases": {
