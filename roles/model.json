@@ -1,5 +1,5 @@
 {
-  "version": "2.7.2",
+  "version": "2.7.3",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -43,7 +43,7 @@
     { "key": "equipment.edit",        "module": "equipment", "label": "Edit equipment",            "description": "Add equipment, change its details, or update calibration dates.",          "roles": ["manager", "supervisor"] },
 
     { "key": "reports.view",          "module": "reports",   "label": "View reports",              "description": "Open the management reports.",                                    "roles": ["manager"] },
-    { "key": "reports.view_financial","module": "reports",   "label": "See financial reports",     "description": "See reports that include revenue, cost, and margin figures.", "roles": ["manager"], "deprecated": "Every report today includes financial figures, so this grants nothing that reports.view doesn't already. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back if a non-financial report is ever added." },
+    { "key": "reports.view_financial","module": "reports",   "label": "See financial reports",     "description": "See the cash, cost, and margin figures inside GM Reports. Kept separate from reports.view so a security group can grant someone reports without also handing them the money.", "roles": ["manager"] },
     { "key": "reports.upload",        "module": "reports",   "label": "Upload reports",            "description": "Upload a source file that reports are built from.",                             "roles": ["manager"] },
     { "key": "reports.generate_briefing", "module": "reports", "label": "Generate AI briefing",    "description": "Produce the AI-written summary of recent activity.",                        "roles": ["manager"] },
 
@@ -115,7 +115,7 @@
       "key": "report_viewers",
       "name": "Report viewers",
       "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
-      "perms": ["reports.view"]
+      "perms": ["reports.view", "reports.view_financial"]
     },
     {
       "key": "project_managers",
