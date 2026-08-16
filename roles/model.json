@@ -1,5 +1,5 @@
 {
-  "version": "2.6.0",
+  "version": "2.7.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -14,19 +14,19 @@
     "field": "is_platform_admin",
     "effect": "Orthogonal to role. When true, can() short-circuits to true for every permission across every tenant. EQ-internal staff only (single audit point for cross-tenant power)."
   },
-  "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes", "ops"],
+  "modules": ["admin", "audit", "entity", "intake", "equipment", "reports", "cards", "service", "field", "quotes", "ops", "documents", "ai"],
   "$labels": "label = short plain-English name for admin UIs (what a non-technical manager reads when granting access). description = the longer developer-facing explanation. Keep labels verb-first and jargon-free per EQ voice.",
   "$deprecated": "Optional `deprecated` string on a permission = scheduled for removal in a future major bump, kept only so existing tenant_role_overrides / consumers don't break early. State the reason + the replacement. Build still emits the key; a lint/tooling pass can warn on new usage.",
   "permissions": [
     { "key": "admin.list_users",      "module": "admin",     "label": "View users",                "description": "See everyone who can sign in to your organisation, with their role and status.",                                  "roles": ["manager"] },
     { "key": "admin.invite_user",     "module": "admin",     "label": "Invite users",              "description": "Send someone an invitation to join and set up their sign-in.",                    "roles": ["manager"] },
-    { "key": "admin.edit_user",       "module": "admin",     "label": "Edit users",                "description": "Change someone's role, name, or contact details.",                       "roles": ["manager"] },
+    { "key": "admin.edit_user",       "module": "admin",     "label": "Edit users",                "description": "Change someone's name or contact details. Changing their role or permanently deleting them are their own separate permissions.",                       "roles": ["manager"] },
     { "key": "admin.deactivate_user", "module": "admin",     "label": "Deactivate users",          "description": "Switch off someone’s access so they can no longer sign in. Their records are kept.",                                  "roles": ["manager"] },
-    { "key": "admin.review_cards",    "module": "admin",     "label": "Review onboarding",         "description": "Review and approve the details new workers submit when they join — licences, contact details, and documents.",                "roles": ["manager"] },
+    { "key": "admin.review_cards",    "module": "admin",     "label": "Review onboarding",         "description": "Review and approve the details a new worker submits when they join, before they're added as staff.",                "roles": ["manager"] },
     { "key": "admin.manage_groups",   "module": "admin",     "label": "Manage access groups",      "description": "Create access groups and choose who belongs to them. Groups add permissions on top of someone’s role.",     "roles": ["manager"] },
 
     { "key": "audit.view",            "module": "audit",     "label": "View activity log",         "description": "See what changed, who changed it, and when.",                                 "roles": ["manager", "supervisor"] },
-    { "key": "audit.rollback",        "module": "audit",     "label": "Undo changes",              "description": "Reverse a change shown in the activity log, putting the record back as it was.",                        "roles": ["manager"] },
+    { "key": "audit.rollback",        "module": "audit",     "label": "Undo changes",              "description": "Reverse a change shown in the activity log, putting the record back as it was.",                        "roles": ["manager"], "deprecated": "The undo action does not currently work — the system always refuses it. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back once undo is rebuilt." },
 
     { "key": "entity.view",           "module": "entity",    "label": "View records",              "description": "See customers, sites, contacts, and assets. Personal contact details are controlled separately.", "roles": ["manager", "supervisor", "employee", "apprentice"] },
     { "key": "entity.view_pii",       "module": "entity",    "label": "See personal details",      "description": "See someone’s phone number, date of birth, and emergency contact. Kept separate from viewing records so people can look up a customer or site without seeing personal information.", "roles": ["manager", "supervisor"] },
@@ -43,7 +43,7 @@
     { "key": "equipment.edit",        "module": "equipment", "label": "Edit equipment",            "description": "Add equipment, change its details, or update calibration dates.",          "roles": ["manager", "supervisor"] },
 
     { "key": "reports.view",          "module": "reports",   "label": "View reports",              "description": "Open the management reports.",                                    "roles": ["manager"] },
-    { "key": "reports.view_financial","module": "reports",   "label": "See financial reports",     "description": "See reports that include revenue, cost, and margin figures.", "roles": ["manager"] },
+    { "key": "reports.view_financial","module": "reports",   "label": "See financial reports",     "description": "See reports that include revenue, cost, and margin figures.", "roles": ["manager"], "deprecated": "Every report today includes financial figures, so this grants nothing that reports.view doesn't already. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back if a non-financial report is ever added." },
     { "key": "reports.upload",        "module": "reports",   "label": "Upload reports",            "description": "Upload a source file that reports are built from.",                             "roles": ["manager"] },
     { "key": "reports.generate_briefing", "module": "reports", "label": "Generate AI briefing",    "description": "Produce the AI-written summary of recent activity.",                        "roles": ["manager"] },
 
@@ -60,7 +60,7 @@
     { "key": "field.view",            "module": "field",     "label": "View field information",      "description": "See staff, licences, availability, and job assignments in EQ Field.", "roles": ["manager", "supervisor", "employee", "apprentice", "labour_hire", "subcontractor"] },
     { "key": "field.view_hours",      "module": "field",     "label": "See timesheets & hours",    "description": "See the hours workers have logged. Kept separate because hours affect pay.", "roles": ["manager", "supervisor"] },
     { "key": "field.view_licences",   "module": "field",     "label": "See worker licences",       "description": "See workers’ licences and tickets, and whether they are current.", "roles": ["manager", "supervisor"] },
-    { "key": "field.view_rates",      "module": "field",     "label": "See charge rates",          "description": "See what labour-hire workers are charged out at.", "roles": ["manager", "supervisor"] },
+    { "key": "field.view_rates",      "module": "field",     "label": "See charge rates",          "description": "See what labour-hire workers are charged out at.", "roles": ["manager", "supervisor"], "deprecated": "Labour-hire rates are actually controlled by ops.view_rates, in both the app and the database — this key is never checked. Kept only so nobody's existing access breaks; do not grant to anyone new. Use ops.view_rates instead." },
     { "key": "field.dispatch",        "module": "field",     "label": "Dispatch staff",            "description": "Send staff to jobs and shifts.",                   "roles": ["manager", "supervisor"] },
     { "key": "field.manage_roster",   "module": "field",     "label": "Build & edit the roster",   "description": "Build and change the crew roster. Separate from day-to-day dispatch because it sets the plan rather than following it.", "roles": ["manager", "supervisor"] },
     { "key": "field.manage_licences", "module": "field",     "label": "Manage worker licences",    "description": "Add a worker’s licence or confirm you have sighted it. This is a sign-off — it records that someone checked.", "roles": ["manager", "supervisor"] },
@@ -77,7 +77,17 @@
     { "key": "ops.create_job",        "module": "ops",       "label": "Convert quote to a job",   "description": "Turn an accepted quote into a numbered job. Job numbers are entered by hand, so this is a deliberate commitment step.", "roles": ["manager", "supervisor"] },
     { "key": "ops.view_suppliers",    "module": "ops",       "label": "View suppliers directory",  "description": "See the list of trade suppliers, wholesalers, and hire companies.", "roles": ["manager", "supervisor"] },
     { "key": "ops.manage_suppliers",  "module": "ops",       "label": "Manage suppliers directory", "description": "Add, change, or remove entries in the suppliers list.", "roles": ["manager", "supervisor"] },
-    { "key": "ops.view_supplier_credentials", "module": "ops", "label": "See supplier login/password", "description": "See the account login and password saved against a supplier. Kept separate so people can use the supplier list without seeing stored passwords.", "roles": ["manager", "supervisor"] }
+    { "key": "ops.view_supplier_credentials", "module": "ops", "label": "See supplier login/password", "description": "See the account login and password saved against a supplier. Kept separate so people can use the supplier list without seeing stored passwords.", "roles": ["manager", "supervisor"] },
+    { "key": "documents.view",       "module": "documents", "label": "View documents",            "description": "See the document library, and the documents assigned to you to read or sign.", "roles": ["manager", "supervisor", "employee", "apprentice", "labour_hire", "subcontractor"] },
+    { "key": "documents.manage",     "module": "documents", "label": "Manage documents",           "description": "Upload document versions, archive documents, and add, rename, or delete categories.", "roles": ["manager", "supervisor"] },
+    { "key": "documents.assign",     "module": "documents", "label": "Require a sign-off",         "description": "Push a document to a role, crew, or person so they must read or sign it, and see who has and who hasn't completed it yet.", "roles": ["manager", "supervisor"] },
+    { "key": "admin.assign_role",    "module": "admin",     "label": "Change someone's role",      "description": "Set or change what role a person holds — wherever that happens, including through EQ Cards.", "roles": ["manager"] },
+    { "key": "admin.delete_user",    "module": "admin",     "label": "Permanently delete a user",  "description": "Permanently delete a person's account. This cannot be undone.", "roles": ["manager"] },
+    { "key": "intake.edit_canonical","module": "intake",    "label": "Edit imported records",      "description": "Change a record that came in through an import, archive or dismiss a duplicate, or work the review queue.", "roles": ["manager", "supervisor"] },
+    { "key": "service.do_work",      "module": "service",   "label": "Carry out and record work",  "description": "Run test procedures and record their results, and raise an on-site check, in EQ Service.", "roles": ["manager", "supervisor", "employee"] },
+    { "key": "reports.manage",       "module": "reports",   "label": "Archive or delete reports",  "description": "Archive a reporting period, or permanently delete one and its job rows. This cannot be undone.", "roles": ["manager"] },
+    { "key": "ai.view_briefing",     "module": "ai",        "label": "View the daily briefing",    "description": "See the daily AI-written activity summary, and dismiss or mark your own action items done.", "roles": ["manager", "supervisor", "employee", "apprentice", "labour_hire", "subcontractor"] },
+    { "key": "ai.use",               "module": "ai",        "label": "Use AI tools",               "description": "Use the AI assistant, ask questions about jobs and licences, and run licence-photo recognition.", "roles": ["manager", "supervisor"] }
   ],
   "roleAliases": {
     "$comment": "Foreign role vocabularies mapped onto canonical EqRole. Build validates every target is a real role. INVARIANT: no alias targets is_platform_admin — cross-tenant power is never derived from a tenant-held role, so tenants stay isolated. EQ-internal platform ops live out-of-band (service-role / audited impersonation), not in any tenant role.",
