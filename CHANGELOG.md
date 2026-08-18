@@ -3,6 +3,18 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.7.4] - 2026-08-18
+
+### Added
+- **`service.receive_calendar_digest`** — gates EQ Service's PM Calendar supervisor digest email.
+  Replaces a bespoke `CALENDAR_DIGEST_GROUP_ID` env var (a raw `security_groups.id` check) that
+  eq-service PR #753 already retired in favour of checking this key against eq-shell's
+  `list-members` effective-permissions field (eq-shell PR #1440). Granted to **manager only** by
+  default — the narrowest default that satisfies this model's manager-holds-every-permission
+  invariant (`roles.test.ts`) — with everyone else added individually via the existing "Calendar
+  Digest Recipients" custom group, so the rest of the recipient list stays a deliberate, curated
+  choice rather than an automatic role grant.
+
 ## [2.5.8] - 2026-07-27
 
 ### Added

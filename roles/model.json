@@ -1,5 +1,5 @@
 {
-  "version": "2.7.3",
+  "version": "2.7.4",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -56,6 +56,7 @@
     { "key": "service.close",         "module": "service",   "label": "Close work orders",         "description": "Mark a work order as finished.",                      "roles": ["manager", "supervisor"] },
     { "key": "service.reopen",        "module": "service",   "label": "Reopen a work order",       "description": "Reopen a work order that was already closed. Kept to a small group so the activity log stays meaningful.", "roles": ["manager", "supervisor"] },
     { "key": "service.record_tests",  "module": "service",   "label": "Log calibration results",   "description": "Record calibration or test results against a piece of equipment.", "roles": ["manager", "supervisor"] },
+    { "key": "service.receive_calendar_digest", "module": "service", "label": "Receive calendar digest", "description": "Get the daily email summarising upcoming and overdue calendar items. Manager only by default — add anyone else via the \"Calendar Digest Recipients\" group so the rest of the recipient list stays a deliberate, curated choice.", "roles": ["manager"] },
 
     { "key": "field.view",            "module": "field",     "label": "View field information",      "description": "See staff, licences, availability, and job assignments in EQ Field.", "roles": ["manager", "supervisor", "employee", "apprentice", "labour_hire", "subcontractor"] },
     { "key": "field.view_hours",      "module": "field",     "label": "See timesheets & hours",    "description": "See the hours workers have logged. Kept separate because hours affect pay.", "roles": ["manager", "supervisor"] },
