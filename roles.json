@@ -1,5 +1,5 @@
 {
-  "version": "2.7.3",
+  "version": "2.7.4",
   "generated": true,
   "roles": [
     {
@@ -385,6 +385,15 @@
       ]
     },
     {
+      "key": "service.receive_calendar_digest",
+      "module": "service",
+      "label": "Receive calendar digest",
+      "description": "Get the daily email summarising upcoming and overdue calendar items. Manager only by default — add anyone else via the \"Calendar Digest Recipients\" group so the rest of the recipient list stays a deliberate, curated choice.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
       "key": "field.view",
       "module": "field",
       "label": "View field information",
@@ -715,6 +724,7 @@
       "service.close",
       "service.reopen",
       "service.record_tests",
+      "service.receive_calendar_digest",
       "field.view",
       "field.view_hours",
       "field.view_licences",
