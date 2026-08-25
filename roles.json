@@ -1,5 +1,5 @@
 {
-  "version": "2.7.4",
+  "version": "2.7.5",
   "generated": true,
   "roles": [
     {
@@ -133,8 +133,7 @@
       "label": "View activity log",
       "description": "See what changed, who changed it, and when.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -756,7 +755,6 @@
       "ai.use"
     ],
     "supervisor": [
-      "audit.view",
       "entity.view",
       "entity.view_pii",
       "entity.edit",

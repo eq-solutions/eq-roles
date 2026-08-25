@@ -18,7 +18,6 @@ test('manager holds every permission', () => {
 });
 
 test('supervisor: granted perms return true', () => {
-  assert.equal(can('supervisor', 'audit.view'), true);
   assert.equal(can('supervisor', 'intake.commit'), true);
   assert.equal(can('supervisor', 'field.dispatch'), true);
 });
@@ -26,6 +25,7 @@ test('supervisor: granted perms return true', () => {
 test('supervisor: withheld admin perms return false', () => {
   assert.equal(can('supervisor', 'admin.invite_user'), false);
   assert.equal(can('supervisor', 'admin.manage_groups'), false);
+  assert.equal(can('supervisor', 'audit.view'), false);
   assert.equal(can('supervisor', 'audit.rollback'), false);
   assert.equal(can('supervisor', 'reports.view'), false);
   assert.equal(can('supervisor', 'quotes.approve'), false);
@@ -125,7 +125,7 @@ test('canAny: empty perms array returns false', () => {
 });
 
 test('canAll: true when role holds all perms', () => {
-  assert.equal(canAll('supervisor', ['audit.view', 'entity.edit', 'field.dispatch']), true);
+  assert.equal(canAll('supervisor', ['intake.commit', 'entity.edit', 'field.dispatch']), true);
 });
 
 test('canAll: false when role is missing any one', () => {
