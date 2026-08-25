@@ -1,5 +1,5 @@
 {
-  "version": "2.7.4",
+  "version": "2.7.5",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -25,7 +25,7 @@
     { "key": "admin.review_cards",    "module": "admin",     "label": "Review onboarding",         "description": "Review and approve the details a new worker submits when they join, before they're added as staff.",                "roles": ["manager"] },
     { "key": "admin.manage_groups",   "module": "admin",     "label": "Manage access groups",      "description": "Create access groups and choose who belongs to them. Groups add permissions on top of someone’s role.",     "roles": ["manager"] },
 
-    { "key": "audit.view",            "module": "audit",     "label": "View activity log",         "description": "See what changed, who changed it, and when.",                                 "roles": ["manager", "supervisor"] },
+    { "key": "audit.view",            "module": "audit",     "label": "View activity log",         "description": "See what changed, who changed it, and when.",                                 "roles": ["manager"] },
     { "key": "audit.rollback",        "module": "audit",     "label": "Undo changes",              "description": "Reverse a change shown in the activity log, putting the record back as it was.",                        "roles": ["manager"], "deprecated": "The undo action does not currently work — the system always refuses it. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back once undo is rebuilt." },
 
     { "key": "entity.view",           "module": "entity",    "label": "View records",              "description": "See customers, sites, contacts, and assets. Personal contact details are controlled separately.", "roles": ["manager", "supervisor", "employee", "apprentice"] },

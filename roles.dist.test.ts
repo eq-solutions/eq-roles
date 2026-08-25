@@ -111,7 +111,7 @@ test('roles.js permissionsFor() agrees with roles.ts for every role', () => {
 test('roles.js canAny / canAll behave correctly', () => {
   assert.equal(rt.canAny('employee', ['admin.invite_user', 'field.view']), true);
   assert.equal(rt.canAny('labour_hire', ['admin.invite_user', 'service.create']), false);
-  assert.equal(rt.canAll('supervisor', ['audit.view', 'entity.edit', 'field.dispatch']), true);
+  assert.equal(rt.canAll('supervisor', ['intake.commit', 'entity.edit', 'field.dispatch']), true);
   assert.equal(rt.canAll('supervisor', ['audit.view', 'admin.invite_user']), false);
 });
 

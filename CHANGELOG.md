@@ -3,6 +3,19 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.7.5] - 2026-08-25
+
+Permission-grant correction, not a nav change. eq-shell's "Audit log" link has always
+gated on `admin.list_users` (manager-only) — never on `audit.view` directly. Supervisor
+held `audit.view` anyway, so the permission implied access the nav never granted.
+Royce's call, once the mismatch surfaced: the permission was the wrong one, not the nav.
+
+### Changed
+- **`audit.view`** — removed from Supervisor's default grant, now **manager only**.
+  No live surface changes: the one place that read this key for Supervisor was the
+  key's own description, not any real gate. `roles.test.ts`/`roles.dist.test.ts`
+  fixtures updated to match.
+
 ## [2.7.4] - 2026-08-18
 
 ### Added
