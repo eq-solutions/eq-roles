@@ -3,6 +3,19 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.7.6] - 2026-08-31
+
+### Added
+- **`quotes.view_all`** — promoted from a Shell-local permission (declared by hand in eq-shell's
+  `src/modules/quotes/permissions.ts` since migration 0267, 2026-08-23) into the canonical matrix.
+  No behaviour change: still Manager+Supervisor by default, same as it's always resolved server-side
+  in `eq_list_quotes`/`eq_get_quote_detail` (migrations 0267/0296). The only thing this adds is a real
+  grant lever — it's now a normal `PermKey`, so eq-shell's Access Control page can grant it to one
+  specific Employee (e.g. covering a manager's leave) without a role promotion, the same way every
+  other perm in this matrix is grantable through the custom-groups mechanism. Previously impossible:
+  the RPCs already honoured an `extra_perms` claim for this key, but nothing in the product could set
+  one, since it lived outside the package's `PermKey` union that the grant UI draws from.
+
 ## [2.7.5] - 2026-08-25
 
 Permission-grant correction, not a nav change. eq-shell's "Audit log" link has always

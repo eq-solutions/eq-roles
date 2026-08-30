@@ -1,5 +1,5 @@
 {
-  "version": "2.7.5",
+  "version": "2.7.6",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -69,6 +69,7 @@
     { "key": "field.manage_people",   "module": "field",     "label": "Add / remove / edit workers", "description": "Add a worker, change their details, remove or restore them, and reset their PIN.", "roles": ["manager", "supervisor"] },
 
     { "key": "quotes.view",           "module": "quotes",    "label": "View quotes",               "description": "See quotes and their status. Cost and margin are controlled separately.",                                        "roles": ["manager", "supervisor", "employee"] },
+    { "key": "quotes.view_all",       "module": "quotes",    "label": "See all quotes",            "description": "See every quote, not just the ones you created. Kept separate from viewing quotes so Employees can track their own pipeline without seeing everyone else's.", "roles": ["manager", "supervisor"] },
     { "key": "quotes.create",         "module": "quotes",    "label": "Create quotes",             "description": "Write a new quote or change an existing one.",                             "roles": ["manager", "supervisor"] },
     { "key": "quotes.approve",        "module": "quotes",    "label": "Approve quotes",            "description": "Approve a quote and send it to the customer.",                           "roles": ["manager"] },
 

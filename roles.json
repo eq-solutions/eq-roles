@@ -1,5 +1,5 @@
 {
-  "version": "2.7.5",
+  "version": "2.7.6",
   "generated": true,
   "roles": [
     {
@@ -499,6 +499,16 @@
       ]
     },
     {
+      "key": "quotes.view_all",
+      "module": "quotes",
+      "label": "See all quotes",
+      "description": "See every quote, not just the ones you created. Kept separate from viewing quotes so Employees can track their own pipeline without seeing everyone else's.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "quotes.create",
       "module": "quotes",
       "label": "Create quotes",
@@ -734,6 +744,7 @@
       "field.manage_labour_hire",
       "field.manage_people",
       "quotes.view",
+      "quotes.view_all",
       "quotes.create",
       "quotes.approve",
       "ops.view_rates",
@@ -781,6 +792,7 @@
       "field.manage_labour_hire",
       "field.manage_people",
       "quotes.view",
+      "quotes.view_all",
       "quotes.create",
       "ops.view_rates",
       "ops.view_margins",
