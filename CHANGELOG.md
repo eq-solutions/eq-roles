@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.7.7] - 2026-09-01
+
+### Changed
+- **`quotes.view_all`** — removed from Supervisor's default grant, now **manager only**. Royce's call after seeing the live grant surface (2026-09-01): of SKS's 12 Supervisors, only 2 have ever created a quote (`quote.created_by`) — one already covered by keeping his own quotes visible regardless, one already a deactivated duplicate account, unrelated to this change. The other 10 have never touched Ops; narrowing removes access they don't use, not access they rely on. `/decide` pass run before building. No new grant lever needed — Access Control's existing custom-groups mechanism (live since v2.7.6, the previous release) already lets any specific Supervisor be re-granted individually if a real need shows up.
+
 ## [2.7.6] - 2026-08-31
 
 ### Added
