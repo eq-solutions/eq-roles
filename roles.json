@@ -1,5 +1,5 @@
 {
-  "version": "2.7.7",
+  "version": "2.8.0",
   "generated": true,
   "roles": [
     {
@@ -876,6 +876,163 @@
         "admin.review_cards",
         "audit.view"
       ]
+    }
+  ],
+  "resourcePermissions": [
+    {
+      "resource": "customer",
+      "action": "view",
+      "perm": "entity.view"
+    },
+    {
+      "resource": "customer",
+      "action": "create",
+      "perm": "entity.create"
+    },
+    {
+      "resource": "customer",
+      "action": "edit",
+      "perm": "entity.edit"
+    },
+    {
+      "resource": "customer",
+      "action": "delete",
+      "perm": "entity.delete"
+    },
+    {
+      "resource": "contact",
+      "action": "view",
+      "perm": "entity.view"
+    },
+    {
+      "resource": "contact",
+      "action": "create",
+      "perm": "entity.create"
+    },
+    {
+      "resource": "contact",
+      "action": "edit",
+      "perm": "entity.edit"
+    },
+    {
+      "resource": "contact",
+      "action": "delete",
+      "perm": "entity.delete"
+    },
+    {
+      "resource": "site",
+      "action": "view",
+      "perm": "entity.view"
+    },
+    {
+      "resource": "site",
+      "action": "create",
+      "perm": "entity.create"
+    },
+    {
+      "resource": "site",
+      "action": "edit",
+      "perm": "entity.edit"
+    },
+    {
+      "resource": "site",
+      "action": "delete",
+      "perm": "entity.delete"
+    },
+    {
+      "resource": "asset",
+      "action": "view",
+      "perm": "entity.view"
+    },
+    {
+      "resource": "asset",
+      "action": "edit",
+      "perm": "entity.edit"
+    },
+    {
+      "resource": "asset",
+      "action": "delete",
+      "perm": "entity.delete"
+    },
+    {
+      "resource": "site_project",
+      "action": "create",
+      "perm": "entity.create"
+    },
+    {
+      "resource": "site_project",
+      "action": "delete",
+      "perm": "entity.delete"
+    },
+    {
+      "resource": "staff",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "staff",
+      "action": "edit",
+      "perm": "field.dispatch"
+    },
+    {
+      "resource": "field_person",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "schedule",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "leave_request",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "leave_request",
+      "action": "edit",
+      "perm": "field.dispatch"
+    },
+    {
+      "resource": "timesheet",
+      "action": "view",
+      "perm": "field.view_hours"
+    },
+    {
+      "resource": "timesheet",
+      "action": "edit",
+      "perm": "field.dispatch"
+    },
+    {
+      "resource": "licence",
+      "action": "view",
+      "perm": "field.view_licences"
+    },
+    {
+      "resource": "team",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "prestart",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "toolbox_talk",
+      "action": "view",
+      "perm": "field.view"
+    },
+    {
+      "resource": "tender",
+      "action": "view",
+      "perm": null
+    },
+    {
+      "resource": "equipment",
+      "action": "view",
+      "perm": "equipment.view"
     }
   ]
 }

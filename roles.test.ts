@@ -6,7 +6,8 @@ import {
   SERVICE_ROLE_MAP, fromServiceRole, labelFor,
   DEFAULT_GROUPS, defaultGroupPerms,
   resolveEffectivePermissions,
-  type EqRole, type PermKey, type ServiceRole,
+  RESOURCE_PERMS, canAccessResource,
+  type EqRole, type PermKey, type ServiceRole, type ResourceAction,
 } from './roles.ts';
 
 // ── can() ──────────────────────────────────────────────────────────────────
@@ -348,4 +349,60 @@ test('resolve: revoke (reserved) subtracts, and deny-wins over a grant', () => {
 test('resolve: platform admin beats revoke (precedence top)', () => {
   const eff = resolveEffectivePermissions({ role: 'manager', isPlatformAdmin: true, revokes: ['quotes.approve'] });
   assert.ok(eff.includes('quotes.approve'), 'platform_admin outranks revoke');
+});
+
+// ── canAccessResource() / RESOURCE_PERMS ────────────────────────────────────
+
+test('RESOURCE_PERMS is non-empty, every action is valid, every non-null perm is a real PermKey', () => {
+  const VALID_ACTIONS = new Set<ResourceAction>(['view', 'create', 'edit', 'delete']);
+  const permKeys = new Set(PERMISSIONS.map((p) => p.key));
+  assert.ok(RESOURCE_PERMS.length > 0);
+  for (const rp of RESOURCE_PERMS) {
+    assert.ok(VALID_ACTIONS.has(rp.action), `"${rp.resource}:${rp.action}" has an invalid action`);
+    if (rp.perm !== null) assert.ok(permKeys.has(rp.perm), `"${rp.resource}:${rp.action}" references unknown permission "${rp.perm}"`);
+  }
+});
+
+test('RESOURCE_PERMS has no duplicate resource+action pair', () => {
+  const seen = new Set<string>();
+  for (const rp of RESOURCE_PERMS) {
+    const key = `${rp.resource}:${rp.action}`;
+    assert.ok(!seen.has(key), `duplicate resource+action: ${key}`);
+    seen.add(key);
+  }
+});
+
+test('canAccessResource: gated pair follows the underlying permission exactly', () => {
+  // customer:view -> entity.view (manager/supervisor/employee/apprentice, not labour_hire).
+  assert.equal(canAccessResource('manager', 'customer', 'view'), can('manager', 'entity.view'));
+  assert.equal(canAccessResource('labour_hire', 'customer', 'view'), can('labour_hire', 'entity.view'));
+  assert.equal(canAccessResource('labour_hire', 'customer', 'view'), false);
+  assert.equal(canAccessResource('employee', 'customer', 'view'), true);
+});
+
+test('canAccessResource: explicit null-perm pair is always true regardless of role', () => {
+  for (const role of ROLE_KEYS) {
+    assert.equal(canAccessResource(role, 'tender', 'view'), true, `tender:view must be true for ${role}`);
+  }
+});
+
+test('canAccessResource: unmodeled resource/action pair fails closed (false), distinct from an explicit null row', () => {
+  // asset has no 'create' row (no generic insert door) — must not silently fall back to entity.create.
+  assert.equal(canAccessResource('manager', 'asset', 'create'), false);
+  assert.equal(can('manager', 'entity.create'), true, 'sanity: manager really does hold entity.create in general');
+  // A resource this model has never heard of at all.
+  assert.equal(canAccessResource('manager', 'not_a_real_resource', 'view'), false);
+});
+
+test('canAccessResource: isPlatformAdmin short-circuits a gated pair to true', () => {
+  assert.equal(canAccessResource('labour_hire', 'customer', 'delete'), false);
+  assert.equal(canAccessResource('labour_hire', 'customer', 'delete', { isPlatformAdmin: true }), true);
+});
+
+test('canAccessResource: field.dispatch-gated resources agree with the raw permission', () => {
+  for (const role of ROLE_KEYS) {
+    assert.equal(canAccessResource(role, 'staff', 'edit'), can(role, 'field.dispatch'));
+    assert.equal(canAccessResource(role, 'timesheet', 'edit'), can(role, 'field.dispatch'));
+    assert.equal(canAccessResource(role, 'leave_request', 'edit'), can(role, 'field.dispatch'));
+  }
 });
