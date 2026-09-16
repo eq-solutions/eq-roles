@@ -322,6 +322,15 @@
       "deprecated": "No longer used — “Review onboarding” does this job. Existing settings still work — do not apply this to anyone new."
     },
     {
+      "key": "cards.manage_licences",
+      "module": "cards",
+      "label": "Manage worker licences",
+      "description": "Add, replace, or remove a worker's licence or certificate on their behalf, and mark compliance overrides.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
       "key": "service.view",
       "module": "service",
       "label": "View maintenance",
@@ -726,6 +735,7 @@
       "reports.generate_briefing",
       "cards.view",
       "cards.onboard",
+      "cards.manage_licences",
       "service.view",
       "service.view_commercials",
       "service.create",
