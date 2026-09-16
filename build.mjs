@@ -58,6 +58,22 @@ export function buildArtefacts(model) {
     if (!Array.isArray(g.perms) || g.perms.length === 0) errors.push(`defaultGroup "${g.key}" must grant at least one permission`);
     for (const p of g.perms ?? []) if (!permKeySet.has(p)) errors.push(`defaultGroup "${g.key}" grants unknown permission "${p}"`);
   }
+
+  // resourcePermissions: resource x action -> required PermKey (or null = deliberately
+  // ungated). action must be one of the four modeled verbs; every resource+action pair
+  // must be unique; every non-null perm must be a real permission key.
+  const RESOURCE_ACTIONS = new Set(['view', 'create', 'edit', 'delete']);
+  const resourcePerms = model.resourcePermissions ?? [];
+  const seenResourceActions = new Set();
+  for (const rp of resourcePerms) {
+    if (!rp.resource || !String(rp.resource).trim()) errors.push('resourcePermissions entry is missing a resource');
+    if (!RESOURCE_ACTIONS.has(rp.action)) errors.push(`resourcePermissions "${rp.resource}" has invalid action "${rp.action}" (must be view/create/edit/delete)`);
+    const rpKey = `${rp.resource}:${rp.action}`;
+    if (seenResourceActions.has(rpKey)) errors.push(`resourcePermissions has a duplicate resource+action: ${rpKey}`);
+    seenResourceActions.add(rpKey);
+    if (rp.perm !== null && !permKeySet.has(rp.perm)) errors.push(`resourcePermissions "${rpKey}" references unknown permission "${rp.perm}"`);
+  }
+
   if (errors.length) throw new Error('model.json invalid:\n  - ' + errors.join('\n  - '));
 
   // ── derive the matrix (per role -> perms that list it) ─────────────────────
@@ -78,6 +94,7 @@ export function buildArtefacts(model) {
     matrix,
     roleAliases: Object.fromEntries(aliases.map(([src, def]) => [src, def.map])),
     defaultGroups: groups,
+    resourcePermissions: resourcePerms,
   };
   const json = JSON.stringify(resolved, null, 2) + '\n';
 
@@ -216,6 +233,37 @@ export function resolveEffectivePermissions(input: EffectivePermsInput): readonl
   if (input.revokes) for (const p of input.revokes) granted.delete(p);
   return PERMISSIONS.filter((p) => granted.has(p.key)).map((p) => p.key);
 }
+
+/* ── Resource-permission layer ─────────────────────────────────────────────
+ * Declarative resource x action -> required PermKey mapping (roles/model.json
+ * resourcePermissions), so "does resource X need permission Y for action Z" can
+ * never quietly drift between independent consumers again. Authored as a
+ * byte-faithful transcription of eq-shell's own pre-existing per-file Sets —
+ * see model.json's own $resourcePermissions comment for the full rationale. */
+export type ResourceAction = 'view' | 'create' | 'edit' | 'delete';
+export interface ResourcePermissionMeta { resource: string; action: ResourceAction; perm: PermKey | null; }
+export const RESOURCE_PERMS: readonly ResourcePermissionMeta[] = ${JSON.stringify(resourcePerms)};
+
+const RESOURCE_PERM_MAP: Record<string, PermKey | null> = Object.fromEntries(
+  RESOURCE_PERMS.map((rp) => [\`\${rp.resource}:\${rp.action}\`, rp.perm]),
+);
+
+/** Does this role hold the permission required for \`action\` on \`resource\`?
+  * Returns true when the pair is explicitly modeled as ungated (perm: null).
+  * Returns false (fail-closed) when the resource/action pair isn't modeled at all —
+  * distinct from an explicit null row above. */
+export function canAccessResource(
+  role: EqRole,
+  resource: string,
+  action: ResourceAction,
+  opts?: { isPlatformAdmin?: boolean },
+): boolean {
+  const key = \`\${resource}:\${action}\`;
+  if (!(key in RESOURCE_PERM_MAP)) return false;
+  const perm = RESOURCE_PERM_MAP[key];
+  if (perm === null) return true;
+  return can(role, perm, opts);
+}
 ` + groupsTs + aliasTs;
 
   // ── roles.js (runtime ESM, the entry consumers actually load) ──────────────
@@ -285,6 +333,26 @@ export function resolveEffectivePermissions(input) {
   if (input.revokes) for (const p of input.revokes) granted.delete(p);
   return PERMISSIONS.filter((p) => granted.has(p.key)).map((p) => p.key);
 }
+
+/* Resource-permission layer — resource x action -> required PermKey (or null =
+ * deliberately ungated). See roles.ts's own comment / model.json's
+ * $resourcePermissions for the full rationale. */
+export const RESOURCE_PERMS = ${JSON.stringify(resourcePerms)};
+
+const RESOURCE_PERM_MAP = Object.fromEntries(
+  RESOURCE_PERMS.map((rp) => [\`\${rp.resource}:\${rp.action}\`, rp.perm]),
+);
+
+/** Does this role hold the permission required for \`action\` on \`resource\`?
+ * Returns true when the pair is explicitly modeled as ungated (perm: null).
+ * Returns false (fail-closed) when the resource/action pair isn't modeled at all. */
+export function canAccessResource(role, resource, action, opts) {
+  const key = \`\${resource}:\${action}\`;
+  if (!(key in RESOURCE_PERM_MAP)) return false;
+  const perm = RESOURCE_PERM_MAP[key];
+  if (perm === null) return true;
+  return can(role, perm, opts);
+}
 ` + groupsJs + aliasJs;
 
   return { json, ts, js, stats: { roles: roleKeys.length, permissions: permKeys.length } };
@@ -322,6 +390,11 @@ export function buildDartArtefacts(model) {
   const groups = model.defaultGroups ?? [];
   const groupEntries = groups.map((g) =>
     `  DefaultGroup('${g.key}', '${esc(g.name)}', '${esc(g.description)}', ${dartList(g.perms)})`,
+  ).join(',\n');
+
+  const resourcePerms = model.resourcePermissions ?? [];
+  const resourceEntries = resourcePerms.map((rp) =>
+    `  ResourcePermissionMeta('${esc(rp.resource)}', '${esc(rp.action)}', ${rp.perm === null ? 'null' : `'${esc(rp.perm)}'`})`,
   ).join(',\n');
 
   const aliases = Object.entries(model.roleAliases ?? {}).filter(([k]) => !k.startsWith('$'));
@@ -445,6 +518,36 @@ Set<String> resolveEffectivePermissions({
   }
   granted.removeAll(revokes);
   return granted;
+}
+
+/// One resource x action -> required-permission mapping. \`perm\` null means
+/// this resource/action pair is deliberately ungated (canAccessResource always
+/// returns true for it) rather than simply unmodeled (canAccessResource
+/// returns false for any resource/action pair not in kResourcePerms at all).
+class ResourcePermissionMeta {
+  const ResourcePermissionMeta(this.resource, this.action, this.perm);
+  final String resource;
+  final String action;
+  final String? perm;
+}
+
+const List<ResourcePermissionMeta> kResourcePerms = [
+${resourceEntries || '  // none defined'}
+];
+
+final Map<String, String?> _kResourcePermMap = {
+  for (final rp in kResourcePerms) '\${rp.resource}:\${rp.action}': rp.perm,
+};
+
+/// Does this role hold the permission required for [action] on [resource]?
+/// Returns true when the pair is explicitly modeled as ungated (perm: null).
+/// Returns false (fail-closed) when the resource/action pair isn't modeled at all.
+bool canAccessResource(EqRole role, String resource, String action, {bool isPlatformAdmin = false}) {
+  final key = '\$resource:\$action';
+  if (!_kResourcePermMap.containsKey(key)) return false;
+  final perm = _kResourcePermMap[key];
+  if (perm == null) return true;
+  return can(role, perm, isPlatformAdmin: isPlatformAdmin);
 }
 ${aliasBlocks}
 `;
