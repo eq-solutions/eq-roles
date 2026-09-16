@@ -3,6 +3,14 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.8.0] - 2026-09-16
+
+### Added
+- **`cards.manage_licences`** — split out of `admin.review_cards`, which bundled two unrelated things: onboarding/policy governance (approve Cards signups, set org-wide credential requirements, export licence data) and per-person licence record admin (add/replace-photo/remove a licence, mark/revoke a compliance override, resync). Only the second cluster moves to this new key; `admin.review_cards` keeps its original scope and every one of its existing call sites. Manager-only by default — no behaviour change for anyone who already has it. The difference is this key isn't `admin.`/`audit.`-prefixed, so unlike `admin.review_cards` it's actually grantable through the custom-groups mechanism to someone who isn't a Manager. Surfaced when a live grant attempt (an Office/Admin group, for a non-Manager) hit the DB's `security_group_perms_no_escalation_keys` constraint — the same constraint independently confirmed to already make the canonical `project_managers` default group (see Known issue below) fully non-functional. `/decide` pass run before building.
+
+### Known issue (not fixed in this release)
+- **`defaultGroups.project_managers`** grants `admin.list_users`, `admin.edit_user`, `admin.review_cards`, `audit.view` — every one of which is illegal under `security_group_perms_no_escalation_keys`. This template cannot currently be instantiated on any tenant. Needs its own pass (replace with group-grantable equivalents where one exists, e.g. `cards.manage_licences`, drop the rest) — left out of this release to keep it focused on the one permission Zemi Asri's case needed.
+
 ## [2.7.7] - 2026-09-01
 
 ### Changed

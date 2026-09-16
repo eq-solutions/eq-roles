@@ -1,5 +1,5 @@
 {
-  "version": "2.7.7",
+  "version": "2.8.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
@@ -49,6 +49,7 @@
 
     { "key": "cards.view",            "module": "cards",     "label": "Open Cards",                "description": "Open the worker onboarding app.",                "roles": ["manager", "supervisor", "employee", "apprentice"], "deprecated": "No longer used. EQ Cards is switched on for a whole organisation rather than per person. Existing settings still work — do not apply this to anyone new." },
     { "key": "cards.onboard",         "module": "cards",     "label": "Submit onboarding",         "description": "Fill in or manage a worker’s onboarding details.",                "roles": ["manager", "supervisor"], "deprecated": "No longer used — “Review onboarding” does this job. Existing settings still work — do not apply this to anyone new." },
+    { "key": "cards.manage_licences", "module": "cards",     "label": "Manage worker licences",    "description": "Add, replace, or remove a worker's licence or certificate on their behalf, and mark compliance overrides.", "roles": ["manager"] },
 
     { "key": "service.view",          "module": "service",   "label": "View maintenance",          "description": "See work orders, faults, and scheduled maintenance.",  "roles": ["manager", "supervisor", "employee", "apprentice"] },
     { "key": "service.view_commercials","module": "service", "label": "See job pricing",           "description": "See what a job is worth — its price and contract value. Kept separate from viewing maintenance so people can do the work without seeing the money.", "roles": ["manager", "supervisor"] },
