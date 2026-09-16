@@ -264,6 +264,21 @@ export function canAccessResource(
   if (perm === null) return true;
   return can(role, perm, opts);
 }
+
+/** Which PermKey does \`action\` on \`resource\` require — without checking whether
+  * any particular role holds it? For a caller (eq-shell's requirePerm()/can(),
+  * which layers tenant overrides + security groups on top of the base role
+  * matrix) that needs the permission key itself, not canAccessResource()'s
+  * bundled role-only check. Returns null when the pair is explicitly modeled
+  * as ungated; undefined when the resource/action pair isn't modeled at all —
+  * same two-state distinction canAccessResource() collapses to false. */
+export function permKeyForResource(
+  resource: string,
+  action: ResourceAction,
+): PermKey | null | undefined {
+  const key = \`\${resource}:\${action}\`;
+  return key in RESOURCE_PERM_MAP ? RESOURCE_PERM_MAP[key] : undefined;
+}
 ` + groupsTs + aliasTs;
 
   // ── roles.js (runtime ESM, the entry consumers actually load) ──────────────
@@ -352,6 +367,15 @@ export function canAccessResource(role, resource, action, opts) {
   const perm = RESOURCE_PERM_MAP[key];
   if (perm === null) return true;
   return can(role, perm, opts);
+}
+
+/** Which PermKey does \`action\` on \`resource\` require, without checking any
+ * particular role — for a caller layering its own can()/requirePerm() (tenant
+ * overrides, security groups) on top instead of using canAccessResource()'s
+ * bundled role-only check. null = explicitly ungated; undefined = not modeled. */
+export function permKeyForResource(resource, action) {
+  const key = \`\${resource}:\${action}\`;
+  return key in RESOURCE_PERM_MAP ? RESOURCE_PERM_MAP[key] : undefined;
 }
 ` + groupsJs + aliasJs;
 

@@ -6,7 +6,7 @@ import {
   SERVICE_ROLE_MAP, fromServiceRole, labelFor,
   DEFAULT_GROUPS, defaultGroupPerms,
   resolveEffectivePermissions,
-  RESOURCE_PERMS, canAccessResource,
+  RESOURCE_PERMS, canAccessResource, permKeyForResource,
   type EqRole, type PermKey, type ServiceRole, type ResourceAction,
 } from './roles.ts';
 
@@ -404,5 +404,36 @@ test('canAccessResource: field.dispatch-gated resources agree with the raw permi
     assert.equal(canAccessResource(role, 'staff', 'edit'), can(role, 'field.dispatch'));
     assert.equal(canAccessResource(role, 'timesheet', 'edit'), can(role, 'field.dispatch'));
     assert.equal(canAccessResource(role, 'leave_request', 'edit'), can(role, 'field.dispatch'));
+  }
+});
+
+// ── permKeyForResource() ─────────────────────────────────────────────────────
+// Built for eq-shell's W3 migration: a caller with its own richer can()/
+// requirePerm() (tenant overrides, security groups) needs the perm KEY, not
+// canAccessResource()'s bundled role-only check.
+
+test('permKeyForResource: gated pair returns the exact perm key from RESOURCE_PERMS', () => {
+  assert.equal(permKeyForResource('customer', 'view'), 'entity.view');
+  assert.equal(permKeyForResource('staff', 'edit'), 'field.dispatch');
+  assert.equal(permKeyForResource('timesheet', 'view'), 'field.view_hours');
+});
+
+test('permKeyForResource: explicit null-perm pair returns null, not undefined', () => {
+  assert.equal(permKeyForResource('tender', 'view'), null);
+});
+
+test('permKeyForResource: unmodeled resource/action pair returns undefined, distinct from an explicit null row', () => {
+  assert.equal(permKeyForResource('asset', 'create'), undefined);
+  assert.equal(permKeyForResource('not_a_real_resource', 'view'), undefined);
+});
+
+test('permKeyForResource agrees with canAccessResource for every modeled pair, for every role', () => {
+  for (const rp of RESOURCE_PERMS) {
+    const perm = permKeyForResource(rp.resource, rp.action);
+    assert.equal(perm, rp.perm);
+    for (const role of ROLE_KEYS) {
+      const expected = perm === null ? true : can(role, perm as Parameters<typeof can>[1]);
+      assert.equal(canAccessResource(role, rp.resource, rp.action), expected);
+    }
   }
 });
