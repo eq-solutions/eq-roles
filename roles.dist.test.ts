@@ -62,6 +62,8 @@ test('roles.js exports the full public surface', () => {
     'MATRIX', 'can', 'permissionsFor', 'canAny', 'canAll', 'isEqRole',
     'SERVICE_ROLE_MAP', 'fromServiceRole', 'labelFor',
     'DEFAULT_GROUPS', 'defaultGroupPerms',
+    'resolveEffectivePermissions', 'RESOURCE_PERMS', 'canAccessResource',
+    'permKeyForResource',
   ]) {
     assert.ok(name in rt, `roles.js is missing export "${name}"`);
   }

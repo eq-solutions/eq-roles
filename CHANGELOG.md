@@ -3,6 +3,14 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.8.1] - 2026-09-16
+
+### Fixed
+- **Version collision** — #34 (`RESOURCE_PERMS` / `canAccessResource`) and #35 (`cards.manage_licences`) both landed as `2.8.0` minutes apart. Package + model stamped to **2.8.1** so combined HEAD has one unambiguous version. No matrix grant changes beyond that stamp.
+
+### Added
+- **`permKeyForResource(resource, action)`** — resource→`PermKey` lookup (or `null` for ungated / unmodeled pairs), exported alongside `canAccessResource()` on TS + JS only. Built for eq-shell's W3 migration: call sites that already layer `tenant_role_overrides` + security-group grants on top of the base matrix need the lookup, not `canAccessResource()`'s plain role-based check (which would silently drop those layers).
+
 ## [2.8.0] - 2026-09-16
 
 ### Added
