@@ -1,6 +1,6 @@
 {
   "version": "2.8.1",
-  "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json. Adding a tier, permission, or roleAlias is a spec-level change — keep IDENTITY-MODEL.md in sync.",
+  "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report." },
     { "key": "supervisor",  "label": "Supervisor",  "rank": 2, "description": "Runs the day-to-day. Views and edits records, runs and confirms imports, manages workers, licences, rosters and dispatch, creates quotes, and sees cost, margin, rates and supplier logins. Cannot manage user accounts, open reports, undo changes, or delete records." },
