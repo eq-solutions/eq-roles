@@ -3,6 +3,23 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.8.2] - 2026-09-21
+
+### Fixed
+- **`defaultGroups.project_managers`** — was unseedable on every tenant: its perms (`admin.list_users`, `admin.edit_user`, `admin.review_cards`, `audit.view`) are all blocked by the live DB constraint `security_group_perms_no_escalation_keys` (CHANGELOG 2.8.0 Known issue). **/decide (recorded):** follow that Known issue's own recommended pass — keep only the group-grantable equivalent that exists (`cards.manage_licences`), drop the illegal admin/audit keys. Template description updated to match. This **narrows** what the template would grant if it had ever seeded (it never could); managers still hold the dropped keys via the base role matrix.
+
+### Documented
+- **`tender:view` remains `perm: null` (ungated)** — byte-faithful transcription of eq-shell's live resource maps (v2.8.0). Closed PR #28 wanted a `tender.view` gate (mgr+sup) because browse exposes `estimated_value_cents`; that is a product decide, not silently flipped here. Tracking: **eq-roles#40**. Model `$resourcePermissions` comment cross-links the open question.
+- **`permKeyForResource` is intentionally TS/JS only** until EQ Cards asks for a Dart helper (`kResourcePerms` + `canAccessResource` are already public in `lib/eq_roles.dart`).
+
+### Tests / DX
+- Default groups must not grant `/^(admin|audit)\./` (escalation denylist).
+- `subcontractor` exclusive-grant assertion (mirror of `labour_hire`).
+- `package.json` exports module subpaths must match `model.modules`.
+- Role description copy aligned with the matrix (no “undoes changes”; labour_hire/subcontractor mention `documents.view`).
+- README default-groups table corrected (`report_viewers` includes `reports.view_financial`).
+- `CONTRIBUTING.md`, `LICENSE` (UNLICENSED), `CODEOWNERS`; sandbox `MODULE_LABELS` covers `documents` + `ai`; `CHANGELOG.md` + `LICENSE` included in npm `files`.
+
 ## [2.8.1] - 2026-09-16
 
 ### Fixed

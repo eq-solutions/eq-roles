@@ -1,42 +1,42 @@
 {
-  "version": "2.8.1",
+  "version": "2.8.2",
   "generated": true,
   "roles": [
     {
       "key": "manager",
       "label": "Manager",
       "rank": 1,
-      "description": "Full access. Manages people and access groups, undoes changes, deletes records, approves quotes, and sees every report."
+      "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)"
     },
     {
       "key": "supervisor",
       "label": "Supervisor",
       "rank": 2,
-      "description": "Runs the day-to-day. Views and edits records, runs and confirms imports, manages workers, licences, rosters and dispatch, creates quotes, and sees cost, margin, rates and supplier logins. Cannot manage user accounts, open reports, undo changes, or delete records."
+      "description": "Runs the day-to-day. Views and edits records, runs and confirms imports, manages workers, licences, rosters and dispatch, creates quotes, and sees cost, margin, rates and supplier logins. Cannot manage user accounts, open reports, or delete records."
     },
     {
       "key": "employee",
       "label": "Employee",
       "rank": 3,
-      "description": "Everyday staff access. Views records, quotes, maintenance, equipment and field information, and can start an import. Cannot see personal details, hours, licences, cost or margin."
+      "description": "Everyday staff access. Views records, quotes, maintenance, equipment, field information and documents, and can start an import. Cannot see personal details, hours, licences, cost or margin."
     },
     {
       "key": "apprentice",
       "label": "Apprentice",
       "rank": 4,
-      "description": "Read-only across records, maintenance, equipment and field information. Can see imports but not start one, and cannot view quotes."
+      "description": "Read-only across records, maintenance, equipment, field information and documents. Can see imports but not start one, and cannot view quotes."
     },
     {
       "key": "labour_hire",
       "label": "Labour Hire",
       "rank": 5,
-      "description": "Agency worker. Sees field information and the equipment list, nothing else."
+      "description": "Agency worker. Sees field information, the equipment list, and documents assigned to them."
     },
     {
       "key": "subcontractor",
       "label": "Subcontractor",
       "rank": 6,
-      "description": "External trade engaged for a job, not an agency worker. Sees field information only."
+      "description": "External trade engaged for a job, not an agency worker. Sees field information and documents assigned to them."
     }
   ],
   "roleKeys": [
@@ -879,12 +879,9 @@
     {
       "key": "project_managers",
       "name": "Project Managers",
-      "description": "Manage users, review Cards onboarding, and view the audit log without full manager admin rights. Promoted from a tenant-specific group (originally SKS) once it proved to be a common cross-cutting need, not a one-off.",
+      "description": "Manage worker licences (add/replace/remove, compliance overrides) without full manager admin rights. Admin/audit keys were removed in v2.8.2 — they are blocked by security_group_perms_no_escalation_keys and made this template unseedable. Promoted from a tenant-specific group (originally SKS).",
       "perms": [
-        "admin.list_users",
-        "admin.edit_user",
-        "admin.review_cards",
-        "audit.view"
+        "cards.manage_licences"
       ]
     }
   ],

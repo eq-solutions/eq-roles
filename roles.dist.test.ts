@@ -54,6 +54,37 @@ test('package.json version matches model.json version', () => {
   assert.equal(pkg.version, model.version, 'bump package.json + roles/model.json together');
 });
 
+test('package.json exports module subpaths match model.modules', () => {
+  const pkg = JSON.parse(read('package.json'));
+  const exportModules = Object.keys(pkg.exports)
+    .filter((k: string) => k.startsWith('./') && k !== './roles.js' && k !== './roles.ts' && k !== './roles.json' && k !== './package.json')
+    .map((k: string) => k.slice(2))
+    .sort();
+  const modelModules = [...model.modules].sort();
+  assert.deepEqual(exportModules, modelModules, 'run npm run build so package.json exports stay in sync with model.modules');
+});
+
+// The sandbox embeds roles.json wholesale (with `<` → `\u003c` so a string
+// value can't break out of the <script type="application/json"> block).
+// Date stamp in the meta line is allowed to drift; the canonical payload is not.
+test('security-groups.html embeds current roles.json (run `npm run export:html`)', () => {
+  const html = read('security-groups.html');
+  const marker = 'id="eq-canonical-data">';
+  const start = html.indexOf(marker);
+  assert.ok(start >= 0, 'eq-canonical-data block missing — re-run npm run export:html');
+  const jsonStart = start + marker.length;
+  const jsonEnd = html.indexOf('</script>', jsonStart);
+  assert.ok(jsonEnd > jsonStart, 'eq-canonical-data script block unclosed');
+  const embedded = JSON.parse(html.slice(jsonStart, jsonEnd).replace(/\\u003c/g, '<'));
+  const onDisk = JSON.parse(read('roles.json'));
+  assert.deepEqual(embedded, onDisk, 'security-groups.html is stale — run npm run export:html');
+  assert.match(
+    html,
+    new RegExp(`@eq-solutions/roles v${String(onDisk.version).replace(/\./g, '\\.')}`),
+    'sandbox meta version drifted from roles.json',
+  );
+});
+
 // ── shipped roles.js behaves identically to roles.ts ────────────────────────
 
 test('roles.js exports the full public surface', () => {

@@ -1,0 +1,3 @@
+# Authz source of truth — require review on semantic changes.
+/roles/model.json @Milmlow
+/build.mjs @Milmlow
