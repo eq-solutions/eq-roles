@@ -74,6 +74,17 @@ test('labour_hire: field.view + equipment.view + documents.view only', () => {
   }
 });
 
+test('subcontractor: field.view + documents.view only', () => {
+  assert.equal(can('subcontractor', 'field.view'), true);
+  assert.equal(can('subcontractor', 'documents.view'), true);
+  assert.equal(can('subcontractor', 'equipment.view'), false);
+  const held = new Set(['field.view', 'documents.view']);
+  const others = PERMISSIONS.map(p => p.key).filter(k => !held.has(k));
+  for (const p of others) {
+    assert.equal(can('subcontractor', p), false, `subcontractor should not have ${p}`);
+  }
+});
+
 // v2.5.1: ops.* promoted from Shell-local-only (src/permissions/matrix.ts
 // OPS_MATRIX) so the server-side can()/requirePerm() can finally check labour
 // hire rate actions instead of a hand-rolled role === 'manager' string check.
@@ -253,6 +264,19 @@ test('default groups are cross-cutting — not a no-op grant for every role', ()
   for (const g of DEFAULT_GROUPS) {
     const addsSomething = g.perms.some(p => !(MATRIX['apprentice'] as readonly PermKey[]).includes(p));
     assert.ok(addsSomething, `group ${g.key} grants nothing beyond the apprentice baseline`);
+  }
+});
+
+test('default groups never grant admin.* / audit.* (security_group_perms_no_escalation_keys)', () => {
+  // Live DB rejects these prefixes on security_group_permissions. Canonical
+  // templates must stay seedable — see v2.8.0 Known issue / v2.8.2 fix.
+  for (const g of DEFAULT_GROUPS) {
+    for (const p of g.perms) {
+      assert.ok(
+        !/^(admin|audit)\./.test(p),
+        `group ${g.key} grants escalation-blocked key ${p}`,
+      );
+    }
   }
 });
 

@@ -54,6 +54,16 @@ test('package.json version matches model.json version', () => {
   assert.equal(pkg.version, model.version, 'bump package.json + roles/model.json together');
 });
 
+test('package.json exports module subpaths match model.modules', () => {
+  const pkg = JSON.parse(read('package.json'));
+  const exportModules = Object.keys(pkg.exports)
+    .filter((k: string) => k.startsWith('./') && k !== './roles.js' && k !== './roles.ts' && k !== './roles.json' && k !== './package.json')
+    .map((k: string) => k.slice(2))
+    .sort();
+  const modelModules = [...model.modules].sort();
+  assert.deepEqual(exportModules, modelModules, 'run npm run build so package.json exports stay in sync with model.modules');
+});
+
 // The sandbox embeds roles.json wholesale (with `<` → `\u003c` so a string
 // value can't break out of the <script type="application/json"> block).
 // Date stamp in the meta line is allowed to drift; the canonical payload is not.

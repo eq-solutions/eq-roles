@@ -4,7 +4,7 @@ description: >
   roles/model.json — the Flutter/Dart consumer (EQ Cards). Mirrors roles.ts /
   roles.js exactly. Pure Dart, no external package dependency.
 # Dart publish version is intentionally decoupled from the npm package version
-# (currently 2.8.1). Bump only when Cards/pub consumers need a new tag.
+# (currently 2.8.2). Bump only when Cards/pub consumers need a new tag.
 version: 2.5.5
 homepage: https://github.com/eq-solutions/eq-roles
 
