@@ -1,5 +1,5 @@
 {
-  "version": "2.9.1",
+  "version": "2.10.0",
   "generated": true,
   "roles": [
     {
@@ -326,6 +326,15 @@
       "module": "cards",
       "label": "Manage worker licences",
       "description": "Add, replace, or remove a worker's licence or certificate on their behalf, and mark compliance overrides.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "cards.export_licences",
+      "module": "cards",
+      "label": "Export licence packs",
+      "description": "Download a compliance pack of workers' licences, including licence numbers and photos. Every export is logged. Separate from “Review onboarding” so office and compliance staff can export without being able to approve new workers.",
       "roles": [
         "manager"
       ]
@@ -746,6 +755,7 @@
       "cards.view",
       "cards.onboard",
       "cards.manage_licences",
+      "cards.export_licences",
       "service.view",
       "service.view_commercials",
       "service.create",
@@ -907,6 +917,15 @@
         "ops.view_rates",
         "ops.view_suppliers",
         "ops.view_customers"
+      ]
+    },
+    {
+      "key": "compliance_viewer",
+      "name": "Compliance Viewer",
+      "description": "See workers' licences, licence numbers and photos, and export compliance packs, without being made a manager. Does not include personal details (phone, date of birth, emergency contact). Every view and export is logged. Add office or compliance staff here.",
+      "perms": [
+        "field.view_licences",
+        "cards.export_licences"
       ]
     }
   ],
