@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.9.1] - 2026-09-29
+
+### Fixed
+- **`ops.view_customers` label and description** — 2.9.0 described it as only the quote customer picker. Migrations 0356/0357 (eq-shell) also let it open the EQ Ops **Clients tab** (customers with stats, sites, contacts) for people a tenant override denies `entity.view`. Wording now matches what the key actually gates; contact details still sit behind `entity.view_pii`. No grant, role, or key changes.
+
 ## [2.9.0] - 2026-09-29
 
 ### Added
