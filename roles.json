@@ -1,5 +1,5 @@
 {
-  "version": "2.10.0",
+  "version": "2.11.0",
   "generated": true,
   "roles": [
     {
@@ -909,14 +909,15 @@
     {
       "key": "ops_admin",
       "name": "Ops Admin",
-      "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, and pick customers. Does not include margins or quote approval.",
+      "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, pick customers, and export licence packs. Does not include margins or quote approval.",
       "perms": [
         "quotes.view_all",
         "quotes.create",
         "ops.create_job",
         "ops.view_rates",
         "ops.view_suppliers",
-        "ops.view_customers"
+        "ops.view_customers",
+        "cards.export_licences"
       ]
     },
     {

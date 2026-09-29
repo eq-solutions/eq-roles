@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.11.0] - 2026-09-30
+
+### Changed
+- **`defaultGroups.ops_admin`** now includes `cards.export_licences`, so admin staff who aren't managers can download a compliance pack of workers' licences. Grant only; no new keys, no role changes. Existing tenants' Ops Admin groups don't pick this up automatically — the seeded rows need a separate update.
+
 ## [2.10.0] - 2026-09-29
 
 ### Added
