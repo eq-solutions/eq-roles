@@ -1,5 +1,5 @@
 {
-  "version": "2.10.0",
+  "version": "2.11.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)" },
@@ -165,8 +165,8 @@
     {
       "key": "ops_admin",
       "name": "Ops Admin",
-      "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, and pick customers. Does not include margins or quote approval.",
-      "perms": ["quotes.view_all", "quotes.create", "ops.create_job", "ops.view_rates", "ops.view_suppliers", "ops.view_customers"]
+      "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, pick customers, and export licence packs. Does not include margins or quote approval.",
+      "perms": ["quotes.view_all", "quotes.create", "ops.create_job", "ops.view_rates", "ops.view_suppliers", "ops.view_customers", "cards.export_licences"]
     },
     {
       "key": "compliance_viewer",
