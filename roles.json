@@ -1,5 +1,5 @@
 {
-  "version": "2.9.0",
+  "version": "2.9.1",
   "generated": true,
   "roles": [
     {
@@ -588,8 +588,8 @@
     {
       "key": "ops.view_customers",
       "module": "ops",
-      "label": "See the customer list in EQ Ops",
-      "description": "Pick from your customers when writing or editing a quote. Kept separate from the general customer register so people can quote without being able to browse every customer record.",
+      "label": "See customers in EQ Ops",
+      "description": "See your customers, their sites, and their contacts inside EQ Ops: the customer picker when writing a quote, and the Clients tab. Kept separate from the general customer register so people can work in EQ Ops without being able to browse every customer record elsewhere. Contact details stay behind their own permission.",
       "roles": [
         "manager",
         "supervisor"

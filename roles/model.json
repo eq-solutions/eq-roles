@@ -1,5 +1,5 @@
 {
-  "version": "2.9.0",
+  "version": "2.9.1",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)" },
@@ -79,7 +79,7 @@
     { "key": "ops.manage_rates",      "module": "ops",       "label": "Manage rates & pricing setup", "description": "Add, import, or change labour-hire rate cards and the pricing setup.", "roles": ["manager", "supervisor"] },
     { "key": "ops.create_job",        "module": "ops",       "label": "Convert quote to a job",   "description": "Turn an accepted quote into a numbered job. Job numbers are entered by hand, so this is a deliberate commitment step.", "roles": ["manager", "supervisor"] },
     { "key": "ops.view_suppliers",    "module": "ops",       "label": "View suppliers directory",  "description": "See the list of trade suppliers, wholesalers, and hire companies.", "roles": ["manager", "supervisor"] },
-    { "key": "ops.view_customers",     "module": "ops",       "label": "See the customer list in EQ Ops", "description": "Pick from your customers when writing or editing a quote. Kept separate from the general customer register so people can quote without being able to browse every customer record.", "roles": ["manager", "supervisor"] },
+    { "key": "ops.view_customers",     "module": "ops",       "label": "See customers in EQ Ops", "description": "See your customers, their sites, and their contacts inside EQ Ops: the customer picker when writing a quote, and the Clients tab. Kept separate from the general customer register so people can work in EQ Ops without being able to browse every customer record elsewhere. Contact details stay behind their own permission.", "roles": ["manager", "supervisor"] },
     { "key": "ops.manage_suppliers",  "module": "ops",       "label": "Manage suppliers directory", "description": "Add, change, or remove entries in the suppliers list.", "roles": ["manager", "supervisor"] },
     { "key": "ops.view_supplier_credentials", "module": "ops", "label": "See supplier login/password", "description": "See the account login and password saved against a supplier. Kept separate so people can use the supplier list without seeing stored passwords.", "roles": ["manager", "supervisor"] },
     { "key": "documents.view",       "module": "documents", "label": "View documents",            "description": "See the document library, and the documents assigned to you to read or sign.", "roles": ["manager", "supervisor", "employee", "apprentice", "labour_hire", "subcontractor"] },
