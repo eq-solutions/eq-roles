@@ -1,5 +1,5 @@
 {
-  "version": "2.9.1",
+  "version": "2.10.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)" },
@@ -50,6 +50,7 @@
     { "key": "cards.view",            "module": "cards",     "label": "Open Cards",                "description": "Open the worker onboarding app.",                "roles": ["manager", "supervisor", "employee", "apprentice"], "deprecated": "No longer used. EQ Cards is switched on for a whole organisation rather than per person. Existing settings still work — do not apply this to anyone new." },
     { "key": "cards.onboard",         "module": "cards",     "label": "Submit onboarding",         "description": "Fill in or manage a worker’s onboarding details.",                "roles": ["manager", "supervisor"], "deprecated": "No longer used — “Review onboarding” does this job. Existing settings still work — do not apply this to anyone new." },
     { "key": "cards.manage_licences", "module": "cards",     "label": "Manage worker licences",    "description": "Add, replace, or remove a worker's licence or certificate on their behalf, and mark compliance overrides.", "roles": ["manager"] },
+    { "key": "cards.export_licences", "module": "cards",     "label": "Export licence packs",      "description": "Download a compliance pack of workers' licences, including licence numbers and photos. Every export is logged. Separate from “Review onboarding” so office and compliance staff can export without being able to approve new workers.", "roles": ["manager"] },
 
     { "key": "service.view",          "module": "service",   "label": "View maintenance",          "description": "See work orders, faults, and scheduled maintenance.",  "roles": ["manager", "supervisor", "employee", "apprentice"] },
     { "key": "service.view_commercials","module": "service", "label": "See job pricing",           "description": "See what a job is worth — its price and contract value. Kept separate from viewing maintenance so people can do the work without seeing the money.", "roles": ["manager", "supervisor"] },
@@ -166,6 +167,12 @@
       "name": "Ops Admin",
       "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, and pick customers. Does not include margins or quote approval.",
       "perms": ["quotes.view_all", "quotes.create", "ops.create_job", "ops.view_rates", "ops.view_suppliers", "ops.view_customers"]
+    },
+    {
+      "key": "compliance_viewer",
+      "name": "Compliance Viewer",
+      "description": "See workers' licences, licence numbers and photos, and export compliance packs, without being made a manager. Does not include personal details (phone, date of birth, emergency contact). Every view and export is logged. Add office or compliance staff here.",
+      "perms": ["field.view_licences", "cards.export_licences"]
     }
   ]
 }

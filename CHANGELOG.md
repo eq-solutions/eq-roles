@@ -3,6 +3,12 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.10.0] - 2026-09-29
+
+### Added
+- **`cards.export_licences`** (`cards` module; manager only by default) - download a compliance pack of workers' licences (numbers and photos). Split out of `admin.review_cards`: the group escalation guard blocks `admin.*` keys from groups, so office/compliance staff who aren't managers could never be granted licence-pack export. Managers keep it through their role, so nobody loses access.
+- **`defaultGroups.compliance_viewer`** ("Compliance Viewer") - `field.view_licences` + `cards.export_licences`. Numbers, photos and exports; deliberately excludes `entity.view_pii` (personal details stay with named people). No admin.*/audit.* keys.
+
 ## [2.9.1] - 2026-09-29
 
 ### Fixed
