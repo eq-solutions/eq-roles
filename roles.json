@@ -1,5 +1,5 @@
 {
-  "version": "2.8.2",
+  "version": "2.9.0",
   "generated": true,
   "roles": [
     {
@@ -586,6 +586,16 @@
       ]
     },
     {
+      "key": "ops.view_customers",
+      "module": "ops",
+      "label": "See the customer list in EQ Ops",
+      "description": "Pick from your customers when writing or editing a quote. Kept separate from the general customer register so people can quote without being able to browse every customer record.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "ops.manage_suppliers",
       "module": "ops",
       "label": "Manage suppliers directory",
@@ -761,6 +771,7 @@
       "ops.manage_rates",
       "ops.create_job",
       "ops.view_suppliers",
+      "ops.view_customers",
       "ops.manage_suppliers",
       "ops.view_supplier_credentials",
       "documents.view",
@@ -807,6 +818,7 @@
       "ops.manage_rates",
       "ops.create_job",
       "ops.view_suppliers",
+      "ops.view_customers",
       "ops.manage_suppliers",
       "ops.view_supplier_credentials",
       "documents.view",
@@ -882,6 +894,19 @@
       "description": "Manage worker licences (add/replace/remove, compliance overrides) without full manager admin rights. Admin/audit keys were removed in v2.8.2 — they are blocked by security_group_perms_no_escalation_keys and made this template unseedable. Promoted from a tenant-specific group (originally SKS).",
       "perms": [
         "cards.manage_licences"
+      ]
+    },
+    {
+      "key": "ops_admin",
+      "name": "Ops Admin",
+      "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, and pick customers. Does not include margins or quote approval.",
+      "perms": [
+        "quotes.view_all",
+        "quotes.create",
+        "ops.create_job",
+        "ops.view_rates",
+        "ops.view_suppliers",
+        "ops.view_customers"
       ]
     }
   ],

@@ -3,6 +3,12 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.9.0] - 2026-09-29
+
+### Added
+- **`ops.view_customers`** (`ops` module; manager + supervisor by default, same tier as the other Ops keys) - pick a customer when writing or editing a quote in EQ Ops, without the general customer register (`entity.view`). Built for a real SKS case: an office/admin employee whose role is denied `entity.view` by a tenant override could not see any customer in EQ Ops, and a group grant of `entity.view` cannot beat that denial.
+- **`defaultGroups.ops_admin`** ("Ops Admin") - `quotes.view_all`, `quotes.create`, `ops.create_job`, `ops.view_rates`, `ops.view_suppliers`, `ops.view_customers`. Proven on SKS first. Deliberately excludes `ops.view_margins` and `quotes.approve`. No admin.*/audit.* keys.
+
 ## [2.8.2] - 2026-09-21
 
 ### Fixed
