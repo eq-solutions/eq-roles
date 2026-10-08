@@ -1,5 +1,5 @@
 {
-  "version": "2.11.1",
+  "version": "2.11.2",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)" },
@@ -29,7 +29,7 @@
     { "key": "audit.rollback",        "module": "audit",     "label": "Undo changes",              "description": "Reverse a change shown in the activity log, putting the record back as it was.",                        "roles": ["manager"], "deprecated": "The undo action does not currently work — the system always refuses it. Kept only so nobody's existing access breaks; do not grant to anyone new. Bring this back once undo is rebuilt." },
 
     { "key": "entity.view",           "module": "entity",    "label": "View records",              "description": "See customers, sites, contacts, and assets. Personal contact details are controlled separately.", "roles": ["manager", "supervisor", "employee", "apprentice"] },
-    { "key": "entity.view_pii",       "module": "entity",    "label": "See personal details",      "description": "See someone’s phone number, date of birth, emergency contact and pay rates. Kept separate from viewing records so people can look up a customer, site or staff member without seeing personal information or pay.", "roles": ["manager", "supervisor"] },
+    { "key": "entity.view_pii",       "module": "entity",    "label": "See personal details",      "description": "See someone’s phone number, date of birth, address and emergency contact, and staff pay rates where your company keeps them private. Kept separate from viewing records so people can look up a customer, site or staff member without seeing personal information.", "roles": ["manager", "supervisor"] },
     { "key": "entity.create",         "module": "entity",    "label": "Add records",               "description": "Add a new customer, site, contact, or asset.",                     "roles": ["manager"] },
     { "key": "entity.edit",           "module": "entity",    "label": "Edit records",              "description": "Change the details on an existing customer, site, contact, or asset.",                  "roles": ["manager", "supervisor"] },
     { "key": "entity.delete",         "module": "entity",    "label": "Delete records",            "description": "Permanently remove a customer, site, contact, or asset. This cannot be undone.", "roles": ["manager"] },

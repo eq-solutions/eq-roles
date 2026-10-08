@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.11.2] - 2026-10-09
+
+### Fixed
+- **`entity.view_pii` description** — pay rates are now covered only where the company keeps them private (eq-shell #2503: `tenant_config.feature_flags.pay_rates.hide_without_view_pii`, EQ only). Everywhere else staff pay rates show to anyone who can view the record, so 2.11.1 overstated it. Also names address, which the key already hides (eq-shell `entity-rows` PII_KEYS). Wording only; no key, label, grant or role changes.
+
 ## [2.11.1] - 2026-10-08
 
 ### Fixed

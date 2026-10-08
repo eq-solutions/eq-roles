@@ -1,5 +1,5 @@
 {
-  "version": "2.11.1",
+  "version": "2.11.2",
   "generated": true,
   "roles": [
     {
@@ -162,7 +162,7 @@
       "key": "entity.view_pii",
       "module": "entity",
       "label": "See personal details",
-      "description": "See someone’s phone number, date of birth, emergency contact and pay rates. Kept separate from viewing records so people can look up a customer, site or staff member without seeing personal information or pay.",
+      "description": "See someone’s phone number, date of birth, address and emergency contact, and staff pay rates where your company keeps them private. Kept separate from viewing records so people can look up a customer, site or staff member without seeing personal information.",
       "roles": [
         "manager",
         "supervisor"
