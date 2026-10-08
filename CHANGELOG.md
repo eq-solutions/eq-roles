@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.11.1] - 2026-10-08
+
+### Fixed
+- **`entity.view_pii` description** — now says it also covers staff pay rates. Since eq-shell #2479 the same key decides whether `app_data.staff.hourly_rate_cost` / `hourly_rate_charge` show in EQ Shell's entity browser; the tenant DB already hid those two columns behind the same check (`eq_tidy_read_entity_columns`, eq-shell tenant migration 0331). Royce chose to reuse this key rather than add a new one. Wording only; no key, label, grant or role changes.
+
 ## [2.11.0] - 2026-09-30
 
 ### Changed
