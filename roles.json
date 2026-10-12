@@ -1,5 +1,5 @@
 {
-  "version": "2.12.0",
+  "version": "3.0.0",
   "generated": true,
   "roles": [
     {
@@ -881,58 +881,9 @@
   },
   "defaultGroups": [
     {
-      "key": "equipment_editors",
-      "name": "Equipment editors",
-      "description": "Edit the plant & equipment list and calibration details. Add people here who maintain equipment but whose role normally only lets them view it.",
-      "perms": [
-        "equipment.view",
-        "equipment.edit"
-      ]
-    },
-    {
-      "key": "report_viewers",
-      "name": "Report viewers",
-      "description": "View GM reports without being made a manager. Add supervisors or leads here who need to read reports.",
-      "perms": [
-        "reports.view",
-        "reports.view_financial"
-      ]
-    },
-    {
-      "key": "project_managers",
-      "name": "Project Managers",
-      "description": "Manage worker licences (add/replace/remove, compliance overrides) without full manager admin rights. Admin/audit keys were removed in v2.8.2 — they are blocked by security_group_perms_no_escalation_keys and made this template unseedable. Promoted from a tenant-specific group (originally SKS).",
-      "perms": [
-        "cards.manage_licences"
-      ]
-    },
-    {
-      "key": "ops_admin",
-      "name": "Ops Admin",
-      "description": "EQ Ops access for admin staff who aren't managers. See all quotes, create quotes and job numbers, view rates and suppliers, pick customers, and export licence packs. Does not include margins or quote approval.",
-      "perms": [
-        "quotes.view_all",
-        "quotes.create",
-        "ops.create_job",
-        "ops.view_rates",
-        "ops.view_suppliers",
-        "ops.view_customers",
-        "cards.export_licences"
-      ]
-    },
-    {
-      "key": "compliance_viewer",
-      "name": "Compliance Viewer",
-      "description": "See workers' licences, licence numbers and photos, and export compliance packs, without being made a manager. Does not include personal details (phone, date of birth, emergency contact). Every view and export is logged. Add office or compliance staff here.",
-      "perms": [
-        "field.view_licences",
-        "cards.export_licences"
-      ]
-    },
-    {
       "key": "office_admin",
       "name": "Office Admin",
-      "description": "Run the office side without being made a manager: view and edit customers, sites and staff records (including personal details), manage the roster, people and labour hire, assign and manage documents, and manage worker licences. Does not include deleting records, user accounts, margins or quote approval. Field-first workers normally don't see Records; holding this group's edit keys lifts that. Proven on SKS first (minus entity.delete and the Field-app-only keys).",
+      "description": "Edit customers, sites, staff and rosters. Cannot delete records or manage users, margins or quotes.",
       "perms": [
         "cards.manage_licences",
         "documents.assign",

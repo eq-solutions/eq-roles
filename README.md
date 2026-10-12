@@ -60,17 +60,15 @@ A **security group** is a named, per-tenant bundle of *extra* `PermKey`s, **addi
 import { DEFAULT_GROUPS, defaultGroupPerms, type DefaultGroupKey } from '@eq-solutions/roles';
 
 DEFAULT_GROUPS;                          // [{ key, name, description, perms }, …]
-defaultGroupPerms('equipment_editors');  // ['equipment.view', 'equipment.edit']
+defaultGroupPerms('office_admin');  // ['cards.manage_licences', 'documents.assign', …]
 defaultGroupPerms('does_not_exist');     // []  (unknown key → no perms)
 ```
 
-Authored in [`roles/model.json`](roles/model.json) under `defaultGroups`; the build validates every `perms` entry is a real `PermKey` and that keys + names are unique. The shipped set:
+Authored in [`roles/model.json`](roles/model.json) under `defaultGroups`; the build validates every `perms` entry is a real `PermKey` and that keys + names are unique. The shipped set is a single starter role (v3.0.0; the earlier `equipment_editors`, `report_viewers`, `project_managers`, `ops_admin` and `compliance_viewer` templates were removed - create further groups per tenant):
 
 | Key | Name | Grants | Why it's cross-cutting |
 |---|---|---|---|
-| `equipment_editors` | Equipment editors | `equipment.view`, `equipment.edit` | Editing the plant list is manager/supervisor-only; this hands it to a few employees/apprentices who maintain equipment. |
-| `report_viewers` | Report viewers | `reports.view`, `reports.view_financial` | GM reports (incl. financial figures) are manager-only; this lets a supervisor or lead read them without being made a manager. |
-| `project_managers` | Project Managers | `cards.manage_licences` | Manage worker licences without full manager admin rights. (v2.8.2: admin/audit keys removed — they are blocked by `security_group_perms_no_escalation_keys` and made the template unseedable.) |
+| `office_admin` | Office Admin | 16 perms: `entity.view/create/edit/view_pii/manage_activation`, `equipment.view/edit`, `field.view/manage_people/manage_roster/manage_labour_hire`, `documents.view/assign/manage`, `cards.manage_licences`, `service.record_tests` | The office side of a tenant without a manager role. No `entity.delete`, no `admin.*`/`audit.*`, no margins or quote approval. |
 
 **These are templates, not duplicates of a role.** Each grants only perms that cut *across* the role hierarchy — a group that merely re-grants what a role already has would blur the role-vs-group line and is intentionally excluded.
 
