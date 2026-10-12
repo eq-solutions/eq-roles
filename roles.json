@@ -1,5 +1,5 @@
 {
-  "version": "2.11.1",
+  "version": "2.12.0",
   "generated": true,
   "roles": [
     {
@@ -927,6 +927,29 @@
       "perms": [
         "field.view_licences",
         "cards.export_licences"
+      ]
+    },
+    {
+      "key": "office_admin",
+      "name": "Office Admin",
+      "description": "Run the office side without being made a manager: view and edit customers, sites and staff records (including personal details), manage the roster, people and labour hire, assign and manage documents, and manage worker licences. Does not include deleting records, user accounts, margins or quote approval. Field-first workers normally don't see Records; holding this group's edit keys lifts that. Proven on SKS first (minus entity.delete and the Field-app-only keys).",
+      "perms": [
+        "cards.manage_licences",
+        "documents.assign",
+        "documents.manage",
+        "documents.view",
+        "entity.create",
+        "entity.edit",
+        "entity.manage_activation",
+        "entity.view",
+        "entity.view_pii",
+        "equipment.edit",
+        "equipment.view",
+        "field.manage_labour_hire",
+        "field.manage_people",
+        "field.manage_roster",
+        "field.view",
+        "service.record_tests"
       ]
     }
   ],
