@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [2.12.0] - 2026-10-12
+
+### Added
+- **`defaultGroups.office_admin`** ("Office Admin") - the office side of a tenant without a manager role: `entity.view/edit/create/view_pii/manage_activation`, `equipment.view/edit`, `field.view/manage_people/manage_roster/manage_labour_hire`, `documents.view/assign/manage`, `cards.manage_licences`, `service.record_tests`. Proven on SKS first (their hand-made "Office / Admin" group), minus `entity.delete` (Royce, 2026-10-12) and minus the Field-app-only keys (`people.*`, `sites.*`, `ts.*`, `reports.*`, `field.manage_sites/teams/audits/job_numbers`) which are not in this package. No admin.*/audit.* keys. Grant only; no new keys, no role changes. Existing tenants don't pick this up automatically - the seeded rows need a separate migration.
+
 ## [2.11.1] - 2026-10-08
 
 ### Fixed
