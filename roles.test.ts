@@ -319,11 +319,11 @@ test('resolve: no groups → exactly the role default set', () => {
 });
 
 test('resolve: a security group ADDS a perm above the base role', () => {
-  // employee can VIEW equipment but not EDIT it; the equipment_editors group grants edit.
+  // employee can VIEW equipment but not EDIT it; the office_admin group grants edit.
   assert.equal(can('employee', 'equipment.edit'), false);
   const eff = resolveEffectivePermissions({
     role: 'employee',
-    groupPerms: defaultGroupPerms('equipment_editors'),
+    groupPerms: defaultGroupPerms('office_admin'),
   });
   assert.ok(eff.includes('equipment.edit'), 'group grant should appear in the effective set');
   assert.ok(eff.includes('field.view'), 'base role perms are retained');

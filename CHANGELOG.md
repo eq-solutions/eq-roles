@@ -3,6 +3,20 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.0.0] - 2026-10-13
+
+### Removed (breaking)
+- **`defaultGroups` reduced to `office_admin` only.** Removed templates: `equipment_editors`, `report_viewers`, `project_managers`, `ops_admin`, `compliance_viewer`. Royce wants ONE starter role; on 2026-10-12 live security groups on the control plane were cut from 28 to 6, and these templates would have re-seeded the deleted groups on every newly provisioned tenant.
+- **Breaking type narrowing:** the exported `DefaultGroupKey` union is now just `'office_admin'`, and `DEFAULT_GROUPS` / `kDefaultGroups` (Dart) lose five entries. `defaultGroupPerms()` returns `[]` for the removed keys. Removing members of an exported union is a breaking change under SemVer, so this is a **major** bump; a minor would let `^2` ranges pull it in silently. (Alternative if a major is unwanted: v2.13.0 - same content, weaker contract.)
+
+### Changed
+- `office_admin` description replaced with the live one-liner: "Edit customers, sites, staff and rosters. Cannot delete records or manage users, margins or quotes." Perms unchanged (same 16; no `admin.*` or `audit.*`).
+
+### Notes
+- **Existing tenants are unaffected.** Templates only seed NEW tenants; nothing here touches groups already in a tenant database.
+- Display/seed data only: no permission keys added or changed, role matrix unchanged.
+- Consumer follow-up: eq-shell `netlify/functions/_shared/default-groups.ts` mirrors this package (CI-checked by `scripts/check-perm-sync.mjs`).
+
 ## [2.12.0] - 2026-10-12
 
 ### Added
