@@ -3,6 +3,13 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.1.0] - 2026-10-14
+
+### Changed (grants removed from `supervisor`)
+- **Supervisors no longer get these 10 permissions by default:** `ops.view_rates`, `ops.view_margins`, `ops.manage_rates`, `field.view_rates` (deprecated, never checked), `service.view_commercials`, `field.manage_people`, `field.manage_labour_hire`, `intake.commit`, `intake.edit_canonical`, `documents.manage`. Managers keep all of them. Supervisors keep crew and job work, suppliers, `quotes.create`, `entity.edit`, `entity.view_pii` and `cards.onboard`.
+- **Decision (Royce Milmlow, 2026-10-14).** Trigger: an SKS supervisor could see rates, margins and people-admin screens a supervisor has no job reason to see. Options considered: SKS-only overrides, tighten the role defaults, or tighten one person. Chosen: SKS overrides first (applied 2026-10-14, 10 rows on the control plane), then these defaults so EQ's supervisors and new tenants inherit the same rule. Audit of what the 14 SKS supervisors actually did in the last 90 days found no use of the removed permissions that the logs can show; `quotes.create` was used (8 quotes, 4 people) and so was kept. Reads of rates and margins are not logged, so the rate removals rest on the role's purpose rather than usage evidence.
+- Key set, labels, descriptions and every other role are unchanged. Existing tenants keep any security-group or override grants they already have.
+
 ## [3.0.0] - 2026-10-13
 
 ### Removed (breaking)

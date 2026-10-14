@@ -19,8 +19,16 @@ test('manager holds every permission', () => {
 });
 
 test('supervisor: granted perms return true', () => {
-  assert.equal(can('supervisor', 'intake.commit'), true);
+  assert.equal(can('supervisor', 'intake.import'), true);
   assert.equal(can('supervisor', 'field.dispatch'), true);
+  assert.equal(can('supervisor', 'quotes.create'), true);
+});
+
+test('supervisor: money and people-admin perms withheld (v3.1.0)', () => {
+  for (const p of ['ops.view_rates', 'ops.view_margins', 'ops.manage_rates', 'field.view_rates', 'service.view_commercials', 'field.manage_people', 'field.manage_labour_hire', 'intake.commit', 'intake.edit_canonical', 'documents.manage']) {
+    assert.equal(can('supervisor', p), false, p);
+    assert.equal(can('manager', p), true, p);
+  }
 });
 
 test('supervisor: withheld admin perms return false', () => {
@@ -88,11 +96,12 @@ test('subcontractor: field.view + documents.view only', () => {
 // v2.5.1: ops.* promoted from Shell-local-only (src/permissions/matrix.ts
 // OPS_MATRIX) so the server-side can()/requirePerm() can finally check labour
 // hire rate actions instead of a hand-rolled role === 'manager' string check.
-test('ops.*: manager + supervisor only, matching the pre-existing Shell matrix', () => {
+test('ops.*: rates manager only; supplier and job perms also supervisor (v3.1.0)', () => {
   assert.equal(can('manager', 'ops.view_rates'), true);
   assert.equal(can('manager', 'ops.manage_rates'), true);
-  assert.equal(can('supervisor', 'ops.view_rates'), true);
-  assert.equal(can('supervisor', 'ops.manage_rates'), true);
+  assert.equal(can('supervisor', 'ops.view_rates'), false);
+  assert.equal(can('supervisor', 'ops.manage_rates'), false);
+  assert.equal(can('supervisor', 'ops.view_suppliers'), true);
   assert.equal(can('employee', 'ops.view_rates'), false);
   assert.equal(can('employee', 'ops.manage_rates'), false);
   assert.equal(can('apprentice', 'ops.manage_rates'), false);
@@ -137,7 +146,7 @@ test('canAny: empty perms array returns false', () => {
 });
 
 test('canAll: true when role holds all perms', () => {
-  assert.equal(canAll('supervisor', ['intake.commit', 'entity.edit', 'field.dispatch']), true);
+  assert.equal(canAll('supervisor', ['intake.import', 'entity.edit', 'field.dispatch']), true);
 });
 
 test('canAll: false when role is missing any one', () => {
