@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0",
+  "version": "3.1.0",
   "generated": true,
   "roles": [
     {
@@ -234,8 +234,7 @@
       "label": "Confirm an import",
       "description": "Save a checked import into your live records. This overwrites existing data and cannot be undone.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -357,8 +356,7 @@
       "label": "See job pricing",
       "description": "See what a job is worth — its price and contract value. Kept separate from viewing maintenance so people can do the work without seeing the money.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -450,8 +448,7 @@
       "label": "See charge rates",
       "description": "See what labour-hire workers are charged out at.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ],
       "deprecated": "Labour-hire rates are actually controlled by ops.view_rates, in both the app and the database — this key is never checked. Kept only so nobody's existing access breaks; do not grant to anyone new. Use ops.view_rates instead."
     },
@@ -491,8 +488,7 @@
       "label": "Manage labour-hire companies",
       "description": "Add or change the labour-hire companies you use and what they charge.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -501,8 +497,7 @@
       "label": "Add / remove / edit workers",
       "description": "Add a worker, change their details, remove or restore them, and reset their PIN.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -550,8 +545,7 @@
       "label": "View rates & pricing setup",
       "description": "See what labour-hire agencies charge, and open Setup — where pricing, the rate library, quote templates, and estimators are configured.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -560,8 +554,7 @@
       "label": "See cost & margin",
       "description": "See what a job costs and what you make on it. Kept separate from viewing quotes so people can work on a quote without seeing the margin.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -570,8 +563,7 @@
       "label": "Manage rates & pricing setup",
       "description": "Add, import, or change labour-hire rate cards and the pricing setup.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -644,8 +636,7 @@
       "label": "Manage documents",
       "description": "Upload document versions, archive documents, and add, rename, or delete categories.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -682,8 +673,7 @@
       "label": "Edit imported records",
       "description": "Change a record that came in through an import, archive or dismiss a duplicate, or work the review queue.",
       "roles": [
-        "manager",
-        "supervisor"
+        "manager"
       ]
     },
     {
@@ -801,13 +791,11 @@
       "entity.edit",
       "intake.view",
       "intake.import",
-      "intake.commit",
       "equipment.view",
       "equipment.edit",
       "cards.view",
       "cards.onboard",
       "service.view",
-      "service.view_commercials",
       "service.create",
       "service.close",
       "service.reopen",
@@ -815,26 +803,18 @@
       "field.view",
       "field.view_hours",
       "field.view_licences",
-      "field.view_rates",
       "field.dispatch",
       "field.manage_roster",
       "field.manage_licences",
-      "field.manage_labour_hire",
-      "field.manage_people",
       "quotes.view",
       "quotes.create",
-      "ops.view_rates",
-      "ops.view_margins",
-      "ops.manage_rates",
       "ops.create_job",
       "ops.view_suppliers",
       "ops.view_customers",
       "ops.manage_suppliers",
       "ops.view_supplier_credentials",
       "documents.view",
-      "documents.manage",
       "documents.assign",
-      "intake.edit_canonical",
       "service.do_work",
       "ai.view_briefing",
       "ai.use"
