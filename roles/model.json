@@ -1,5 +1,5 @@
 {
-  "version": "3.1.0",
+  "version": "3.2.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)" },
@@ -70,8 +70,9 @@
     { "key": "field.manage_labour_hire", "module": "field",  "label": "Manage labour-hire companies", "description": "Add or change the labour-hire companies you use and what they charge.", "roles": ["manager"] },
     { "key": "field.manage_people",   "module": "field",     "label": "Add / remove / edit workers", "description": "Add a worker, change their details, remove or restore them, and reset their PIN.", "roles": ["manager"] },
 
-    { "key": "quotes.view",           "module": "quotes",    "label": "View quotes",               "description": "See quotes and their status. Cost and margin are controlled separately.",                                        "roles": ["manager", "supervisor", "employee"] },
-    { "key": "quotes.view_all",       "module": "quotes",    "label": "See all quotes",            "description": "See every quote, not just the ones you created. Kept separate from viewing quotes so Employees can track their own pipeline without seeing everyone else's.", "roles": ["manager"] },
+    { "key": "quotes.view",           "module": "quotes",    "label": "View quotes",               "description": "See every quote and its status. Dollar amounts are controlled separately by quotes.view_values; cost and margin by ops.view_margins.",                                        "roles": ["manager", "supervisor", "employee"] },
+    { "key": "quotes.view_values",    "module": "quotes",    "label": "See quote values",          "description": "See what quotes are worth: line prices, subtotal, GST and total. Without it you still see every quote, with the amounts blank, except quotes you created yourself.", "roles": ["manager"] },
+    { "key": "quotes.view_all",       "module": "quotes",    "label": "See all quotes",            "description": "See every quote, not just the ones you created. Kept separate from viewing quotes so Employees can track their own pipeline without seeing everyone else's.", "roles": ["manager"], "deprecated": "Since 3.2.0 everyone who can view quotes sees every quote; what is now protected is the money, via quotes.view_values. Kept only so existing groups and overrides do not break; do not grant to anyone new." },
     { "key": "quotes.create",         "module": "quotes",    "label": "Create quotes",             "description": "Write a new quote or change an existing one.",                             "roles": ["manager", "supervisor"] },
     { "key": "quotes.approve",        "module": "quotes",    "label": "Approve quotes",            "description": "Approve a quote and send it to the customer.",                           "roles": ["manager"] },
 
