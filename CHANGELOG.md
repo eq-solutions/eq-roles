@@ -3,6 +3,21 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.2.0] - 2026-10-16
+
+### Added
+- **`quotes.view_values`** ("See quote values", `quotes` module; manager only by default) - see what quotes are worth: line prices, subtotal, GST and total. Without it a person still sees every quote, with the amounts blank, except quotes they created themselves (they need the prices to build them). Grant it to anyone else through an access group.
+
+### Changed
+- **`quotes.view` description** - now "see every quote"; the money is what is controlled separately.
+
+### Deprecated
+- **`quotes.view_all`** - kept, not removed. Since this version everyone with `quotes.view` sees every quote, so the key no longer does anything new; do not grant it to anyone new.
+
+### Why (Royce Milmlow, 2026-10-16)
+- Trigger: an SKS supervisor could not see 9 quotes for a site he works on, because `quotes.view_all` (manager-only since 3.0/0391) hides whole quotes. The quotes were not the sensitive part; what they are worth is. Options considered: one-click "see all quotes" approval, a request-and-approve flow, or hide the money instead of the quotes. Chosen: hide the money. Separately, nothing in the apps hid quote amounts at all before this; `ops.view_margins` only covered cost and margin.
+- Consumer follow-up: eq-shell masks the amounts in its quote functions and screens (tenant migration + UI). Until a consumer does that, adding this key changes nothing for anyone.
+
 ## [3.1.0] - 2026-10-14
 
 ### Changed (grants removed from `supervisor`)
