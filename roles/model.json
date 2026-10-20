@@ -1,5 +1,5 @@
 {
-  "version": "3.2.0",
+  "version": "3.3.0",
   "$comment": "Single source of truth for the EQ 6-tier role model + permission matrix. Extracted from eq-shell src/session.ts + src/permissions/**. Edit this file and run `npm run build` to regenerate roles.ts / roles.json / lib/eq_roles.dart. Adding a tier, permission, or roleAlias is a spec-level change — document it in CHANGELOG.md.",
   "roles": [
     { "key": "manager",     "label": "Manager",     "rank": 1, "description": "Full access. Manages people and access groups, deletes records, approves quotes, and sees every report. (Activity-log undo exists as a deprecated key but does not currently work.)" },
@@ -69,6 +69,7 @@
     { "key": "field.manage_licences", "module": "field",     "label": "Manage worker licences",    "description": "Add a worker’s licence or confirm you have sighted it. This is a sign-off — it records that someone checked.", "roles": ["manager", "supervisor"] },
     { "key": "field.manage_labour_hire", "module": "field",  "label": "Manage labour-hire companies", "description": "Add or change the labour-hire companies you use and what they charge.", "roles": ["manager"] },
     { "key": "field.manage_people",   "module": "field",     "label": "Add / remove / edit workers", "description": "Add a worker, change their details, remove or restore them, and reset their PIN.", "roles": ["manager"] },
+    { "key": "field.manage_pay_rules", "module": "field",   "label": "Manage pay rules",          "description": "Set overtime multipliers, the away-from-home rate and leave types.", "roles": ["manager"] },
 
     { "key": "quotes.view",           "module": "quotes",    "label": "View quotes",               "description": "See every quote and its status. Dollar amounts are controlled separately by quotes.view_values; cost and margin by ops.view_margins.",                                        "roles": ["manager", "supervisor", "employee"] },
     { "key": "quotes.view_values",    "module": "quotes",    "label": "See quote values",          "description": "See what quotes are worth: line prices, subtotal, GST and total. Without it you still see every quote, with the amounts blank, except quotes you created yourself.", "roles": ["manager"] },

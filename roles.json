@@ -1,5 +1,5 @@
 {
-  "version": "3.2.0",
+  "version": "3.3.0",
   "generated": true,
   "roles": [
     {
@@ -501,6 +501,15 @@
       ]
     },
     {
+      "key": "field.manage_pay_rules",
+      "module": "field",
+      "label": "Manage pay rules",
+      "description": "Set overtime multipliers, the away-from-home rate and leave types.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
       "key": "quotes.view",
       "module": "quotes",
       "label": "View quotes",
@@ -772,6 +781,7 @@
       "field.manage_licences",
       "field.manage_labour_hire",
       "field.manage_people",
+      "field.manage_pay_rules",
       "quotes.view",
       "quotes.view_values",
       "quotes.view_all",
