@@ -3,6 +3,14 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.3.0] - 2026-10-21
+
+### Added
+- **`field.manage_pay_rules`** ("Manage pay rules", `field` module; manager only by default) - set overtime multipliers, the away-from-home rate and leave types. Pay rules only feed EQ Field timesheets, so it gets its own key instead of borrowing `ops.manage_rates`. Supervisors do not get it by default; grant it to anyone else through an access group.
+
+### Why (Royce Milmlow, 2026-10-21)
+- "Pay rates does not belong anywhere near EQ Ops." Reverses the 2026-10-05 decision to reuse `ops.manage_rates`. Consumer follow-up: eq-shell switches the Pay rules page and its save function to this key; until a consumer does, adding the key changes nothing for anyone.
+
 ## [3.2.0] - 2026-10-16
 
 ### Added
