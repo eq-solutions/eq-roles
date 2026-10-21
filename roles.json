@@ -1,5 +1,5 @@
 {
-  "version": "3.3.0",
+  "version": "3.4.0",
   "generated": true,
   "roles": [
     {
@@ -325,6 +325,15 @@
       "module": "cards",
       "label": "Manage worker licences",
       "description": "Add, replace, or remove a worker's licence or certificate on their behalf, and mark compliance overrides.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "cards.send_texts",
+      "module": "cards",
+      "label": "Send texts",
+      "description": "Text sign-up links and reminders to people you have invited, from EQ so you don't need your own phone.",
       "roles": [
         "manager"
       ]
@@ -764,6 +773,7 @@
       "cards.view",
       "cards.onboard",
       "cards.manage_licences",
+      "cards.send_texts",
       "cards.export_licences",
       "service.view",
       "service.view_commercials",
