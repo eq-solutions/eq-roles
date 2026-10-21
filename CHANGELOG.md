@@ -3,6 +3,11 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.4.0] - 2026-10-21
+
+### Added
+- **`cards.send_texts`** ("Send texts", `cards` module; manager only by default) - text sign-up links and reminders to invited people from EQ. Split out of `admin.invite_user` so texting can be granted on its own. Deliberately not `admin.`-prefixed: `admin.` keys cannot be granted through access groups (`security_group_perms_no_escalation_keys`), the same reason `cards.manage_licences` lives under `cards.`. No behaviour change for managers. Consumer follow-up: eq-shell gates the Send texts screens and send functions on this key; until it does, adding the key changes nothing for anyone. "Text your team" still needs Cards' `send-batch-sms`, which checks `is_org_admin` itself, so it stays manager-only until Cards accepts this key.
+
 ## [3.3.0] - 2026-10-21
 
 ### Added
