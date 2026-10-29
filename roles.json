@@ -1,5 +1,5 @@
 {
-  "version": "3.5.0",
+  "version": "3.6.0",
   "generated": true,
   "roles": [
     {
@@ -798,6 +798,14 @@
       "module": "staff",
       "label": "Review all staff",
       "description": "Widen staff conversations and report cards from the teams you supervise to everyone. Given through an access group, never by role.",
+      "roles": [],
+      "grantOnly": true
+    },
+    {
+      "key": "staff.view_combined_report_cards",
+      "module": "staff",
+      "label": "See combined report cards",
+      "description": "See report cards that draw on every reviewer's conversations about a person, not just your own. Given through an access group, never by role.",
       "roles": [],
       "grantOnly": true
     }
