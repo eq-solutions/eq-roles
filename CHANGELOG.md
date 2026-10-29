@@ -3,6 +3,14 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.6.0] - 2026-10-30
+
+### Added
+- **`staff.view_combined_report_cards`** (See combined report cards, `staff` module). **Grant-only**: held by no role, given through an access group. Staff report cards are now built from, and shown to, only the person who generated them; this key lets someone generate and see a card that draws on every reviewer's conversations. Consumer: eq-shell. Until it adopts the key, adding it changes nothing for anyone.
+
+### Why (Royce Milmlow, 2026-10-30)
+- A report card summary could carry other reviewers' private notes. Reach is decided per person's own content, with one grant for the legitimate combined view.
+
 ## [3.5.0] - 2026-10-29
 
 ### Added

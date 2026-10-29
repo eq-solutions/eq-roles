@@ -474,7 +474,7 @@ test('permKeyForResource agrees with canAccessResource for every modeled pair, f
 
 test('grant-only permissions are held by no role and only by an explicit grant (v3.5.0)', () => {
   const grantOnly = PERMISSIONS.filter((p) => p.grantOnly);
-  assert.deepEqual(grantOnly.map((p) => p.key), ['staff.review_all_staff']);
+  assert.deepEqual(grantOnly.map((p) => p.key), ['staff.review_all_staff', 'staff.view_combined_report_cards']);
   for (const p of grantOnly) {
     assert.deepEqual(p.roles, [], p.key);
     for (const role of ROLE_KEYS) assert.equal(can(role, p.key), false, `${role} ${p.key}`);
