@@ -1,5 +1,5 @@
 {
-  "version": "3.4.0",
+  "version": "3.5.0",
   "generated": true,
   "roles": [
     {
@@ -70,7 +70,8 @@
     "quotes",
     "ops",
     "documents",
-    "ai"
+    "ai",
+    "staff"
   ],
   "permissions": [
     {
@@ -519,6 +520,36 @@
       ]
     },
     {
+      "key": "field.manage_teams",
+      "module": "field",
+      "label": "Manage teams",
+      "description": "Create, edit and delete teams, and choose who is in each team and who supervises it.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.manage_apprentices",
+      "module": "field",
+      "label": "Manage apprentices",
+      "description": "Add and change apprentice records and their progress.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
+      "key": "field.view_all_crews",
+      "module": "field",
+      "label": "See every crew",
+      "description": "See every crew's timesheets and leave, not only the crews you supervise.",
+      "roles": [
+        "manager",
+        "supervisor"
+      ]
+    },
+    {
       "key": "quotes.view",
       "module": "quotes",
       "label": "View quotes",
@@ -743,6 +774,32 @@
         "manager",
         "supervisor"
       ]
+    },
+    {
+      "key": "staff.manage_conversations",
+      "module": "staff",
+      "label": "Log staff conversations",
+      "description": "Record onboarding, one-to-one and performance conversations on a person's staff record. Limited to people in teams you supervise unless you also have Review all staff.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "staff.access_report_cards",
+      "module": "staff",
+      "label": "See staff report cards",
+      "description": "View and generate a person's report card. Limited to people in teams you supervise unless you also have Review all staff.",
+      "roles": [
+        "manager"
+      ]
+    },
+    {
+      "key": "staff.review_all_staff",
+      "module": "staff",
+      "label": "Review all staff",
+      "description": "Widen staff conversations and report cards from the teams you supervise to everyone. Given through an access group, never by role.",
+      "roles": [],
+      "grantOnly": true
     }
   ],
   "matrix": {
@@ -792,6 +849,9 @@
       "field.manage_labour_hire",
       "field.manage_people",
       "field.manage_pay_rules",
+      "field.manage_teams",
+      "field.manage_apprentices",
+      "field.view_all_crews",
       "quotes.view",
       "quotes.view_values",
       "quotes.view_all",
@@ -814,7 +874,9 @@
       "service.do_work",
       "reports.manage",
       "ai.view_briefing",
-      "ai.use"
+      "ai.use",
+      "staff.manage_conversations",
+      "staff.access_report_cards"
     ],
     "supervisor": [
       "entity.view",
@@ -837,6 +899,9 @@
       "field.dispatch",
       "field.manage_roster",
       "field.manage_licences",
+      "field.manage_teams",
+      "field.manage_apprentices",
+      "field.view_all_crews",
       "quotes.view",
       "quotes.create",
       "ops.create_job",
