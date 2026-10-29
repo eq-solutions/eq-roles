@@ -28,6 +28,8 @@ export function buildArtefacts(model) {
   if (new Set(roleKeys).size !== roleKeys.length) errors.push('duplicate role key(s)');
   for (const p of model.permissions) {
     for (const r of p.roles) if (!roleSet.has(r)) errors.push(`permission ${p.key} grants unknown role "${r}"`);
+    if (p.grantOnly) { if (p.roles.length) errors.push(`permission ${p.key} is grantOnly so its roles must be empty`); }
+    else if (!p.roles.length) errors.push(`permission ${p.key} has no roles; mark it "grantOnly": true if it is only ever given through an access group`);
     if (!p.key.includes('.')) errors.push(`permission ${p.key} must be <module>.<verb>`);
     if (!p.label || !p.label.trim()) errors.push(`permission ${p.key} is missing a plain-English label`);
   }
@@ -158,7 +160,7 @@ export type PermKey = ${union(permKeys)};
 export type ModuleKey = ${union(model.modules)};
 
 export interface RoleMeta { key: EqRole; label: string; rank: number; description: string; }
-export interface PermissionMeta { key: PermKey; module: ModuleKey; label: string; description: string; roles: readonly EqRole[]; deprecated?: string; }
+export interface PermissionMeta { key: PermKey; module: ModuleKey; label: string; description: string; roles: readonly EqRole[]; deprecated?: string; grantOnly?: boolean; }
 
 export const ROLE_KEYS = [${roleKeys.map((r) => `'${r}'`).join(', ')}] as const satisfies readonly EqRole[];
 export const TIERS = [${model.tiers.map((t) => `'${t}'`).join(', ')}] as const satisfies readonly EqTier[];
@@ -403,7 +405,7 @@ export function buildDartArtefacts(model) {
   const permEntries = model.permissions.map((p) => {
     const rolesLit = roleEnumRefs(p.roles);
     const dep = p.deprecated ? `, deprecated: '${esc(p.deprecated)}'` : '';
-    return `  PermissionMeta('${p.key}', '${p.module}', '${esc(p.label)}', '${esc(p.description)}', ${rolesLit}${dep})`;
+    return `  PermissionMeta('${p.key}', '${p.module}', '${esc(p.label)}', '${esc(p.description)}', ${rolesLit}${dep}${p.grantOnly ? ', grantOnly: true' : ''})`;
   }).join(',\n');
 
   const matrixEntries = model.roles.map((r) => {
@@ -474,13 +476,15 @@ const String kPlatformAdminField = '${esc(model.platformAdmin.field)}';
 /// Permission metadata. \`deprecated\` (if set) explains why + the replacement —
 /// still enforced/emitted, just don't grant it to new consumers.
 class PermissionMeta {
-  const PermissionMeta(this.key, this.module, this.label, this.description, this.roles, {this.deprecated});
+  const PermissionMeta(this.key, this.module, this.label, this.description, this.roles, {this.deprecated, this.grantOnly = false});
   final String key;
   final String module;
   final String label;
   final String description;
   final Set<EqRole> roles;
   final String? deprecated;
+  /// True when no role holds it by default; it is only given through an access group.
+  final bool grantOnly;
 }
 
 const List<PermissionMeta> kPermissions = [

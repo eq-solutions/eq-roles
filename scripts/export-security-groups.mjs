@@ -38,6 +38,7 @@ const MODULE_LABELS = {
   ops: 'Ops',
   documents: 'Documents',
   ai: 'AI',
+  staff: 'Staff',
 };
 
 const ACCESS_CONTROL_URL = 'https://core.eq.solutions/sks/admin/access-control';

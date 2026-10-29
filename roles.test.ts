@@ -14,6 +14,7 @@ import {
 
 test('manager holds every permission', () => {
   for (const p of PERMISSIONS) {
+    if (p.grantOnly) continue;
     assert.equal(can('manager', p.key), true, `manager missing ${p.key}`);
   }
 });
@@ -468,5 +469,28 @@ test('permKeyForResource agrees with canAccessResource for every modeled pair, f
       const expected = perm === null ? true : can(role, perm as Parameters<typeof can>[1]);
       assert.equal(canAccessResource(role, rp.resource, rp.action), expected);
     }
+  }
+});
+
+test('grant-only permissions are held by no role and only by an explicit grant (v3.5.0)', () => {
+  const grantOnly = PERMISSIONS.filter((p) => p.grantOnly);
+  assert.deepEqual(grantOnly.map((p) => p.key), ['staff.review_all_staff']);
+  for (const p of grantOnly) {
+    assert.deepEqual(p.roles, [], p.key);
+    for (const role of ROLE_KEYS) assert.equal(can(role, p.key), false, `${role} ${p.key}`);
+    assert.equal(can('manager', p.key, { isPlatformAdmin: true }), true, p.key);
+    assert.ok(resolveEffectivePermissions({ role: 'manager', groupPerms: [p.key] }).includes(p.key), p.key);
+  }
+});
+
+test('team and crew keys: manager and supervisor only (v3.5.0)', () => {
+  for (const k of ['field.manage_teams', 'field.manage_apprentices', 'field.view_all_crews'] as const) {
+    for (const role of ROLE_KEYS) assert.equal(can(role, k), role === 'manager' || role === 'supervisor', `${role} ${k}`);
+  }
+});
+
+test('staff conversations and report cards: manager only (v3.5.0)', () => {
+  for (const k of ['staff.manage_conversations', 'staff.access_report_cards'] as const) {
+    for (const role of ROLE_KEYS) assert.equal(can(role, k), role === 'manager', `${role} ${k}`);
   }
 });

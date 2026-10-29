@@ -3,6 +3,17 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.5.0] - 2026-10-29
+
+### Added
+- **`field.manage_teams`**, **`field.manage_apprentices`**, **`field.view_all_crews`** (`field` module; manager and supervisor by default) - promoted from EQ Field's own list into the package. The defaults match what EQ Field already gives managers and supervisors, so nobody gains or loses anything. `field.manage_teams` is also the one key for editing teams from Shell's org chart, replacing Shell's own `staff.manage_teams` (consumer follow-up; Shell will accept both for one release).
+- **New `staff` module** with **`staff.manage_conversations`** (Log staff conversations) and **`staff.access_report_cards`** (See staff report cards), manager only by default. Promoted from Shell's own list. Today nobody holds either; managers gain them, limited to people in teams they supervise.
+- **`staff.review_all_staff`** (Review all staff) - widens the two keys above from the teams you supervise to everyone. **Grant-only**: held by no role, given through an access group.
+- **`grantOnly` flag in `model.json`** - a permission with an empty `roles` list that is only ever given through an access group. The build rejects an empty `roles` list unless `grantOnly` is true (and rejects `grantOnly` with roles). The "manager holds every permission" test skips grant-only keys. Exposed as `grantOnly?: boolean` on `PermissionMeta` and in the Dart output.
+
+### Why (Royce Milmlow, 2026-10-29)
+- Shell and Field each kept their own copy of the team-editing key with different defaults. One definition, one place. Consumer follow-ups: eq-shell and eq-field adopt the keys in later releases; until then adding them changes nothing for anyone.
+
 ## [3.4.0] - 2026-10-21
 
 ### Added
