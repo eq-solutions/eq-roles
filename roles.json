@@ -1,5 +1,5 @@
 {
-  "version": "3.6.0",
+  "version": "3.7.0",
   "generated": true,
   "roles": [
     {
@@ -553,7 +553,7 @@
       "key": "quotes.view",
       "module": "quotes",
       "label": "View quotes",
-      "description": "See every quote and its status. Dollar amounts are controlled separately by quotes.view_values; cost and margin by ops.view_margins.",
+      "description": "See quotes and their status: every quote, unless you are in a group that limits you to your own (quotes.own_only). Dollar amounts are controlled separately by quotes.view_values; cost and margin by ops.view_margins.",
       "roles": [
         "manager",
         "supervisor",
@@ -806,6 +806,14 @@
       "module": "staff",
       "label": "See combined report cards",
       "description": "See report cards that draw on every reviewer's conversations about a person, not just your own. Given through an access group, never by role.",
+      "roles": [],
+      "grantOnly": true
+    },
+    {
+      "key": "quotes.own_only",
+      "module": "quotes",
+      "label": "Only see own quotes and jobs",
+      "description": "Limits someone to the quotes they created or are the named estimator on, and the jobs that come from them. Given through an access group to named people, never by role; holding it takes access away. Quote values stay controlled by quotes.view_values.",
       "roles": [],
       "grantOnly": true
     }

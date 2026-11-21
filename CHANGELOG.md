@@ -3,6 +3,17 @@
 All notable changes to `@eq-solutions/roles` are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/). Versioning: [SemVer](https://semver.org/).
 
+## [3.7.0] - 2026-11-21
+
+### Added
+- **`quotes.own_only`** (Only see own quotes and jobs, `quotes` module). **Grant-only**: held by no role, given through an access group to named people. Unlike the other grant-only keys, holding it takes access away: someone holding it sees only the quotes they created or are the named estimator on, and the jobs that come from them. Consumer: eq-shell (tenant migration 0488). Until that migration is applied, granting it changes nothing.
+
+### Changed
+- `quotes.view` description no longer says "every quote" without exception; it points at `quotes.own_only`.
+
+### Why (Royce Milmlow, 2026-11-21)
+- A manager needs to be limited to their own quotes and jobs without changing anyone else in the same role. Access Control can only deny a permission for a whole role, never for one person, so the limit is a group grant on named people.
+
 ## [3.6.0] - 2026-10-30
 
 ### Added
